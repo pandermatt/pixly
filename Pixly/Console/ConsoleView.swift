@@ -62,7 +62,7 @@ enum ConsoleRenderer {
                 let cell = buffer[x, y]
                 guard cell.character != " " else { continue }
                 let rect = layout.rect(x: x, y: y)
-                let color = theme.console(cell.foreground)
+                let color = theme.ink(cell.foreground)
                 switch cell.character {
                 case "■":
                     context.fill(Path(CGRect(x: rect.minX, y: rect.midY - rect.width / 2, width: rect.width, height: rect.width)), with: .color(color))

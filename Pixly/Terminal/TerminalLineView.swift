@@ -33,7 +33,7 @@ struct TerminalLineView: View {
         case .art:
             // Menlo has every block and box-drawing glyph at the same advance, so the letters line up.
             Text(verbatim: line.text)
-                .font(.custom("Menlo", size: 13))
+                .font(.custom("Menlo", size: 13 * Theme.scale))
                 .foregroundStyle(theme.art)
                 .shadow(color: theme.art.opacity(theme.artGlow), radius: 5)
                 .fixedSize(horizontal: true, vertical: true)
@@ -50,6 +50,34 @@ struct TerminalLineView: View {
             Text(verbatim: line.text).foregroundStyle(theme.warning)
         case .error:
             Text(verbatim: line.text).foregroundStyle(theme.error)
+        case .link:
+            #if os(tvOS)
+            // There's no browser on Apple TV to open it in.
+            Text(verbatim: line.text)
+                .underline()
+                .foregroundStyle(theme.accent)
+            #else
+            if let url = URL(string: line.text) {
+                Link(destination: url) {
+                    Text(verbatim: line.text)
+                        .underline()
+                        .foregroundStyle(theme.accent)
+                }
+            }
+            #endif
+        case .palette:
+            VStack(alignment: .leading, spacing: 0) {
+                ForEach([0, 8], id: \.self) { start in
+                    HStack(spacing: 0) {
+                        ForEach(ConsoleColor.allCases[start..<start + 8], id: \.self) { color in
+                            Rectangle()
+                                .fill(theme.console(color))
+                                .frame(width: 22, height: 14)
+                        }
+                    }
+                }
+            }
+            .padding(.vertical, 4)
         }
     }
 }

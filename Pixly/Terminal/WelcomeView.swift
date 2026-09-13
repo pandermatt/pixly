@@ -26,6 +26,12 @@ struct WelcomeView: View {
                             title: "Press space to jump",
                             detail: "Press the space bar to jump. Stay clear of the walls and the red bars."
                         )
+                        #elseif os(tvOS)
+                        feature(
+                            "appletvremote.gen4.fill",
+                            title: "Click to jump",
+                            detail: "Click the remote, or press A on a controller, to jump. Stay clear of the walls and the red bars."
+                        )
                         #else
                         feature(
                             "hand.tap.fill",
@@ -38,11 +44,19 @@ struct WelcomeView: View {
                             title: "Press start",
                             detail: "Start compiles the original C game and runs it. Your best scores go to Game Center."
                         )
+                        #if os(tvOS)
+                        feature(
+                            "paintpalette.fill",
+                            title: "Make it yours",
+                            detail: "Pick a theme and an avatar in Settings, in the game's menu."
+                        )
+                        #else
                         feature(
                             "paintpalette.fill",
                             title: "Make it yours",
                             detail: "Pick a theme, avatar and app icon in Settings, or type `settings` in the terminal."
                         )
+                        #endif
                     }
                 }
                 .padding(.horizontal, 36)
@@ -60,7 +74,9 @@ struct WelcomeView: View {
             .buttonStyle(.glassProminent)
             .buttonBorderShape(.capsule)
             .tint(theme.buttonTint)
+            #if !os(tvOS)
             .keyboardShortcut(.defaultAction)
+            #endif
             .frame(maxWidth: 468)
             .padding(.horizontal, 36)
             .padding(.vertical, 24)

@@ -87,17 +87,22 @@ struct PixlyThemeTests {
     func paletteKeepsTheGameReadable(_ id: ThemeID) {
         let theme = id.palette
         #expect(theme.consoleHex.count == ConsoleColor.allCases.count)
+        #expect((theme.inkHex ?? theme.consoleHex).count == ConsoleColor.allCases.count)
         #expect(theme.backdrop.count == 9)
         func hex(_ color: ConsoleColor) -> UInt32 { theme.consoleHex[Int(color.rawValue)] }
-        // Tunnel against walls, and menu text against the background.
-        #expect(contrast(hex(.white), hex(.black)) >= 4.5)
+        func ink(_ color: ConsoleColor) -> UInt32 { (theme.inkHex ?? theme.consoleHex)[Int(color.rawValue)] }
+        // Menu text against the background, and the pixel against the tunnel.
+        #expect(contrast(ink(.white), hex(.black)) >= 4.5)
+        #expect(contrast(ink(.black), hex(.white)) >= 4.5)
+        // The tunnel stands out from the walls (on Light only just: 2.0 draws a thin border).
+        #expect(contrast(hex(.white), hex(.black)) >= 1.2)
         // The red bar against the tunnel.
         #expect(contrast(hex(.red), hex(.white)) >= 2.5)
         // Text on the save-score bars.
-        #expect(contrast(hex(.white), hex(.green)) >= 3)
-        #expect(contrast(hex(.white), hex(.lightRed)) >= 3)
+        #expect(contrast(ink(.white), hex(.green)) >= 3)
+        #expect(contrast(ink(.white), hex(.lightRed)) >= 3)
         // The selected menu entry stands out from the others.
-        #expect(contrast(hex(.darkGray), hex(.black)) < contrast(hex(.white), hex(.black)))
+        #expect(contrast(ink(.darkGray), hex(.black)) < contrast(ink(.white), hex(.black)))
     }
 
     private func contrast(_ a: UInt32, _ b: UInt32) -> Double {

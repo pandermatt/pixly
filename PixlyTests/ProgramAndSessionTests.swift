@@ -61,6 +61,18 @@ struct PixlyProgramTests {
         #expect(program.selection == 2)
     }
 
+    @Test func selectingAnEntryByNumber() async throws {
+        let program = try makeProgram()
+        await program.run()
+        #expect(program.currentMenu?.count == 6)
+        program.select(4)
+        #expect(program.selection == 4)
+        #expect(row(13, of: program) == "> Settings <")
+        program.select(0)
+        program.select(7)
+        #expect(program.selection == 4)
+    }
+
     @Test func avatarMenuPreviewsTheHighlightedAvatar() async throws {
         let program = try makeProgram()
         await program.run()
@@ -111,6 +123,21 @@ struct PixlyProgramTests {
         program.handle(.space)
         #expect(program.screen == .menu)
         #expect(program.selection == 4)
+    }
+
+    @Test func aNewGameWaitsForTheFirstTap() async throws {
+        let program = try makeProgram()
+        await program.run()
+        program.confirm()
+        #expect(program.screen == .playing)
+        #expect(program.isWaitingToStart)
+        #expect(row(9, of: program).contains("START"))
+        #expect(program.game.score == 0)
+
+        program.press(at: (x: 40, y: 12))
+        #expect(!program.isWaitingToStart)
+        #expect(!row(9, of: program).contains("START"))
+        #expect(program.game.y == PixelEscapeGame.startY - 1)
     }
 
     @Test func playingUntilGameOverSavesTheScore() async throws {
@@ -278,7 +305,7 @@ struct TerminalSessionTests {
     @Test func startTypesTheBuildCommandThenLaunches() async {
         let session = await bootedSession()
         await session.compileAndRun()
-        #expect(session.mode == .program)
+        #expect(session.mode == .program(.classic))
         #expect(session.lines.contains { $0.style == .command && $0.text == BootScript.buildCommand })
         #expect(session.lines.last?.text == "./pixly")
 
@@ -296,6 +323,29 @@ struct TerminalSessionTests {
         #expect(entries.allSatisfy { ($0.label?.count ?? 99) <= 14 })
     }
 
+    @Test func start2BuildsAndLaunchesPixly2() async {
+        let session = await bootedSession()
+        await session.submit("start2")
+        #expect(session.mode == .program(.smooth))
+        #expect(session.lines.contains { $0.style == .command && $0.text == BootScript.buildCommand2 })
+        #expect(session.lines.last?.text == "./pixly2")
+        #expect(!session.lines.contains { $0.style == .warning })
+
+        session.programExited(runtime: 3, interrupted: true)
+        #expect(session.mode == .shell)
+        await session.submit("./pixly2")
+        #expect(session.mode == .program(.smooth))
+    }
+
+    @Test func highscore2ListsTheSecondTable() async {
+        let session = await bootedSession()
+        session.highscores2 = { [ScoreEntry(name: "Smooth", score: 420)] }
+        await session.submit("highscore2")
+        #expect(session.lines.last?.text.hasSuffix("420  Smooth") == true)
+        await session.submit("highscore")
+        #expect(session.lines.last?.text == "no highscores yet. run ./pixly")
+    }
+
     @Test func unknownCommand() async {
         let session = await bootedSession()
         await session.submit("pong")
@@ -306,6 +356,10 @@ struct TerminalSessionTests {
         let session = await bootedSession()
         await session.submit("cat ball.c")
         #expect(session.lines.contains { $0.text.contains("#define XPOS 5") })
+        await session.submit("cat credits.txt")
+        #expect(session.lines.contains { $0.text == "© Pascal Andermatt, Jan Huber, Adrian Schrempp" })
+        await session.submit("help")
+        #expect(!session.lines.contains { ["credits", "theme [NAME]", "icon [NAME]", "ls, cat FILE", "./pixly", "clear"].contains($0.label) })
     }
 
     @Test func clearEmptiesTheScrollback() async {
@@ -371,7 +425,7 @@ struct TerminalSessionTests {
         preferences.setTheme(.amber)
         preferences.setScanlines(false)
         await session.submit("ls -a")
-        #expect(session.lines.last?.text.hasPrefix(".  ..  .pixlyrc  ball.c") == true)
+        #expect(session.lines.last?.text.hasPrefix(".  ..  .pixlyrc  Pixly.xcodeproj  Pixly2.swift  ball.c") == true)
         await session.submit("cat ~/.pixlyrc")
         #expect(session.lines.suffix(5).map(\.text) == [
             "# ~/.pixlyrc — written by `settings`",
@@ -401,7 +455,10 @@ struct TerminalSessionTests {
         session.input = "s"
         session.complete()
         #expect(session.input == "s")
-        #expect(session.lines.last?.text == "scanlines  settings  start  sudo")
+        #expect(session.lines.last?.text == "scanlines  settings  start  start2  sudo")
+        session.input = "./pix"
+        session.complete()
+        #expect(session.input == "./pixly")
         session.input = "wh"
         session.complete()
         #expect(session.input == "whoami ")
@@ -422,6 +479,165 @@ struct TerminalSessionTests {
         }
         await command.value
         #expect(preferences.theme == .phosphor)
+    }
+
+    private func sessionWithFiles() async throws -> (TerminalSession, UserDefaults) {
+        let defaults = try #require(UserDefaults(suiteName: "pixly-files-\(UUID().uuidString)"))
+        let session = TerminalSession(charDelay: .zero, lineDelay: .zero, defaults: defaults)
+        await session.boot()
+        return (session, defaults)
+    }
+
+    @Test func scoreFilesAreListedCatableAndRemovable() async throws {
+        let (session, _) = try await sessionWithFiles()
+        var classic = [ScoreEntry(name: "Pascal", score: 420), ScoreEntry(name: "Jan", score: 99)]
+        session.highscores = { classic }
+        session.resetScores = { program in
+            if program == .classic { classic = [] }
+        }
+        await session.submit("ls")
+        #expect(session.lines.last?.text.contains("consoleio.h  credits.txt  highscore.txt  landscape.c") == true)
+        #expect(session.lines.last?.text.contains("highscore2.txt") == false)
+        await session.submit("cat highscore.txt")
+        #expect(session.lines.suffix(2).map(\.text) == ["Pascal§420", "Jan§99"])
+
+        await session.submit("rm highscore.txt")
+        #expect(classic.isEmpty)
+        await session.submit("highscore")
+        #expect(session.lines.last?.text == "no highscores yet. run ./pixly")
+        await session.submit("cat highscore.txt")
+        #expect(session.lines.last?.text == "cat: highscore.txt: No such file or directory")
+        await session.submit("rm highscore2.txt")
+        #expect(session.lines.last?.text == "rm: highscore2.txt: No such file or directory")
+    }
+
+    @Test func removedSourcesBreakTheBuildUntilRestored() async throws {
+        let (session, defaults) = try await sessionWithFiles()
+        await session.submit("rm ball.h *.cbp")
+        #expect(!session.canRestore)
+        await session.submit("ls")
+        #expect(session.lines.last?.text.hasPrefix("Pixly.xcodeproj  Pixly2.swift  ball.c  consoleio.h  credits.txt  landscape.c") == true)
+        #expect(session.restoreTitle == "restore C files")
+        await session.submit("cat ball.h")
+        #expect(session.lines.last?.text == "cat: ball.h: No such file or directory")
+
+        await session.compileAndRun()
+        #expect(session.mode == .shell)
+        #expect(session.canRestore)
+        #expect(session.lines.contains { $0.text == "main.c:8:10: fatal error: ball.h: No such file or directory" })
+        #expect(session.lines.last?.text == "compilation terminated.")
+
+        let relaunched = TerminalSession(charDelay: .zero, lineDelay: .zero, defaults: defaults)
+        #expect(relaunched.removedFiles == ["ball.h", "pixel_escape.cbp"])
+
+        await session.restoreFiles()
+        #expect(!session.canRestore)
+        #expect(session.lines.suffix(2).map(\.text) == [BootScript.restoreCommand, "Updated 2 paths from the index"])
+        await session.compileAndRun()
+        #expect(session.mode == .program(.classic))
+    }
+
+    @Test func removingEverything() async throws {
+        let (session, _) = try await sessionWithFiles()
+        await session.submit("rm -rf *")
+        await session.submit("ls")
+        #expect(session.lines.last?.style == .command)
+        await session.submit("rm *.c")
+        #expect(session.lines.last?.text == "zsh: no matches found: *.c")
+        await session.compileAndRun()
+        #expect(session.mode == .shell)
+        #expect(session.lines.contains { $0.text == "gcc: error: main.c: No such file or directory" })
+    }
+
+    @Test func removingPixlyrcResetsTheSettings() async throws {
+        let (session, preferences) = try await sessionWithPreferences(FakeIconSwitcher())
+        preferences.setTheme(.amber)
+        preferences.setAvatar(.heart)
+        preferences.setScanlines(true)
+        await session.submit("rm .pixlyrc")
+        #expect(preferences.theme == .classic)
+        #expect(preferences.avatar == .pixel)
+        #expect(!preferences.scanlines)
+        preferences.setTheme(.light)
+        await session.submit("rm ~/.pixlyrc")
+        #expect(preferences.theme == .classic)
+        await session.submit("cat .pixlyrc")
+        #expect(session.lines.suffix(4).map(\.text) == ["theme = classic", "icon = classic", "avatar = pixel", "scanlines = off"])
+    }
+
+    @Test func removingTheRootDirectoryRebootsWithoutDeletingAnything() async throws {
+        let (session, _) = try await sessionWithFiles()
+        await session.submit("rm -rf /")
+        #expect(session.mode == .shell)
+        #expect(session.lines.first?.text.hasPrefix("Last login") == true)
+        #expect(session.lines.last?.text.hasPrefix("(just kidding") == true)
+        #expect(session.removedFiles.isEmpty)
+        await session.submit("rm /")
+        #expect(session.lines.last?.text == "rm: /: is a directory")
+    }
+
+    @Test func swiftSourceLinksToGitHubAndTheProjectIsADirectory() async throws {
+        let (session, _) = try await sessionWithFiles()
+        await session.submit("cat Pixly2.swift")
+        #expect(session.lines.contains { $0.text.contains("static let jumpVelocity") })
+        #expect(session.lines.last?.style == .link)
+        #expect(session.lines.last?.text == BootScript.repository)
+        await session.submit("cat Pixly.xcodeproj")
+        #expect(session.lines.last?.text == "cat: Pixly.xcodeproj: Is a directory")
+        await session.submit("ls Pixly.xcodeproj")
+        #expect(session.lines.last?.text == BootScript.xcodeprojContents)
+        await session.submit("open Pixly.xcodeproj")
+        #expect(session.lines.last?.style == .link)
+        await session.submit("rm Pixly.xcodeproj")
+        #expect(session.lines.last?.text == "rm: Pixly.xcodeproj: is a directory")
+        #expect(session.removedFiles.isEmpty)
+        await session.submit("rm -r Pixly.xcodeproj")
+        #expect(session.removedFiles == ["Pixly.xcodeproj"])
+    }
+
+    @Test func removingTheSwiftFileBreaksPixly2UntilRestored() async throws {
+        let (session, _) = try await sessionWithFiles()
+        await session.submit("rm Pixly2.swift")
+        await session.compileAndRun(.smooth)
+        #expect(session.mode == .shell)
+        #expect(session.canRestore)
+        #expect(session.restoreTitle == "restore files")
+        #expect(session.lines.last?.text == "<unknown>:0: error: no such file or directory: 'Pixly2.swift'")
+        await session.submit("git status")
+        #expect(session.lines.last?.text.hasSuffix("deleted:    Pixly2.swift") == true)
+        await session.restoreFiles()
+        await session.compileAndRun(.smooth)
+        #expect(session.mode == .program(.smooth))
+    }
+
+    @Test func hiddenJokes() async throws {
+        let (session, preferences) = try await sessionWithPreferences(FakeIconSwitcher())
+        preferences.setTheme(.amber)
+        preferences.setAvatar(.heart)
+        var earned: [Achievement] = []
+        session.onAchievement = { earned.append($0) }
+        await session.submit("neofetch")
+        #expect(session.lines.contains { $0.label == "Theme" && $0.text == "amber" })
+        #expect(session.lines.contains { $0.label == "Avatar" && $0.text == "heart" })
+        #expect(session.lines.last?.style == .palette)
+        await session.submit("git")
+        #expect(session.lines.contains { $0.text.hasPrefix("what is git?") })
+        await session.submit("git push --force")
+        #expect(session.lines.last?.text == "(just kidding. nothing changed.)")
+        await session.submit("git rebase")
+        #expect(session.lines.last?.text == "git: 'rebase' is not a git command. See 'git --help'.")
+        await session.submit("ping pixel")
+        #expect(session.lines.last?.text == "PONG")
+        await session.submit("brew coffee")
+        #expect(session.lines.last?.text == "418 I'm a teapot")
+        await session.submit("make coffee")
+        #expect(session.mode == .shell)
+        #expect(session.lines.last?.text == "418 I'm a teapot")
+        await session.submit("top")
+        #expect(session.lines.contains { $0.text.contains("pixel") && $0.text.contains("99.9") })
+        #expect(ShellJokes.duration(3_725) == "1 h, 2 mins")
+        await session.submit("cat ball.c")
+        #expect(earned == [.showOff, .fridayDeploy, .teapot, .teapot, .readTheSource])
     }
 
     /// Waits until the session asks a question starting with `prefix`, then answers it.

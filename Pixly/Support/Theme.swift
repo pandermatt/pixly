@@ -6,8 +6,15 @@ enum Theme {
     static let trafficYellow = Color(red: 1, green: 0.74, blue: 0.18)
     static let trafficGreen = Color(red: 0.16, green: 0.79, blue: 0.25)
 
+    /// Sizes are for a phone or a desk; a TV is watched from the couch.
+    #if os(tvOS)
+    static let scale: CGFloat = 2
+    #else
+    static let scale: CGFloat = 1
+    #endif
+
     static func mono(_ size: CGFloat = 13, weight: Font.Weight = .regular) -> Font {
-        .system(size: size, weight: weight, design: .monospaced)
+        .system(size: size * scale, weight: weight, design: .monospaced)
     }
 }
 

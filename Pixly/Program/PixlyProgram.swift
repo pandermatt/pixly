@@ -21,6 +21,15 @@ enum Avatar: String, CaseIterable, Sendable {
         case .diamond: "Diamond"
         }
     }
+
+    /// How Pixly 2.0 draws the avatar: the pixel stays a square, the others become emoji.
+    var emoji: String? {
+        switch self {
+        case .pixel: nil
+        case .heart: "❤️"
+        case .diamond: "💎"
+        }
+    }
 }
 
 /// Port of main.c and score.c: the loading bar, menus and save-score window, drawn into an
@@ -70,8 +79,13 @@ final class PixlyProgram {
     private static let pressAnyKey = "Press any key to continue . . ."
     #if os(macOS)
     private static let continueHint = "Press enter to continue"
+    private static let startHint = "PRESS SPACE TO START"
+    #elseif os(tvOS)
+    private static let continueHint = "Click to continue"
+    private static let startHint = "CLICK TO START"
     #else
     private static let continueHint = "Tap here or press enter to continue"
+    private static let startHint = "TAP TO START"
     #endif
     private static let saveBarRow = 17
     private static let nameRow = 16
@@ -80,6 +94,8 @@ final class PixlyProgram {
     private(set) var screen = Screen.loading
     private(set) var selection = 1
     private(set) var isPaused = false
+    /// A new game shows the tunnel and waits for the first tap, so new players aren't thrown in.
+    private(set) var isWaitingToStart = false
     private(set) var jumpCount = 0
     private(set) var nameInput = ""
     private(set) var isTypingName = false
@@ -120,7 +136,7 @@ final class PixlyProgram {
         Date().timeIntervalSince(startDate)
     }
 
-    private var currentMenu: Menu? {
+    var currentMenu: Menu? {
         switch screen {
         case .menu: Self.mainMenu
         case .avatar: Self.avatarMenu
@@ -131,14 +147,19 @@ final class PixlyProgram {
         }
     }
 
+    /// tvOS apps have a single icon, so the Apple TV settings leave it out.
+    #if os(tvOS)
+    private static let showsAppIconSetting = false
+    #else
+    private static let showsAppIconSetting = true
+    #endif
+
     private var settingsMenu: Menu {
         Menu(
             title: "Settings",
-            items: [
-                "Theme: \(preferences.theme.title)",
-                "App Icon: \(preferences.appIcon.title)",
-                "Scanlines: \(preferences.scanlines ? "On" : "Off")",
-            ],
+            items: ["Theme: \(preferences.theme.title)"]
+                + (Self.showsAppIconSetting ? ["App Icon: \(preferences.appIcon.title)"] : [])
+                + ["Scanlines: \(preferences.scanlines ? "On" : "Off")"],
             firstRow: 11,
             hasBack: true
         )
@@ -252,6 +273,13 @@ final class PixlyProgram {
         selectionDidChange(menu)
     }
 
+    /// Makes an entry of the current menu the selection (on tvOS, focus moves between entries).
+    func select(_ choice: Int) {
+        guard let menu = currentMenu, (1...menu.count).contains(choice), choice != selection else { return }
+        selection = choice
+        selectionDidChange(menu)
+    }
+
     func confirm() {
         if let menu = currentMenu, menu.isBack(selection) {
             goBack()
@@ -273,7 +301,7 @@ final class PixlyProgram {
         case .settings:
             switch selection {
             case 1: showChoiceMenu(.theme, current: preferences.theme)
-            case 2: showChoiceMenu(.appIcon, current: preferences.appIcon)
+            case 2 where Self.showsAppIconSetting: showChoiceMenu(.appIcon, current: preferences.appIcon)
             default:
                 preferences.setScanlines(!preferences.scanlines)
                 drawMenu(settingsMenu)
@@ -294,8 +322,9 @@ final class PixlyProgram {
 
     func jump() {
         guard screen == .playing else { return }
-        if isPaused {
+        if isPaused || isWaitingToStart {
             isPaused = false
+            isWaitingToStart = false
             lastTimestamp = nil
         }
         game.jump()
@@ -388,6 +417,7 @@ final class PixlyProgram {
     /// One 20 ms step of the `while (restart == 1)` loop in main.c.
     func advance() {
         guard screen == .playing else { return }
+        isWaitingToStart = false
         game.tick()
         renderGame()
         if game.isOver {
@@ -398,6 +428,7 @@ final class PixlyProgram {
     private func startGame() {
         game = PixelEscapeGame()
         isPaused = false
+        isWaitingToStart = true
         accumulator = 0
         lastTimestamp = nil
         screen = .playing
@@ -413,7 +444,7 @@ final class PixlyProgram {
 
     private func frame(_ timestamp: CFTimeInterval) {
         defer { lastTimestamp = timestamp }
-        guard screen == .playing, !isPaused, let lastTimestamp else { return }
+        guard screen == .playing, !isPaused, !isWaitingToStart, let lastTimestamp else { return }
         accumulator += min(timestamp - lastTimestamp, 0.1)
         while accumulator >= PixelEscapeGame.tickInterval, screen == .playing {
             accumulator -= PixelEscapeGame.tickInterval
@@ -694,6 +725,7 @@ final class PixlyProgram {
         let glyph = avatar.glyph
         let highscore = scores.highscore(game.score)
         let isPaused = isPaused
+        let isWaitingToStart = isWaitingToStart
         draw { c in
             for y in 1...24 {
                 for x in 1...ConsoleBuffer.columns {
@@ -711,6 +743,14 @@ final class PixlyProgram {
             if (1...24).contains(game.y) {
                 c.set(PixelEscapeGame.playerX, game.y, .init(character: glyph, foreground: .black, background: .white))
             }
+            if isWaitingToStart {
+                // Written into the empty tunnel above the pixel, which starts on row 13.
+                c.textcolor(.black, .white)
+                for (row, text) in [(9, Self.startHint), (10, "stay clear of the walls and the red bar")] {
+                    c.gotoxy(ConsoleBuffer.centeredX(text), row)
+                    c.write(text)
+                }
+            }
 
             c.textcolor(.white, .black)
             c.gotoxy(1, 25)
@@ -722,6 +762,8 @@ final class PixlyProgram {
             if isPaused {
                 #if os(macOS)
                 let text = "PAUSED - press space to continue"
+                #elseif os(tvOS)
+                let text = "PAUSED - click to continue"
                 #else
                 let text = "PAUSED - tap to continue"
                 #endif

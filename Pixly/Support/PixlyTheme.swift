@@ -45,11 +45,18 @@ struct PixlyTheme: Sendable {
     /// Nine colours for the 3×3 backdrop mesh.
     let backdrop: [Color]
     let scanlines: Color
-    /// sRGB hex for each `ConsoleColor`, in raw-value order.
+    /// sRGB hex for each `ConsoleColor`, in raw-value order. Cell backgrounds, and text too unless
+    /// `inkHex` is set.
     let consoleHex: [UInt32]
+    /// Text colours, when they differ from the backgrounds: Light draws dark ink on light cells.
+    var inkHex: [UInt32]? = nil
 
     func console(_ color: ConsoleColor) -> Color {
         Color(hex: consoleHex[Int(color.rawValue)])
+    }
+
+    func ink(_ color: ConsoleColor) -> Color {
+        Color(hex: (inkHex ?? consoleHex)[Int(color.rawValue)])
     }
 }
 
@@ -132,7 +139,7 @@ extension PixlyTheme {
         ]
     )
 
-    /// Ink on paper. The console swaps black and white, like the dark app icon.
+    /// Ink on paper: a white tunnel between light grey walls, with dark text on the light cells.
     static let light = PixlyTheme(
         colorScheme: .light,
         text: Color(hex: 0x1F1F1F),
@@ -153,8 +160,12 @@ extension PixlyTheme {
         ],
         scanlines: .black.opacity(0.02),
         consoleHex: [
-            0xF4F1EA, 0x1F5FBF, 0xA8D5B0, 0x2A8FA8, 0xE5483C, 0x9C2BB0, 0x9A7A00, 0x6E6B64,
-            0xB5B1A8, 0x9DB8E8, 0x2E9E4F, 0x2A8FA8, 0xF2B8B5, 0xB23AC8, 0x8A6D00, 0x1F1F1F,
+            0xE5E5E5, 0x9DB8E8, 0x7CC896, 0x9FD3E0, 0xE5483C, 0xD49BE0, 0xE3CB7A, 0xE9E6DF,
+            0xC9C5BC, 0xBFD2F2, 0x9ED9B0, 0xB9E2EC, 0xF08A80, 0xE2B3EC, 0xF2E3A6, 0xFFFFFF,
+        ],
+        inkHex: [
+            0x2B2A27, 0x1F5FBF, 0x1E7A3C, 0x1F7A8C, 0xE5483C, 0x9C2BB0, 0x8A6D00, 0x5E5A53,
+            0x7A766E, 0x1F5FBF, 0x1E7A3C, 0x1F7A8C, 0xC4312B, 0x9C2BB0, 0x8A6D00, 0x1F1F1F,
         ]
     )
 }

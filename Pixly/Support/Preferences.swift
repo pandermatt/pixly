@@ -74,6 +74,19 @@ final class Preferences {
         return true
     }
 
+    /// `rm ~/.pixlyrc`: every setting back to its default. The welcome screen stays seen.
+    func resetSettings() async {
+        setTheme(.classic)
+        setAvatar(.pixel)
+        setScanlines(false)
+        if appIcon != .classic {
+            await setAppIcon(.classic)
+        }
+        for key in [Self.themeKey, Self.avatarKey, Self.scanlinesKey] {
+            defaults.removeObject(forKey: key)
+        }
+    }
+
     /// macOS forgets a custom Dock icon when the app quits, so apply it again at launch.
     func restoreAppIcon() async {
         guard iconSwitcher.current == nil, appIcon != .classic else { return }

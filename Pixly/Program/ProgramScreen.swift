@@ -20,6 +20,12 @@ struct ProgramScreen: View {
     #else
     @FocusState private var keysFocused: Bool
     #endif
+    /// tvOS: a moment after the crash, a click saves the score.
+    @State private var canClickToSave = false
+    #if os(tvOS)
+    /// tvOS: the menu entry whose invisible row has focus.
+    @FocusState private var focusedEntry: Int?
+    #endif
 
     private var windowShape: RoundedRectangle {
         RoundedRectangle(cornerRadius: isLandscape ? 18 : 24, style: .continuous)
@@ -28,16 +34,21 @@ struct ProgramScreen: View {
     var body: some View {
         let layout = isLandscape ? AnyLayout(HStackLayout(spacing: 12)) : AnyLayout(VStackLayout(spacing: 12))
         layout {
+            #if os(tvOS)
+            // Full screen: the console's black reaches the edges of the TV, while the 80×25 grid
+            // stays inside the safe area.
+            remoteControls(
+                console
+                    .overlay { scanlines }
+                    .background { theme.console(.black).ignoresSafeArea() }
+            )
+            #else
             console
-                .overlay {
-                    if program.preferences.scanlines {
-                        // Dark lines: invisible on the walls, a CRT stripe across the bright tunnel.
-                        Scanlines(color: .black.opacity(theme.colorScheme == .light ? 0.08 : 0.3))
-                    }
-                }
+                .overlay { scanlines }
                 .background(theme.console(.black), in: windowShape)
                 .clipShape(windowShape)
                 .overlay { windowShape.strokeBorder(theme.stroke, lineWidth: 1) }
+            #endif
             #if os(iOS)
             controls
                 .frame(width: isLandscape ? 132 : nil)
@@ -49,12 +60,17 @@ struct ProgramScreen: View {
         .onAppear { keyMonitor.start(handleKeyDown) }
         .onDisappear { keyMonitor.stop() }
         #else
+        #if !os(tvOS)
+        // (On tvOS the console is a button, which takes focus by itself.)
         .focusable()
         .focused($keysFocused)
         .focusEffectDisabled()
+        #endif
         .onKeyPress(phases: [.down, .repeat], action: handleKeyPress)
+        #if !os(tvOS)
         .onAppear { keysFocused = true }
         .onChange(of: program.screen) { keysFocused = true }
+        #endif
         .alert("Enter your name", isPresented: Binding(get: { program.isEditingName }, set: { program.isEditingName = $0 })) {
             TextField("Name", text: Binding(get: { program.draftName }, set: { program.draftName = $0 }))
                 .textInputAutocapitalization(.words)
@@ -68,11 +84,160 @@ struct ProgramScreen: View {
         .onChange(of: scenePhase) { _, phase in
             if phase != .active { program.pause() }
         }
+        .gameController { button in
+            #if os(tvOS)
+            // On tvOS everything but A also reaches the focus system, which handles it below.
+            guard button == .a else { return }
+            #endif
+            handleController(button)
+        }
+        #if os(tvOS)
+        // The Siri Remote (and controllers, through focus): swipes move through menus, Back stops
+        // a run or leaves a menu (the main menu goes back to the shell), Play/Pause pauses and saves.
+        .onMoveCommand { direction in
+            // While a menu row has focus, the focus move itself changes the selection.
+            guard focusedEntry == nil else { return }
+            switch direction {
+            case .up: program.moveSelection(-1)
+            case .down: program.moveSelection(1)
+            default: break
+            }
+        }
+        .onExitCommand {
+            if program.screen == .menu {
+                onInterrupt()
+            } else {
+                handleController(.b)
+            }
+        }
+        .onPlayPauseCommand { handleController(.menu) }
+        .onChange(of: focusedEntry) { _, entry in
+            if let entry {
+                program.select(entry)
+            }
+        }
+        // Clicks in the first moments after a crash were still meant for jumping.
+        .task(id: program.screen) {
+            canClickToSave = false
+            guard program.screen == .saveScore else { return }
+            try? await Task.sleep(for: .seconds(1.5))
+            canClickToSave = !Task.isCancelled
+        }
+        #else
         .sensoryFeedback(.impact(weight: .light, intensity: 0.7), trigger: program.jumpCount)
         .sensoryFeedback(trigger: program.screen) { old, new in
             old == .playing && new == .saveScore ? .error : nil
         }
+        #endif
     }
+
+    /// A jumps while playing and confirms in menus, B stops a run or goes back, the d-pad and
+    /// stick move through menus, Menu pauses. The save window after a crash ignores A, so a
+    /// player still hammering it doesn't skip past the score: Menu saves instead.
+    private func handleController(_ button: ControllerButton) {
+        switch button {
+        case .a:
+            if program.isEditingName {
+                program.finishEditingName(save: true)
+            } else if program.screen == .playing {
+                program.jump()
+            } else if program.screen != .saveScore {
+                program.confirm()
+            } else {
+                saveWindowClicked()
+            }
+        case .b:
+            program.screen == .playing ? program.quitGame() : program.handle(.escape)
+        case .up:
+            program.moveSelection(-1)
+        case .down:
+            program.moveSelection(1)
+        case .menu:
+            if program.screen == .saveScore {
+                program.confirm()
+            } else if program.screen == .playing {
+                program.isPaused ? program.jump() : program.pause()
+            }
+        case .y:
+            break
+        }
+    }
+
+    /// A on the save window: nothing, except on tvOS, where a click saves once the crash has sunk
+    /// in (and until then shows how to continue).
+    private func saveWindowClicked() {
+        #if os(tvOS)
+        if canClickToSave {
+            program.confirm()
+        } else {
+            program.handle(.space)
+        }
+        #endif
+    }
+
+    @ViewBuilder
+    private var scanlines: some View {
+        if program.preferences.scanlines {
+            // Dark lines: invisible on the walls, a CRT stripe across the bright tunnel.
+            Scanlines(color: .black.opacity(theme.colorScheme == .light ? 0.08 : 0.3))
+        }
+    }
+
+    #if os(tvOS)
+    /// tvOS: outside menus the console is one big button (a click jumps or continues). In a menu
+    /// it sits over focusable rows instead, with no button around them: inside a disabled button
+    /// the rows became one focus group, and a swipe jumped straight to the last entry.
+    @ViewBuilder
+    private func remoteControls(_ console: some View) -> some View {
+        if program.currentMenu == nil {
+            console.remoteSelect { handleController(.a) }
+        } else {
+            console.background { menuEntries }
+        }
+    }
+
+    /// tvOS: the menu entries as focusable rows hidden behind their console lines. Moving
+    /// through a menu is then a real focus move, so the Apple TV plays its click and the remote
+    /// ticks; the focused row is the selection.
+    @ViewBuilder
+    private var menuEntries: some View {
+        if let menu = program.currentMenu {
+            GeometryReader { proxy in
+                let layout = ConsoleLayout(size: proxy.size, scale: displayScale)
+                // Plain layout, row under row (the empty line before Back is a gap): the focus
+                // engine sees each entry exactly on its console line, so up and down go one step.
+                VStack(alignment: .leading, spacing: 0) {
+                    ForEach(1...menu.count, id: \.self) { choice in
+                        let row = layout.rect(x: 1, y: menu.row(for: choice), width: ConsoleBuffer.columns)
+                        let gap = choice == 1
+                            ? row.minY
+                            : row.minY - layout.rect(x: 1, y: menu.row(for: choice - 1)).maxY
+                        Button {
+                            // A real remote may already have confirmed this click through GameController.
+                            guard !GameControllerInput.shared.pressedARecently else { return }
+                            program.select(choice)
+                            program.confirm()
+                        } label: {
+                            // Opaque, but hidden behind the console: tvOS never focuses invisible views.
+                            Rectangle().fill(theme.console(.black))
+                        }
+                        .buttonStyle(RemoteSelectStyle())
+                        .focused($focusedEntry, equals: choice)
+                        .accessibilityLabel(menu.label(choice))
+                        .frame(width: row.width, height: row.height)
+                        .padding(.top, gap)
+                    }
+                }
+                .padding(.leading, layout.origin.x)
+                .frame(width: proxy.size.width, height: proxy.size.height, alignment: .topLeading)
+                .defaultFocus($focusedEntry, program.selection)
+            }
+            // A new menu starts with focus on its current selection.
+            .id(program.screen)
+            .task { focusedEntry = program.selection }
+        }
+    }
+    #endif
 
     private var console: some View {
         GeometryReader { proxy in
@@ -83,6 +248,7 @@ struct ProgramScreen: View {
                 ConsoleRenderer.draw(buffer, layout: layout, theme: theme, in: &context)
             }
             .contentShape(Rectangle())
+            #if !os(tvOS)
             .gesture(
                 DragGesture(minimumDistance: 0)
                     .onChanged { value in
@@ -97,9 +263,12 @@ struct ProgramScreen: View {
                     program.hover(at: cell)
                 }
             }
+            #endif
         }
         .accessibilityElement()
         .accessibilityLabel("Pixly console")
+        .accessibilityIdentifier("console")
+        .accessibilityValue(program.currentMenu.map { $0.label(program.selection) } ?? "")
     }
 
     #if os(macOS)

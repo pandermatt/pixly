@@ -13,6 +13,13 @@ struct SystemAppIconSwitcher: AppIconSwitching {
         NSApp.applicationIconImage = icon.iconName.flatMap { NSImage(named: "Dock-\($0)") }
         return true
     }
+    #elseif os(tvOS)
+    /// tvOS apps have a single icon.
+    var current: ThemeID? { nil }
+
+    func apply(_ icon: ThemeID) async -> Bool {
+        false
+    }
     #else
     var current: ThemeID? {
         let name = UIApplication.shared.alternateIconName

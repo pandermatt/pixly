@@ -1,6 +1,10 @@
 struct TerminalLine: Identifiable, Equatable, Sendable {
     enum Style: Sendable {
         case output, dim, accent, success, warning, error, art, command, answer
+        /// A tappable URL.
+        case link
+        /// The theme's 16 console colours as blocks (`neofetch`).
+        case palette
         /// A help entry: `label` is the command, `text` its description.
         case definition
     }
