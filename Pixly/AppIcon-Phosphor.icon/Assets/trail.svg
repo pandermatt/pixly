@@ -1,9 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1932 1932">
-  <polygon fill="#000000" points="62,968 116,1022 62,1076 8,1022"/>
-  <rect fill="#000000" x="166" y="958" width="78" height="77"/>
-  <polygon fill="#000000" points="322,1029 376,1083 322,1137 268,1083"/>
-  <rect fill="#000000" x="424" y="1079" width="77" height="77"/>
-  <polygon fill="#000000" points="596,1015 650,1069 596,1123 542,1069"/>
-  <polygon fill="#000000" points="725,955 779,1009 725,1063 671,1009"/>
-  <rect fill="#000000" x="822" y="927" width="77" height="77"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1932 1932"><polygon fill="#000" points="62 968 116 1022 62 1076 8 1022"/><rect width="78" height="77" x="166" y="958" fill="#000"/><polygon fill="#000" points="322 1029 376 1083 322 1137 268 1083"/><rect width="77" height="77" x="424" y="1079" fill="#000"/><polygon fill="#000" points="596 1015 650 1069 596 1123 542 1069"/><polygon fill="#000" points="725 955 779 1009 725 1063 671 1009"/><rect width="77" height="77" x="822" y="927" fill="#000"/></svg>
