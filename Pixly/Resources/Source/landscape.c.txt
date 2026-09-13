@@ -1,0 +1,172 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include "consoleio.h"
+#define SECOND_LAST_LAND 79
+#define LAST_LAND 80
+#define WHITE_ZONE 15
+#define LANDSCAPE_BRICK 219
+#define HINDERNISS_HEIGHT 3
+
+
+int hindernissposition = -1;
+int hindernissStart = 14;
+int land[LAST_LAND];
+
+void moveHinternis()
+{
+
+    if (hindernissposition >= 0) //Clearen
+    {
+        textcolor(white|bgwhite);
+        int i = 0;
+        for (i = 0; i < HINDERNISS_HEIGHT; i++)
+        {
+            gotoxy(LAST_LAND-hindernissposition, hindernissStart+i);
+            {
+                printf(" ");
+            }
+        }
+    }
+    hindernissposition = (hindernissposition+1)%LAST_LAND;
+    //zwischen LAST_LAND und 1
+    if (hindernissposition == LAST_LAND)
+    {
+        //beginnt von Vorne, neuer startpunkt ausrechnen. Immer Frei: Von 10-15 = Von 25-15 bis 15 = Von 25-WHITEZONE bis WHITEZONE Es darf beginnen von
+        hindernissStart = (rand()%HINDERNISS_HEIGHT)+25-WHITE_ZONE;
+    }
+    //printen
+
+    textcolor(red|bgred);
+    int i = 0;
+    for (i = 0; i < HINDERNISS_HEIGHT; i++)
+    {
+        //textcolor(white|bgblack);
+        //gotoxy(1,1);
+        //printf("%i / %i", LAST_LAND-hindernissposition, hindernissStart+i);
+        //system("PAUSE");
+        textcolor(red|bgred);
+        gotoxy(LAST_LAND-hindernissposition, hindernissStart+i);
+        {
+            printf("%c", LANDSCAPE_BRICK);
+        }
+
+    }
+}
+
+int checkHindernis(int x, int y)
+{
+    if (LAST_LAND-hindernissposition == x)
+    {
+        int i = hindernissStart;
+        for (i = hindernissStart; i < hindernissStart+HINDERNISS_HEIGHT; i++)
+        {
+            if (i == y)
+            {
+                return 1;
+            }
+        }
+    }
+    return 0;
+}
+
+
+
+void moveLandscape()
+{
+    int i;
+    int z;
+
+    moveHinternis();
+
+    textcolor(black|bgwhite);
+
+    for(z=1; z<LAST_LAND; z++)
+    {
+        if(land[z-1]>land[z])
+        {
+            gotoxy(z,land[z]+1);
+            printf(" ");
+            gotoxy(z,land[z]+WHITE_ZONE+1);
+            printf("%c", LANDSCAPE_BRICK);
+        }
+        else if (land[z-1]<land[z])
+        {
+            gotoxy(z,land[z]);
+            printf("%c", LANDSCAPE_BRICK);
+            gotoxy(z,land[z]+WHITE_ZONE);
+            printf(" ");
+        }
+        land[z-1]=land[z];
+    }
+
+    if(land[78]==1)
+    {
+        land[SECOND_LAST_LAND]=land[SECOND_LAST_LAND]+(rand()%2);
+    }
+    else if(land[SECOND_LAST_LAND]==24-WHITE_ZONE)
+    {
+        land[SECOND_LAST_LAND]=land[SECOND_LAST_LAND]-(rand()%2);
+    }
+    else
+    {
+        land[SECOND_LAST_LAND]=land[SECOND_LAST_LAND]+((rand()%3)-1);
+    }
+
+    if(land[78]>land[SECOND_LAST_LAND])
+    {
+        gotoxy(LAST_LAND,land[SECOND_LAST_LAND]+1);
+        printf(" ");
+        gotoxy(LAST_LAND,land[SECOND_LAST_LAND]+WHITE_ZONE+1);
+        printf("%c", LANDSCAPE_BRICK);
+    }
+    else if (land[78]<land[SECOND_LAST_LAND])
+    {
+        gotoxy(LAST_LAND,land[SECOND_LAST_LAND]);
+        printf("%c", LANDSCAPE_BRICK);
+        gotoxy(LAST_LAND,land[SECOND_LAST_LAND]+WHITE_ZONE);
+        printf(" ");
+    }
+    gotoxy(1,1);
+}
+
+void printLandscape()
+{
+    int i;
+    int z;
+    int black_zone=(25-WHITE_ZONE)/2+1;
+
+    textcolor(black|bgwhite);
+    clrscr();
+
+    for(z=1; z<=LAST_LAND; z++)
+    {
+        land[z-1]=black_zone-1;
+        for(i=0; i<black_zone; i++)
+        {
+            gotoxy(z,i);
+            printf("%c", LANDSCAPE_BRICK);
+            gotoxy(z,i+WHITE_ZONE+black_zone);
+            printf("%c", LANDSCAPE_BRICK);
+        }
+    }
+    gotoxy(1,1);
+}
+
+int check(int x, int y)
+{
+    if (checkHindernis(x, y) == 1)
+    {
+        return 1;
+    }
+    if(land[x-1]>=y || land[x-1]+WHITE_ZONE+1<=y)
+    {
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+

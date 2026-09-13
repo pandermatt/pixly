@@ -1,0 +1,52 @@
+// -----------------------------------------------------------------------
+//
+// consoleio.h
+//
+// -----------------------------------------------------------------------
+#ifndef __CONSOLEIO
+#define __CONSOLEIO
+
+#include <windows.h>
+
+
+#define red FOREGROUND_RED
+#define green FOREGROUND_GREEN
+#define blue FOREGROUND_BLUE
+#define white FOREGROUND_RED|FOREGROUND_BLUE|FOREGROUND_GREEN|FOREGROUND_INTENSITY
+#define gray FOREGROUND_RED|FOREGROUND_BLUE|FOREGROUND_GREEN
+#define lightred FOREGROUND_RED|FOREGROUND_INTENSITY
+#define lightgreen FOREGROUND_GREEN|FOREGROUND_INTENSITY
+#define lightblue FOREGROUND_BLUE|FOREGROUND_INTENSITY
+#define black 0
+
+#define bgblue BACKGROUND_BLUE
+#define bggreen BACKGROUND_GREEN
+#define bgred BACKGROUND_RED
+#define bgwhite BACKGROUND_RED|BACKGROUND_BLUE|BACKGROUND_GREEN|BACKGROUND_INTENSITY
+#define bggray BACKGROUND_RED|BACKGROUND_BLUE|BACKGROUND_GREEN
+#define bglightred BACKGROUND_RED|BACKGROUND_INTENSITY
+#define bglightgreen BACKGROUND_GREEN|BACKGROUND_INTENSITY
+#define bglightblue BACKGROUND_BLUE|BACKGROUND_INTENSITY
+#define bgblack 0
+
+#define NORMAL_CURSOR 0
+#define NO_CURSOR 2
+
+void gotoxy(int, int);
+// -----------------------------------------------------------------------
+// gotoxy
+// Positioniert den Cursor auf eine bestimmte Stelle auf dem
+// Bildschirm. Die Bildschirmgrösse beträgt 80x25 Zeichen.
+// -----------------------------------------------------------------------
+void clrscr();
+// -----------------------------------------------------------------------
+// clrscr
+// Löscht den Bildschirm
+// -----------------------------------------------------------------------
+void textcolor(WORD farbe);
+// Setzt die Farbe (Text und Hintergrund!!) auf den übergebenen wert
+// Beispiel: textcolor(green | bgwhite) ergibt grün auf weißem hintergrund
+
+void setcursortype(int type);
+
+#endif

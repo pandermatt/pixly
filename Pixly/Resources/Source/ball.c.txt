@@ -1,0 +1,111 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include "consoleio.h"
+#define XPOS 5
+#define TAIL '.'
+
+int ypos=13;
+int updown=0;
+int control=0;
+int lastposition=13;
+int tail[4];
+int NPixel;
+
+int yPosition()
+{
+    return ypos;
+}
+
+
+void setPixel(int pixel)
+{
+    NPixel=pixel;
+}
+
+void jump()
+{
+    textcolor(black|bgwhite);
+    gotoxy(XPOS,ypos);
+    printf(" ");
+    ypos--;
+    printBall();
+    updown+=2;
+}
+
+void moveDown()
+{
+    control++;
+    if(control==3)
+    {
+        updown--;
+        textcolor(black|bgwhite);
+        gotoxy(XPOS,ypos);
+        printf(" ");
+        if(updown>0)
+        {
+            ypos--;
+        }
+        else if(updown<0)
+        {
+            ypos++;
+        }
+        printBall();
+        if(updown<0)
+        {
+            updown=0;
+        }
+        control=0;
+    }
+}
+
+
+void Tail()
+{
+    int i;
+
+
+    if(lastposition!=ypos)
+    {
+        for(i=0; i<4; i++)
+        {
+            if(i!=3)
+            {
+                gotoxy(i+1,tail[i]);
+                printf(" ");
+                tail[i]=tail[i+1];
+                gotoxy(i+1,tail[i]);
+                printf("%c", TAIL);
+            }
+            else
+            {
+                gotoxy(4,tail[i]);
+                printf(" ");
+                tail[i]=lastposition;
+                gotoxy(4,tail[i]);
+                printf("%c", TAIL);
+                lastposition=ypos;
+            }
+        }
+    }
+}
+
+void printBall()
+{
+
+    gotoxy(XPOS,ypos);
+    printf("%c", NPixel);
+    Tail();
+}
+
+void resetBall()
+{
+    int i;
+
+    for(i=0; i<4; i++)
+    {
+        tail[i]=13;
+    }
+    lastposition=13;
+    ypos=13;
+    printBall();
+}

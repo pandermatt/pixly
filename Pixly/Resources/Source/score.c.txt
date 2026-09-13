@@ -1,0 +1,257 @@
+#include <stdio.h>
+#include "consoleio.h"
+#include <string.h>
+#define TEXT_SIZE 100       //Die Grösse eines Namens
+#define BUFFER_LAENGE 1024 //Grösse des Arrays mit den Scores, Die Maximalgrösse einer Zeile
+#define STANDART_TEXT white
+#define STANDART_BACKGROUND bgblack
+#define STANDART_INACTIVE_TEXT gray
+#define STANDART_LOADING lightblue //ACHTUNG, Resundant, Muss ich noch anpassen
+
+char dateiname[] = "pixel_escape.txt"; //Hier wird der Score gespeichert
+FILE *myFile;
+int isLoaded = 0;
+
+
+struct score
+{
+    char name[TEXT_SIZE];
+    int score;
+};
+
+struct score scores[BUFFER_LAENGE]; //In diesem Array sind die Punkte der Spieler gespsichert.
+int scoresCount;
+
+int sort_score (void *pp1, void *pp2) //Sortiermethode für qsort
+{
+    struct score p1 = *((struct score*)pp1);
+    struct score p2 = *((struct score*)pp2);
+
+    return p2.score - p1.score;
+}
+
+void writeFile() //Schreibt Informatonen aus dem Struct zurück in das File
+{
+    loadFile();
+    myFile = fopen(dateiname,"w");
+    qsort(scores, scoresCount, sizeof (struct score), sort_score); //Den Struct sortieren
+
+    int i = 0;
+    for (i = 0; i < scoresCount; i++)
+    {
+        char ausgabe[TEXT_SIZE];
+        sprintf(ausgabe, "%s§%i", scores[i].name, scores[i].score);
+        lock(ausgabe);
+        ausgabe[strlen(ausgabe)+1]=0;
+        ausgabe[strlen(ausgabe)]='\n';
+        fprintf(myFile, ausgabe);
+    }
+    fclose(myFile);
+}
+
+void lock(char *text)
+{
+    int i = 0;
+    for (i = 0; i < strlen(text); i++)
+    {
+        text[i] = text[i]+5;
+    }
+}
+
+void unlock (char *text)
+{
+    int i = 0;
+    for (i = 0; i < strlen(text); i++)
+    {
+        text[i] = text[i]-5;
+    }
+
+}
+
+void loadFile() //File lesen und die Informationen im Struct speichern
+{
+    if (isLoaded == 0)
+    {
+        scoresCount = 0;
+        char zeile [BUFFER_LAENGE];
+        char *tmp;
+
+        myFile = fopen(dateiname,"r");
+
+        if (myFile == NULL) //Existiert das File?
+        {
+            //File Anlegen
+            myFile = fopen(dateiname, "w"); //File anlgen, falls es nicht exisiert
+            myFile = fopen(dateiname, "r");
+        }
+
+
+        while (fgets(zeile, BUFFER_LAENGE, myFile) != NULL ) //File zerlegen um im Struct speichern (Komma ist Trennzeichen)
+        {
+            unlock(zeile);
+            tmp = strtok(zeile, "§");
+            strcpy(scores[scoresCount].name, tmp);
+            tmp = strtok(NULL, "§");
+            scores[scoresCount].score = atoi(tmp);
+            scoresCount++;
+        }
+
+        qsort(scores, scoresCount, sizeof (struct score), sort_score); //Den Struct sortieren
+        fclose(myFile);
+        isLoaded = 1;
+    }
+}
+
+int highscore(int AcctualScore) //Gibt Acctualscore zurück falls grösser als highscore
+{
+    loadFile();
+    if (scoresCount > 0);
+    {
+        if(AcctualScore>scores[0].score)
+        {
+            return AcctualScore;
+        }
+        else
+        {
+            return scores[0].score;
+        }
+    }
+    return 0;
+}
+
+//Zähler des Arrays
+
+
+void showScoreTable() //Zeigt die Highscore-Tabelle an
+{
+    loadFile();
+    textcolor(STANDART_TEXT | STANDART_BACKGROUND);
+    system("CLS");
+    int i = 0;
+    printf("\n\n\n\n");
+    printf("  %20s %10s%    26s\n","Platz", "Score", "Name"); //Tabellenkopf
+    printf("\n");
+    for (i = 0; i < scoresCount; i++) //Tabelleneinträge
+    {
+        printf("  %20i %10i  %24s\n",i+1, scores[i].score, scores[i].name);
+    }
+    printf("\n\n\n\n");
+    printf("\t\t   ");
+    system("Pause");
+}
+
+
+
+void showSaveScore(int score) //Zeigt ein "Fenster" an um den Score zu speichern //Score ist der zu speichernde Score
+{
+    loadFile();
+    int x,y;
+    char name[TEXT_SIZE];
+    int i;
+    int namecounter=0;
+
+    for(y=8; y<18; y++)
+    {
+        if(y>16 || 9>y)
+        {
+            if(score>scores[0].score)
+            {
+                textcolor(white | bggreen);
+                for(x=20; x<60; x++)
+                {
+                    gotoxy(x,y);
+                    printf(" ");
+                }
+                textcolor(white | bggreen);
+                gotoxy(xPositionForCenteredText("NEW HIGHSCORE"), 8); //VORSICHT; Resundant
+                printf("NEW HIGHSCORE");
+            }
+            else
+            {
+                textcolor(white | bglightred);
+                for(x=20; x<60; x++)
+                {
+                    gotoxy(x,y);
+                    printf(" ");
+                }
+            }
+
+
+
+        }
+        else
+        {
+            textcolor(white | bgwhite);
+            for(x=20; x<60; x++)
+            {
+                gotoxy(x,y);
+                printf(" ");
+            }
+
+        }
+
+    }
+
+    fclose(myFile);
+
+    textcolor(bgblack | bgwhite);
+
+    gotoxy(xPositionForCenteredText("GAME OVER!"), 10); //VORSICHT; Resundant
+    printf("GAME OVER");
+    gotoxy(xPositionForCenteredText("GAME OVER!"), 11); //VORSICHT; Resundant
+    printf("---- ----");
+    gotoxy(xPositionForCenteredText("Gratulation, Ihre Punktzahl ist %i", score), 13); //VORSICHT; Redundant
+    printf("Gratulation, Ihre Punktzahl ist %i\n\n", score);
+    gotoxy(xPositionForCenteredText("Bitte geben Sie Ihren Namen ein: ", score), 14); //VORSICHT; Redundant
+    printf("Bitte geben Sie Ihren Namen ein: ");
+    fflush(stdin); //Ist notwendig, leert verbleibende Zeichen aus dem Puffer.
+    gotoxy(xPositionForCenteredText(""), 16); //VORSICHT; Resundant
+    while(1)
+    {
+        if(kbhit())
+        {
+            name[namecounter]=getch();
+            if(name[namecounter]=='\r')
+            {
+                name[namecounter]=0;
+                break;
+            }
+            else if(name[namecounter]==8)
+            {
+                gotoxy(xPositionForCenteredText(name), 16);
+                for(i=0; i<namecounter*2; i++)
+                {
+                    printf(" ");
+                }
+                name[namecounter]=0;
+                namecounter--;
+                name[namecounter]=0;
+                gotoxy(xPositionForCenteredText(name), 16);
+                printf("%s", name);
+            }
+            else
+            {
+                namecounter++;
+                name[namecounter]=0;
+                gotoxy(xPositionForCenteredText(name), 16);
+                printf("%s", name);
+            }
+        }
+    }
+
+    if (strlen(name) == 0) //Benutzer hat keinen Namen eingegeben
+    {
+        strcpy(name,"No Name");
+    }
+    strcpy(scores[scoresCount].name, name);
+    scores[scoresCount].score = score;
+    scoresCount++;
+
+    qsort(scores, scoresCount, sizeof (struct score), sort_score); //Den Struct sortieren
+
+    writeFile(); //File schreiben
+
+}
+
+
+

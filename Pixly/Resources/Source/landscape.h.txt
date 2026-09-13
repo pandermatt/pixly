@@ -1,0 +1,11 @@
+#ifndef LANDSCAPE_H_INCLUDED
+#define LANDSCAPE_H_INCLUDED
+
+
+void moveLandscape();
+
+void printLandscape();
+
+int check(x,y);
+
+#endif // LANDSCAPE_H_INCLUDED

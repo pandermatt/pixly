@@ -1,0 +1,14 @@
+#ifndef TIMER_H_INCLUDED
+#define TIMER_H_INCLUDED
+
+int TimerInit(int time);
+
+void TimerRestart(int timerId);
+
+int TimerDown(int timerId);
+
+void TimerSlower(int timerId);
+
+void TimerFaster(int timerId);
+
+#endif // TIMER_H_INCLUDED

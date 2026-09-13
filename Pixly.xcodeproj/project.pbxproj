@@ -1,0 +1,736 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		010E58DAF66FDC59A177F1BC /* TitleBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F1490A776311ED00BC9B51 /* TitleBar.swift */; };
+		09346168A875CFF8D56162D2 /* GameCenterManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91072C6376CE8CC8780FD2F7 /* GameCenterManager.swift */; };
+		0B1A681EDE128B091E0F3D0A /* ProgramScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 653C94E76664ACA8C508C1BA /* ProgramScreen.swift */; };
+		0CA3B8B81EDBE1F52EAB0C61 /* ball.c.txt in Resources */ = {isa = PBXBuildFile; fileRef = 5B640BAD1A4AC81093F59926 /* ball.c.txt */; };
+		0EB7C634EFFD3D019CE3F760 /* TerminalLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13B9919CBEF063F335ED95EA /* TerminalLine.swift */; };
+		0F1676179B584728042114EF /* PixlyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A5A466AED2A9A0E0B9A58AD /* PixlyApp.swift */; };
+		1A715CC39B5A7D9555E3EB00 /* PixlyProgram.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1574A3D06D1DBFE6EE3191 /* PixlyProgram.swift */; };
+		265A3391075B78FFA719CFBB /* score.c.txt in Resources */ = {isa = PBXBuildFile; fileRef = A5182C2B4B522D289192FAB4 /* score.c.txt */; };
+		2810453111ED8D1322AC5B46 /* ConsoleAndScoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970D51B730F334BCB8429459 /* ConsoleAndScoreTests.swift */; };
+		2E4B8F6F6D73B04F11C4913C /* TerminalLineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 381DAD0F64E8C8942A534801 /* TerminalLineView.swift */; };
+		3428DABF0C62D4A6BA086937 /* ProgramAndSessionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D495B6B851DB69753FFC1F38 /* ProgramAndSessionTests.swift */; };
+		36EFF4BB59DBC4F7D05947EE /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E91BD0ECCEE5722B6AA6CA2 /* Theme.swift */; };
+		3933FD2184195F00BADAD3D9 /* TerminalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0163230186057BE3105BBFBB /* TerminalView.swift */; };
+		40E94A42DFF0D91D0E761095 /* PixelEscapeGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03989B6B9391F02C78F6EB56 /* PixelEscapeGame.swift */; };
+		42668C5960DC34C5B4D30E19 /* TerminalLineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 381DAD0F64E8C8942A534801 /* TerminalLineView.swift */; };
+		491D32D502C92C97B7652486 /* pixel_escape.cbp.txt in Resources */ = {isa = PBXBuildFile; fileRef = 6D30A929337D0087F911F5BF /* pixel_escape.cbp.txt */; };
+		502905C6C41A854C9430081E /* TerminalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0163230186057BE3105BBFBB /* TerminalView.swift */; };
+		5ACB0F81F3D9219ECB1E924E /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 27F59BC3E82ED283831F2432 /* AppIcon.icon */; };
+		5CD153429EECEC1BFF2811BC /* landscape.h.txt in Resources */ = {isa = PBXBuildFile; fileRef = 99662FC509775ACFB87855C1 /* landscape.h.txt */; };
+		5D0439886A91B3955B7E904A /* ProgramScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 653C94E76664ACA8C508C1BA /* ProgramScreen.swift */; };
+		630E37DF5BBD427F6A6096EE /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 27F59BC3E82ED283831F2432 /* AppIcon.icon */; };
+		6BAC70145269DE454581A596 /* landscape.c.txt in Resources */ = {isa = PBXBuildFile; fileRef = AAC993534ADB27BEE5402856 /* landscape.c.txt */; };
+		735F4D9A8C28D7892051EE88 /* ConsoleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 969D0666885F443EA623FBB7 /* ConsoleView.swift */; };
+		74D8DED832E73C0F3435266C /* ball.h.txt in Resources */ = {isa = PBXBuildFile; fileRef = F03E13E36FD35B602C92010B /* ball.h.txt */; };
+		7578C46C3CAD78BA8999772E /* PixelEscapeGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03989B6B9391F02C78F6EB56 /* PixelEscapeGame.swift */; };
+		793230DAF8B910D16F866917 /* main.c.txt in Resources */ = {isa = PBXBuildFile; fileRef = 7547898B833FDB86C0F69900 /* main.c.txt */; };
+		7B215231AFDB74D240CCCA34 /* PixlyProgram.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1574A3D06D1DBFE6EE3191 /* PixlyProgram.swift */; };
+		7D42B7E16E3DA1989A04E072 /* SeededGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 788A03B7F5F5BCF8F7920DCD /* SeededGenerator.swift */; };
+		82B9B4BB08FD83C2DF2A79F2 /* ConsoleBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73CC8F83211C1F000B5FB8F0 /* ConsoleBuffer.swift */; };
+		838A439CBEEC85C827BDDD74 /* DisplayLinkTicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71B5BEDDE5BD5853D1FE6A3D /* DisplayLinkTicker.swift */; };
+		88BC8277D0CBC2E464E5545F /* ball.h.txt in Resources */ = {isa = PBXBuildFile; fileRef = F03E13E36FD35B602C92010B /* ball.h.txt */; };
+		8B94770D6AA3A5A2A15B4E23 /* consoleio.h.txt in Resources */ = {isa = PBXBuildFile; fileRef = 860C0ABCD8F3F1406C12B3D0 /* consoleio.h.txt */; };
+		912205D269E629FAABCA1951 /* ConsoleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 969D0666885F443EA623FBB7 /* ConsoleView.swift */; };
+		92028177117EF61288C47188 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1D652F329FB2DD2FB729185C /* Assets.xcassets */; };
+		924C865F3D496E99FF6E6AEC /* pixel_escape.cbp.txt in Resources */ = {isa = PBXBuildFile; fileRef = 6D30A929337D0087F911F5BF /* pixel_escape.cbp.txt */; };
+		94B6EBBADAC6B14C0429C1C5 /* score.c.txt in Resources */ = {isa = PBXBuildFile; fileRef = A5182C2B4B522D289192FAB4 /* score.c.txt */; };
+		97D7119FBCC7836C95E10178 /* GameCenterManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91072C6376CE8CC8780FD2F7 /* GameCenterManager.swift */; };
+		9849BD174EC0DA719C8F8B25 /* timer.h.txt in Resources */ = {isa = PBXBuildFile; fileRef = BAA1279969F5A3B2A5FB8003 /* timer.h.txt */; };
+		9A8201B76F1F326EAF1556D4 /* timer.h.txt in Resources */ = {isa = PBXBuildFile; fileRef = BAA1279969F5A3B2A5FB8003 /* timer.h.txt */; };
+		A409C128DB2D9987430D17F6 /* main.c.txt in Resources */ = {isa = PBXBuildFile; fileRef = 7547898B833FDB86C0F69900 /* main.c.txt */; };
+		A5C3B034794D65D421F93671 /* ConsoleBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73CC8F83211C1F000B5FB8F0 /* ConsoleBuffer.swift */; };
+		B12D37A485EBAA231EB4D098 /* SeededGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 788A03B7F5F5BCF8F7920DCD /* SeededGenerator.swift */; };
+		BF4C9AD5F43FEC389C66EEAE /* TerminalSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = F72B94D140CA0F71E519DE30 /* TerminalSession.swift */; };
+		C1D82CDBAEFCE428DDF9C9C7 /* PixlyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A5A466AED2A9A0E0B9A58AD /* PixlyApp.swift */; };
+		C7AC7EBCF68FE77721D2013C /* score.h.txt in Resources */ = {isa = PBXBuildFile; fileRef = 0966600C6C0857A734AF9F00 /* score.h.txt */; };
+		C8AA450F02FD203BA58F3333 /* ScoreStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F775A32F1BAD49453EDAE8C /* ScoreStore.swift */; };
+		CE9DF2379266BD1117ED2D7C /* DisplayLinkTicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71B5BEDDE5BD5853D1FE6A3D /* DisplayLinkTicker.swift */; };
+		D2F5355BBFD4AE7E6C64AD0A /* landscape.h.txt in Resources */ = {isa = PBXBuildFile; fileRef = 99662FC509775ACFB87855C1 /* landscape.h.txt */; };
+		D86223A90A66B155A384CD18 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E91BD0ECCEE5722B6AA6CA2 /* Theme.swift */; };
+		D86A2BCB3AB0F028698F6A02 /* TerminalLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13B9919CBEF063F335ED95EA /* TerminalLine.swift */; };
+		DE55F77D0C80A00D6A7C4247 /* TerminalSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = F72B94D140CA0F71E519DE30 /* TerminalSession.swift */; };
+		E1DA10E2EAEB581EF96B1DCE /* ball.c.txt in Resources */ = {isa = PBXBuildFile; fileRef = 5B640BAD1A4AC81093F59926 /* ball.c.txt */; };
+		E32F704B1164B9BED869C0E9 /* score.h.txt in Resources */ = {isa = PBXBuildFile; fileRef = 0966600C6C0857A734AF9F00 /* score.h.txt */; };
+		E3AA249278876416F3AC2E12 /* consoleio.h.txt in Resources */ = {isa = PBXBuildFile; fileRef = 860C0ABCD8F3F1406C12B3D0 /* consoleio.h.txt */; };
+		E74673D4382CED1EEDE7C8F3 /* BootScript.swift in Sources */ = {isa = PBXBuildFile; fileRef = 551EE7E95E573F4B991FDB64 /* BootScript.swift */; };
+		E7BE2CA1E47167C6F824AB9C /* ScoreStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F775A32F1BAD49453EDAE8C /* ScoreStore.swift */; };
+		EB4A7403A35DDE21811A6F59 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1D652F329FB2DD2FB729185C /* Assets.xcassets */; };
+		EC9336CF1CAE2FCD5A737FCB /* landscape.c.txt in Resources */ = {isa = PBXBuildFile; fileRef = AAC993534ADB27BEE5402856 /* landscape.c.txt */; };
+		EDE51FA6B67E6F96E972DACA /* BootScript.swift in Sources */ = {isa = PBXBuildFile; fileRef = 551EE7E95E573F4B991FDB64 /* BootScript.swift */; };
+		F483F3326FD188AAA14637D5 /* PixelEscapeGameTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBA0EB5A17037BEFA09FCE81 /* PixelEscapeGameTests.swift */; };
+		FF33AEF2E6D6425BAC424758 /* TitleBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F1490A776311ED00BC9B51 /* TitleBar.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		5B99242199AA29F1D1090ED7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 798CF2B5D1D28E1EE326A5C9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C3A0DA1099C197E3F75F3ADC;
+			remoteInfo = Pixly;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		0163230186057BE3105BBFBB /* TerminalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalView.swift; sourceTree = "<group>"; };
+		03989B6B9391F02C78F6EB56 /* PixelEscapeGame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixelEscapeGame.swift; sourceTree = "<group>"; };
+		0966600C6C0857A734AF9F00 /* score.h.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = score.h.txt; sourceTree = "<group>"; };
+		13B9919CBEF063F335ED95EA /* TerminalLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalLine.swift; sourceTree = "<group>"; };
+		1D652F329FB2DD2FB729185C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		27F59BC3E82ED283831F2432 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = wrapper.icon; path = AppIcon.icon; sourceTree = "<group>"; };
+		2E91BD0ECCEE5722B6AA6CA2 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		33F1490A776311ED00BC9B51 /* TitleBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleBar.swift; sourceTree = "<group>"; };
+		381DAD0F64E8C8942A534801 /* TerminalLineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalLineView.swift; sourceTree = "<group>"; };
+		3B0B1B5EED68037DFE60BDEC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		4A5A466AED2A9A0E0B9A58AD /* PixlyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixlyApp.swift; sourceTree = "<group>"; };
+		511683E12516989A3F136964 /* Pixly.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Pixly.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		551EE7E95E573F4B991FDB64 /* BootScript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BootScript.swift; sourceTree = "<group>"; };
+		5B640BAD1A4AC81093F59926 /* ball.c.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = ball.c.txt; sourceTree = "<group>"; };
+		5FF1392CD1A9191B4709A732 /* PixlyTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = PixlyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		653C94E76664ACA8C508C1BA /* ProgramScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgramScreen.swift; sourceTree = "<group>"; };
+		6D30A929337D0087F911F5BF /* pixel_escape.cbp.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = pixel_escape.cbp.txt; sourceTree = "<group>"; };
+		71B5BEDDE5BD5853D1FE6A3D /* DisplayLinkTicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayLinkTicker.swift; sourceTree = "<group>"; };
+		73CC8F83211C1F000B5FB8F0 /* ConsoleBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsoleBuffer.swift; sourceTree = "<group>"; };
+		7547898B833FDB86C0F69900 /* main.c.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = main.c.txt; sourceTree = "<group>"; };
+		788A03B7F5F5BCF8F7920DCD /* SeededGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeededGenerator.swift; sourceTree = "<group>"; };
+		860C0ABCD8F3F1406C12B3D0 /* consoleio.h.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = consoleio.h.txt; sourceTree = "<group>"; };
+		91072C6376CE8CC8780FD2F7 /* GameCenterManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameCenterManager.swift; sourceTree = "<group>"; };
+		969D0666885F443EA623FBB7 /* ConsoleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsoleView.swift; sourceTree = "<group>"; };
+		970D51B730F334BCB8429459 /* ConsoleAndScoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsoleAndScoreTests.swift; sourceTree = "<group>"; };
+		99662FC509775ACFB87855C1 /* landscape.h.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = landscape.h.txt; sourceTree = "<group>"; };
+		9F775A32F1BAD49453EDAE8C /* ScoreStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreStore.swift; sourceTree = "<group>"; };
+		A5182C2B4B522D289192FAB4 /* score.c.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = score.c.txt; sourceTree = "<group>"; };
+		AAC993534ADB27BEE5402856 /* landscape.c.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = landscape.c.txt; sourceTree = "<group>"; };
+		B57D2A7E54ECEDAAE227ECBA /* Pixly.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Pixly.entitlements; sourceTree = "<group>"; };
+		BAA1279969F5A3B2A5FB8003 /* timer.h.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = timer.h.txt; sourceTree = "<group>"; };
+		BC1574A3D06D1DBFE6EE3191 /* PixlyProgram.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixlyProgram.swift; sourceTree = "<group>"; };
+		D495B6B851DB69753FFC1F38 /* ProgramAndSessionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgramAndSessionTests.swift; sourceTree = "<group>"; };
+		EBA0EB5A17037BEFA09FCE81 /* PixelEscapeGameTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixelEscapeGameTests.swift; sourceTree = "<group>"; };
+		F03E13E36FD35B602C92010B /* ball.h.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = ball.h.txt; sourceTree = "<group>"; };
+		F72B94D140CA0F71E519DE30 /* TerminalSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalSession.swift; sourceTree = "<group>"; };
+		F9669617A6F6CB7D6FBE9B2B /* PixlyMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PixlyMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		04396900ACF17301DF34A37E /* Program */ = {
+			isa = PBXGroup;
+			children = (
+				03989B6B9391F02C78F6EB56 /* PixelEscapeGame.swift */,
+				BC1574A3D06D1DBFE6EE3191 /* PixlyProgram.swift */,
+				653C94E76664ACA8C508C1BA /* ProgramScreen.swift */,
+				9F775A32F1BAD49453EDAE8C /* ScoreStore.swift */,
+			);
+			path = Program;
+			sourceTree = "<group>";
+		};
+		256F7932B12098A85588D9CC /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				5B640BAD1A4AC81093F59926 /* ball.c.txt */,
+				F03E13E36FD35B602C92010B /* ball.h.txt */,
+				860C0ABCD8F3F1406C12B3D0 /* consoleio.h.txt */,
+				AAC993534ADB27BEE5402856 /* landscape.c.txt */,
+				99662FC509775ACFB87855C1 /* landscape.h.txt */,
+				7547898B833FDB86C0F69900 /* main.c.txt */,
+				6D30A929337D0087F911F5BF /* pixel_escape.cbp.txt */,
+				A5182C2B4B522D289192FAB4 /* score.c.txt */,
+				0966600C6C0857A734AF9F00 /* score.h.txt */,
+				BAA1279969F5A3B2A5FB8003 /* timer.h.txt */,
+			);
+			path = Source;
+			sourceTree = "<group>";
+		};
+		498D75C614ABB928A1A6E3A5 /* Support */ = {
+			isa = PBXGroup;
+			children = (
+				71B5BEDDE5BD5853D1FE6A3D /* DisplayLinkTicker.swift */,
+				788A03B7F5F5BCF8F7920DCD /* SeededGenerator.swift */,
+				2E91BD0ECCEE5722B6AA6CA2 /* Theme.swift */,
+			);
+			path = Support;
+			sourceTree = "<group>";
+		};
+		5E48A67ABD0E493585B57043 /* GameCenter */ = {
+			isa = PBXGroup;
+			children = (
+				91072C6376CE8CC8780FD2F7 /* GameCenterManager.swift */,
+			);
+			path = GameCenter;
+			sourceTree = "<group>";
+		};
+		772C985E68CC61875A238801 /* PixlyTests */ = {
+			isa = PBXGroup;
+			children = (
+				970D51B730F334BCB8429459 /* ConsoleAndScoreTests.swift */,
+				EBA0EB5A17037BEFA09FCE81 /* PixelEscapeGameTests.swift */,
+				D495B6B851DB69753FFC1F38 /* ProgramAndSessionTests.swift */,
+			);
+			path = PixlyTests;
+			sourceTree = "<group>";
+		};
+		7822B0A1440EE52F5525AC87 = {
+			isa = PBXGroup;
+			children = (
+				B627002C2D2F3E94C11CA15E /* Pixly */,
+				772C985E68CC61875A238801 /* PixlyTests */,
+				C6B093253837096B9A99085C /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A0DABD38D2C1565A8F658DA8 /* Terminal */ = {
+			isa = PBXGroup;
+			children = (
+				551EE7E95E573F4B991FDB64 /* BootScript.swift */,
+				13B9919CBEF063F335ED95EA /* TerminalLine.swift */,
+				381DAD0F64E8C8942A534801 /* TerminalLineView.swift */,
+				F72B94D140CA0F71E519DE30 /* TerminalSession.swift */,
+				0163230186057BE3105BBFBB /* TerminalView.swift */,
+				33F1490A776311ED00BC9B51 /* TitleBar.swift */,
+			);
+			path = Terminal;
+			sourceTree = "<group>";
+		};
+		B627002C2D2F3E94C11CA15E /* Pixly */ = {
+			isa = PBXGroup;
+			children = (
+				27F59BC3E82ED283831F2432 /* AppIcon.icon */,
+				1D652F329FB2DD2FB729185C /* Assets.xcassets */,
+				3B0B1B5EED68037DFE60BDEC /* Info.plist */,
+				B57D2A7E54ECEDAAE227ECBA /* Pixly.entitlements */,
+				4A5A466AED2A9A0E0B9A58AD /* PixlyApp.swift */,
+				C97A809FC5A3A0C59D879B4D /* Console */,
+				5E48A67ABD0E493585B57043 /* GameCenter */,
+				04396900ACF17301DF34A37E /* Program */,
+				EC93E67B8D79F13973FDEE67 /* Resources */,
+				498D75C614ABB928A1A6E3A5 /* Support */,
+				A0DABD38D2C1565A8F658DA8 /* Terminal */,
+			);
+			path = Pixly;
+			sourceTree = "<group>";
+		};
+		C6B093253837096B9A99085C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				511683E12516989A3F136964 /* Pixly.app */,
+				F9669617A6F6CB7D6FBE9B2B /* PixlyMac.app */,
+				5FF1392CD1A9191B4709A732 /* PixlyTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C97A809FC5A3A0C59D879B4D /* Console */ = {
+			isa = PBXGroup;
+			children = (
+				73CC8F83211C1F000B5FB8F0 /* ConsoleBuffer.swift */,
+				969D0666885F443EA623FBB7 /* ConsoleView.swift */,
+			);
+			path = Console;
+			sourceTree = "<group>";
+		};
+		EC93E67B8D79F13973FDEE67 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				256F7932B12098A85588D9CC /* Source */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		9425E031778F05481F8B0AD3 /* PixlyMac */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 65A09E31E3346491E55FCCBD /* Build configuration list for PBXNativeTarget "PixlyMac" */;
+			buildPhases = (
+				654DBF85EDA6B59603B6FB5F /* Sources */,
+				F2746B0F0D6F7382C0220DDC /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PixlyMac;
+			packageProductDependencies = (
+			);
+			productName = PixlyMac;
+			productReference = F9669617A6F6CB7D6FBE9B2B /* PixlyMac.app */;
+			productType = "com.apple.product-type.application";
+		};
+		C3A0DA1099C197E3F75F3ADC /* Pixly */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7D3CB8E018412514E2766FBF /* Build configuration list for PBXNativeTarget "Pixly" */;
+			buildPhases = (
+				E0E36A4D78310043ED25D638 /* Sources */,
+				EAC99B5CFBA25CF77DD9CB1B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Pixly;
+			packageProductDependencies = (
+			);
+			productName = Pixly;
+			productReference = 511683E12516989A3F136964 /* Pixly.app */;
+			productType = "com.apple.product-type.application";
+		};
+		C520D3FD2C7148E4619DE337 /* PixlyTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 492B8438B9FAE2504ECF6832 /* Build configuration list for PBXNativeTarget "PixlyTests" */;
+			buildPhases = (
+				A460D0EBDECE1B0C2827C92F /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				AD190D71EB14C2BFD83342C9 /* PBXTargetDependency */,
+			);
+			name = PixlyTests;
+			packageProductDependencies = (
+			);
+			productName = PixlyTests;
+			productReference = 5FF1392CD1A9191B4709A732 /* PixlyTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		798CF2B5D1D28E1EE326A5C9 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					9425E031778F05481F8B0AD3 = {
+						DevelopmentTeam = 692NM4E836;
+						ProvisioningStyle = Automatic;
+					};
+					C3A0DA1099C197E3F75F3ADC = {
+						DevelopmentTeam = 692NM4E836;
+						ProvisioningStyle = Automatic;
+					};
+					C520D3FD2C7148E4619DE337 = {
+						DevelopmentTeam = 692NM4E836;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = ED272A999AF2AD267F6491DB /* Build configuration list for PBXProject "Pixly" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 7822B0A1440EE52F5525AC87;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = C6B093253837096B9A99085C /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				C3A0DA1099C197E3F75F3ADC /* Pixly */,
+				9425E031778F05481F8B0AD3 /* PixlyMac */,
+				C520D3FD2C7148E4619DE337 /* PixlyTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		EAC99B5CFBA25CF77DD9CB1B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5ACB0F81F3D9219ECB1E924E /* AppIcon.icon in Resources */,
+				92028177117EF61288C47188 /* Assets.xcassets in Resources */,
+				E1DA10E2EAEB581EF96B1DCE /* ball.c.txt in Resources */,
+				74D8DED832E73C0F3435266C /* ball.h.txt in Resources */,
+				E3AA249278876416F3AC2E12 /* consoleio.h.txt in Resources */,
+				EC9336CF1CAE2FCD5A737FCB /* landscape.c.txt in Resources */,
+				D2F5355BBFD4AE7E6C64AD0A /* landscape.h.txt in Resources */,
+				793230DAF8B910D16F866917 /* main.c.txt in Resources */,
+				491D32D502C92C97B7652486 /* pixel_escape.cbp.txt in Resources */,
+				265A3391075B78FFA719CFBB /* score.c.txt in Resources */,
+				E32F704B1164B9BED869C0E9 /* score.h.txt in Resources */,
+				9A8201B76F1F326EAF1556D4 /* timer.h.txt in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F2746B0F0D6F7382C0220DDC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				630E37DF5BBD427F6A6096EE /* AppIcon.icon in Resources */,
+				EB4A7403A35DDE21811A6F59 /* Assets.xcassets in Resources */,
+				0CA3B8B81EDBE1F52EAB0C61 /* ball.c.txt in Resources */,
+				88BC8277D0CBC2E464E5545F /* ball.h.txt in Resources */,
+				8B94770D6AA3A5A2A15B4E23 /* consoleio.h.txt in Resources */,
+				6BAC70145269DE454581A596 /* landscape.c.txt in Resources */,
+				5CD153429EECEC1BFF2811BC /* landscape.h.txt in Resources */,
+				A409C128DB2D9987430D17F6 /* main.c.txt in Resources */,
+				924C865F3D496E99FF6E6AEC /* pixel_escape.cbp.txt in Resources */,
+				94B6EBBADAC6B14C0429C1C5 /* score.c.txt in Resources */,
+				C7AC7EBCF68FE77721D2013C /* score.h.txt in Resources */,
+				9849BD174EC0DA719C8F8B25 /* timer.h.txt in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		654DBF85EDA6B59603B6FB5F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E74673D4382CED1EEDE7C8F3 /* BootScript.swift in Sources */,
+				A5C3B034794D65D421F93671 /* ConsoleBuffer.swift in Sources */,
+				735F4D9A8C28D7892051EE88 /* ConsoleView.swift in Sources */,
+				838A439CBEEC85C827BDDD74 /* DisplayLinkTicker.swift in Sources */,
+				09346168A875CFF8D56162D2 /* GameCenterManager.swift in Sources */,
+				40E94A42DFF0D91D0E761095 /* PixelEscapeGame.swift in Sources */,
+				0F1676179B584728042114EF /* PixlyApp.swift in Sources */,
+				1A715CC39B5A7D9555E3EB00 /* PixlyProgram.swift in Sources */,
+				0B1A681EDE128B091E0F3D0A /* ProgramScreen.swift in Sources */,
+				E7BE2CA1E47167C6F824AB9C /* ScoreStore.swift in Sources */,
+				B12D37A485EBAA231EB4D098 /* SeededGenerator.swift in Sources */,
+				0EB7C634EFFD3D019CE3F760 /* TerminalLine.swift in Sources */,
+				2E4B8F6F6D73B04F11C4913C /* TerminalLineView.swift in Sources */,
+				BF4C9AD5F43FEC389C66EEAE /* TerminalSession.swift in Sources */,
+				502905C6C41A854C9430081E /* TerminalView.swift in Sources */,
+				36EFF4BB59DBC4F7D05947EE /* Theme.swift in Sources */,
+				FF33AEF2E6D6425BAC424758 /* TitleBar.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A460D0EBDECE1B0C2827C92F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2810453111ED8D1322AC5B46 /* ConsoleAndScoreTests.swift in Sources */,
+				F483F3326FD188AAA14637D5 /* PixelEscapeGameTests.swift in Sources */,
+				3428DABF0C62D4A6BA086937 /* ProgramAndSessionTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E0E36A4D78310043ED25D638 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EDE51FA6B67E6F96E972DACA /* BootScript.swift in Sources */,
+				82B9B4BB08FD83C2DF2A79F2 /* ConsoleBuffer.swift in Sources */,
+				912205D269E629FAABCA1951 /* ConsoleView.swift in Sources */,
+				CE9DF2379266BD1117ED2D7C /* DisplayLinkTicker.swift in Sources */,
+				97D7119FBCC7836C95E10178 /* GameCenterManager.swift in Sources */,
+				7578C46C3CAD78BA8999772E /* PixelEscapeGame.swift in Sources */,
+				C1D82CDBAEFCE428DDF9C9C7 /* PixlyApp.swift in Sources */,
+				7B215231AFDB74D240CCCA34 /* PixlyProgram.swift in Sources */,
+				5D0439886A91B3955B7E904A /* ProgramScreen.swift in Sources */,
+				C8AA450F02FD203BA58F3333 /* ScoreStore.swift in Sources */,
+				7D42B7E16E3DA1989A04E072 /* SeededGenerator.swift in Sources */,
+				D86A2BCB3AB0F028698F6A02 /* TerminalLine.swift in Sources */,
+				42668C5960DC34C5B4D30E19 /* TerminalLineView.swift in Sources */,
+				DE55F77D0C80A00D6A7C4247 /* TerminalSession.swift in Sources */,
+				3933FD2184195F00BADAD3D9 /* TerminalView.swift in Sources */,
+				D86223A90A66B155A384CD18 /* Theme.swift in Sources */,
+				010E58DAF66FDC59A177F1BC /* TitleBar.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		AD190D71EB14C2BFD83342C9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C3A0DA1099C197E3F75F3ADC /* Pixly */;
+			targetProxy = 5B99242199AA29F1D1090ED7 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		01BF951100146B56B8F3CED7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 692NM4E836;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
+		1BB64A0E9D269A167B3F963E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = PixlyMac/PixlyMac.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				INFOPLIST_FILE = PixlyMac/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ch.pandermatt.pixly;
+				PRODUCT_NAME = Pixly;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		35DDBF2684448150472A0F1E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = ch.pandermatt.pixly.tests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Pixly.app/Pixly";
+			};
+			name = Release;
+		};
+		755D850FC1115E7E415DD5D7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Pixly/Pixly.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = Pixly/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = ch.pandermatt.pixly;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		7981B2B430132484B28040C1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Pixly/Pixly.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = Pixly/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = ch.pandermatt.pixly;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		D76AE25CF7C4D2FC483DA85B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 692NM4E836;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Release;
+		};
+		D958DB0CEFBA22ED7D405B73 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = ch.pandermatt.pixly.tests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Pixly.app/Pixly";
+			};
+			name = Debug;
+		};
+		EEFE9BF64FE8FBAA406CBBE3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = PixlyMac/PixlyMac.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				INFOPLIST_FILE = PixlyMac/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ch.pandermatt.pixly;
+				PRODUCT_NAME = Pixly;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		492B8438B9FAE2504ECF6832 /* Build configuration list for PBXNativeTarget "PixlyTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D958DB0CEFBA22ED7D405B73 /* Debug */,
+				35DDBF2684448150472A0F1E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		65A09E31E3346491E55FCCBD /* Build configuration list for PBXNativeTarget "PixlyMac" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EEFE9BF64FE8FBAA406CBBE3 /* Debug */,
+				1BB64A0E9D269A167B3F963E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		7D3CB8E018412514E2766FBF /* Build configuration list for PBXNativeTarget "Pixly" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7981B2B430132484B28040C1 /* Debug */,
+				755D850FC1115E7E415DD5D7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		ED272A999AF2AD267F6491DB /* Build configuration list for PBXProject "Pixly" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				01BF951100146B56B8F3CED7 /* Debug */,
+				D76AE25CF7C4D2FC483DA85B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 798CF2B5D1D28E1EE326A5C9 /* Project object */;
+}

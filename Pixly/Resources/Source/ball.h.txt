@@ -1,0 +1,14 @@
+#ifndef BALL_H_INCLUDED
+#define BALL_H_INCLUDED
+
+int yPosition();
+
+void setPixel(pixel);
+
+void jump();
+
+void moveDown();
+
+void resetBall();
+
+#endif // BALL_H_INCLUDED

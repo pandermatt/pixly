@@ -1,0 +1,10 @@
+#ifndef SCORE_H_INCLUDED
+#define SCORE_H_INCLUDED
+
+void showScoreTable(); //Zeigt die Rangliste an
+void showSaveScore(int score); //Zeigt ein "Fenster" an um den Score zu speichern //Score ist der zu speichernde Score
+int highscore(int AcctualScore);
+
+
+
+#endif // SCORE_H_INCLUDED
