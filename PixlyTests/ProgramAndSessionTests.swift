@@ -6,7 +6,21 @@ import Testing
 struct PixlyProgramTests {
     private func makeProgram() throws -> PixlyProgram {
         let defaults = try #require(UserDefaults(suiteName: "pixly-program-\(UUID().uuidString)"))
-        return PixlyProgram(defaults: defaults, loadingStep: .zero)
+        let preferences = Preferences(defaults: defaults, iconSwitcher: FakeIconSwitcher())
+        return PixlyProgram(preferences: preferences, defaults: defaults, loadingStep: .zero)
+    }
+
+    private func row(_ y: Int, of program: PixlyProgram) -> String {
+        (1...80).map { String(program.console[$0, y].character) }.joined().trimmingCharacters(in: .whitespaces)
+    }
+
+    private func playUntilGameOver(_ program: PixlyProgram) -> Int {
+        var ticks = 0
+        while program.screen == .playing, ticks < 2000 {
+            program.advance()
+            ticks += 1
+        }
+        return ticks
     }
 
     @Test func loadsIntoTheMenu() async throws {
@@ -26,11 +40,25 @@ struct PixlyProgramTests {
         program.moveSelection(1)
         #expect(row(10, of: program) == "New Game")
         #expect(row(11, of: program) == "> Highscore <")
-        for y in 10...14 {
+        for y in 10...15 {
             let used = (1...80).filter { program.console[$0, y].character != " " }
             let centre = Double(used.first! + used.last!) / 2
             #expect(abs(centre - 39.5) <= 0.5)
         }
+    }
+
+    @Test func hoveringAnEntrySelectsIt() async throws {
+        let program = try makeProgram()
+        await program.run()
+        program.hover(at: (x: 40, y: 12))
+        #expect(program.selection == 3)
+        #expect(row(12, of: program) == "> Change Avatar <")
+        program.hover(at: (x: 5, y: 13))
+        #expect(program.selection == 3)
+        program.hover(at: (x: 40, y: 20))
+        #expect(program.selection == 3)
+        program.handle(.up)
+        #expect(program.selection == 2)
     }
 
     @Test func avatarMenuPreviewsTheHighlightedAvatar() async throws {
@@ -41,15 +69,48 @@ struct PixlyProgramTests {
         #expect(program.screen == .avatar)
         #expect(program.console[40, 8] == .init(character: Avatar.pixel.glyph, foreground: .black, background: .white))
         program.handle(.down)
-        #expect(program.console[40, 8].character == Avatar.smiley.glyph)
-        #expect(row(13, of: program) == "> Smiley <")
+        #expect(program.console[40, 8].character == Avatar.heart.glyph)
+        #expect(row(13, of: program) == "> Heart <")
         program.handle(.space)
-        #expect(program.avatar == .smiley)
+        #expect(program.avatar == .heart)
         #expect(program.screen == .menu)
     }
 
-    private func row(_ y: Int, of program: PixlyProgram) -> String {
-        (1...80).map { String(program.console[$0, y].character) }.joined().trimmingCharacters(in: .whitespaces)
+    @Test func everySubmenuEndsWithBackAfterAnEmptyLine() async throws {
+        let program = try makeProgram()
+        await program.run()
+
+        program.press(at: (x: 40, y: 12))
+        #expect(program.screen == .avatar)
+        #expect(row(15, of: program).isEmpty)
+        #expect(row(16, of: program) == "Back")
+        program.press(at: (x: 40, y: 16))
+        #expect(program.screen == .menu)
+        #expect(program.selection == 3)
+
+        program.press(at: (x: 40, y: 13))
+        #expect(program.screen == .settings)
+        #expect(row(14, of: program).isEmpty)
+        #expect(row(15, of: program) == "Back")
+
+        program.press(at: (x: 40, y: 11))
+        #expect(program.screen == .theme)
+        #expect(row(17, of: program) == "Back")
+        program.press(at: (x: 40, y: 17))
+        #expect(program.screen == .settings)
+
+        program.handle(.down)
+        program.handle(.enter)
+        #expect(program.screen == .appIcon)
+        program.moveSelection(10)
+        #expect(row(17, of: program) == "> Back <")
+        program.handle(.enter)
+        #expect(program.screen == .settings)
+
+        program.moveSelection(10)
+        program.handle(.space)
+        #expect(program.screen == .menu)
+        #expect(program.selection == 4)
     }
 
     @Test func playingUntilGameOverSavesTheScore() async throws {
@@ -60,11 +121,7 @@ struct PixlyProgramTests {
         program.confirm()
         #expect(program.screen == .playing)
 
-        var ticks = 0
-        while program.screen == .playing, ticks < 2000 {
-            program.advance()
-            ticks += 1
-        }
+        let ticks = playUntilGameOver(program)
         #expect(program.screen == .saveScore)
         #expect(submitted == [ticks * 2])
         #expect(program.console[20, 8].background == .green)
@@ -75,16 +132,64 @@ struct PixlyProgramTests {
         #expect(program.scores.entries == [ScoreEntry(name: "Pascal", score: ticks * 2)])
     }
 
+    @Test func tappingTheBottomBarSavesOnceTheNameIsTyped() async throws {
+        let program = try makeProgram()
+        await program.run()
+        program.confirm()
+        _ = playUntilGameOver(program)
+
+        program.press(at: (x: 40, y: 17))
+        #expect(program.screen == .saveScore)
+        #expect(row(17, of: program).contains("continue"))
+
+        program.setName("Tap")
+        program.press(at: (x: 40, y: 12))
+        #expect(program.screen == .saveScore)
+        program.press(at: (x: 40, y: 17))
+        #expect(program.screen == .menu)
+        #expect(program.scores.entries.first?.name == "Tap")
+    }
+
+    @Test func theNameDialogSavesTheScore() async throws {
+        let program = try makeProgram()
+        program.playerAlias = { "Pandermatt" }
+        await program.run()
+        program.confirm()
+        _ = playUntilGameOver(program)
+
+        program.beginEditingName()
+        #expect(program.isEditingName)
+        #expect(program.draftName == "Pandermatt")
+        #expect(!program.isTypingName)
+
+        program.finishEditingName(save: false)
+        #expect(!program.isEditingName)
+        #expect(program.screen == .saveScore)
+
+        program.beginEditingName()
+        program.draftName = "Pascal"
+        program.finishEditingName(save: true)
+        #expect(program.screen == .menu)
+        #expect(program.scores.entries.first?.name == "Pascal")
+    }
+
+    #if os(iOS)
+    @Test func tappingTheNameOpensTheDialog() async throws {
+        let program = try makeProgram()
+        await program.run()
+        program.confirm()
+        _ = playUntilGameOver(program)
+        program.press(at: (x: 40, y: 16))
+        #expect(program.isEditingName)
+    }
+    #endif
+
     @Test func enterWhileTheNameIsStillTypingSavesTheWholeName() async throws {
         let program = try makeProgram()
         program.playerAlias = { "Pandermatt" }
         await program.run()
         program.confirm()
-        var ticks = 0
-        while program.screen == .playing, ticks < 2000 {
-            program.advance()
-            ticks += 1
-        }
+        _ = playUntilGameOver(program)
         #expect(program.screen == .saveScore)
         #expect(program.isTypingName)
 
@@ -106,14 +211,10 @@ struct PixlyProgramTests {
         program.handle(.enter)
         #expect(program.screen == .playing)
 
-        var ticks = 0
-        while program.screen == .playing, ticks < 2000 {
-            program.advance()
-            ticks += 1
-        }
+        _ = playUntilGameOver(program)
         program.handle(.space)
         #expect(program.screen == .saveScore)
-        #expect(row(17, of: program).contains("Press enter to continue"))
+        #expect(row(17, of: program).contains("continue"))
 
         program.setName("Pix")
         program.handle(.character("l"))
@@ -136,14 +237,14 @@ struct PixlyProgramTests {
         #expect(program.screen == .avatar)
         program.moveSelection(2)
         program.confirm()
-        #expect(program.avatar == .heart)
-        #expect(program.console[40, 8].character == Avatar.heart.glyph)
+        #expect(program.avatar == .diamond)
+        #expect(program.console[40, 8].character == Avatar.diamond.glyph)
     }
 
     @Test func tappingAMenuRowActivatesIt() async throws {
         let program = try makeProgram()
         await program.run()
-        program.press(at: (x: 40, y: 13))
+        program.press(at: (x: 40, y: 14))
         #expect(program.screen == .credits)
         program.press(at: nil)
         #expect(program.screen == .menu)
@@ -156,6 +257,14 @@ struct TerminalSessionTests {
         let session = TerminalSession(charDelay: .zero, lineDelay: .zero)
         await session.boot()
         return session
+    }
+
+    private func sessionWithPreferences(_ icons: FakeIconSwitcher) async throws -> (TerminalSession, Preferences) {
+        let defaults = try #require(UserDefaults(suiteName: "pixly-session-\(UUID().uuidString)"))
+        let preferences = Preferences(defaults: defaults, iconSwitcher: icons)
+        let session = await bootedSession()
+        session.preferences = preferences
+        return (session, preferences)
     }
 
     @Test func bootsIntoTheShell() async {
@@ -178,6 +287,15 @@ struct TerminalSessionTests {
         #expect(session.lines.contains { $0.text.hasPrefix("Process returned 1 (0x1)") })
     }
 
+    @Test func helpListsCommandsAsTwoColumns() async {
+        let session = await bootedSession()
+        await session.submit("help")
+        let entries = session.lines.filter { $0.style == .definition }
+        #expect(entries.first?.label == "start")
+        #expect(entries.first?.text == "compile & run pixly")
+        #expect(entries.allSatisfy { ($0.label?.count ?? 99) <= 14 })
+    }
+
     @Test func unknownCommand() async {
         let session = await bootedSession()
         await session.submit("pong")
@@ -194,5 +312,124 @@ struct TerminalSessionTests {
         let session = await bootedSession()
         await session.submit("clear")
         #expect(session.lines.isEmpty)
+    }
+
+    @Test func themeCommandListsAndSwitchesThemes() async throws {
+        let (session, preferences) = try await sessionWithPreferences(FakeIconSwitcher())
+        await session.submit("theme")
+        #expect(session.lines.contains { $0.text == "* classic" })
+        await session.submit("theme Amber")
+        #expect(preferences.theme == .amber)
+        #expect(session.lines.last?.text == "theme: amber")
+        await session.submit("theme neon")
+        #expect(session.lines.last?.text == "theme: no such theme: neon")
+    }
+
+    @Test func iconCommandReportsUnsupportedDevices() async throws {
+        let icons = FakeIconSwitcher()
+        icons.isSupported = false
+        let (session, _) = try await sessionWithPreferences(icons)
+        await session.submit("icon amber")
+        #expect(session.lines.last?.text == "icon: not supported on this device")
+    }
+
+    @Test func settingsAsksForEachValue() async throws {
+        let (session, preferences) = try await sessionWithPreferences(FakeIconSwitcher())
+        let command = Task { await session.submit("settings") }
+
+        await answer("amber", to: "theme (classic, phosphor, amber, light) [classic]:", in: session)
+        #expect(session.isBusy)
+        await answer("", to: "icon", in: session)
+        await answer("dragon", to: "avatar", in: session)
+        await answer("Heart", to: "avatar", in: session)
+        await answer("on", to: "scanlines (on, off) [off]:", in: session)
+        await command.value
+
+        #expect(session.question == nil)
+        #expect(!session.isBusy)
+        #expect(preferences.theme == .amber)
+        #expect(preferences.appIcon == .classic)
+        #expect(preferences.avatar == .heart)
+        #expect(preferences.scanlines)
+        #expect(session.lines.contains { $0.style == .answer && $0.label?.hasPrefix("theme") == true && $0.text == "amber" })
+        #expect(session.lines.contains { $0.text == "✗ no such avatar: dragon" })
+        #expect(session.lines.contains { $0.text == "✓ avatar = heart" })
+        #expect(session.lines.last?.text == "saved to ~/.pixlyrc")
+    }
+
+    @Test func settingsWithArgumentsSetsDirectly() async throws {
+        let (session, preferences) = try await sessionWithPreferences(FakeIconSwitcher())
+        await session.submit("settings avatar diamond")
+        #expect(preferences.avatar == .diamond)
+        #expect(session.lines.last?.text == "avatar: diamond")
+        await session.submit("settings volume 11")
+        #expect(session.lines.last?.text == "settings: unknown setting 'volume' (theme, icon, avatar, scanlines)")
+    }
+
+    @Test func pixlyrcIsListedAndCatable() async throws {
+        let (session, preferences) = try await sessionWithPreferences(FakeIconSwitcher())
+        preferences.setTheme(.amber)
+        preferences.setScanlines(false)
+        await session.submit("ls -a")
+        #expect(session.lines.last?.text.hasPrefix(".  ..  .pixlyrc  ball.c") == true)
+        await session.submit("cat ~/.pixlyrc")
+        #expect(session.lines.suffix(5).map(\.text) == [
+            "# ~/.pixlyrc — written by `settings`",
+            "theme = amber",
+            "icon = classic",
+            "avatar = pixel",
+            "scanlines = off",
+        ])
+    }
+
+    @Test func tabCompletesCommandsFilesAndValues() async throws {
+        let (session, _) = try await sessionWithPreferences(FakeIconSwitcher())
+        session.input = "se"
+        session.complete()
+        #expect(session.input == "settings ")
+        session.complete()
+        #expect(session.lines.last?.text == "theme  icon  avatar  scanlines")
+        session.input = "settings sc"
+        session.complete()
+        #expect(session.input == "settings scanlines ")
+        session.input = "cat .p"
+        session.complete()
+        #expect(session.input == "cat .pixlyrc ")
+        session.input = "theme a"
+        session.complete()
+        #expect(session.input == "theme amber ")
+        session.input = "s"
+        session.complete()
+        #expect(session.input == "s")
+        #expect(session.lines.last?.text == "scanlines  settings  start  sudo")
+        session.input = "wh"
+        session.complete()
+        #expect(session.input == "whoami ")
+    }
+
+    @Test func tabCompletesSettingsAnswers() async throws {
+        let (session, preferences) = try await sessionWithPreferences(FakeIconSwitcher())
+        let command = Task { await session.submit("settings") }
+        for _ in 0..<200 where session.question == nil {
+            await Task.yield()
+        }
+        session.input = "ph"
+        session.complete()
+        #expect(session.input == "phosphor")
+        await session.submit(session.input)
+        for key in ["icon", "avatar", "scanlines"] {
+            await answer("", to: key, in: session)
+        }
+        await command.value
+        #expect(preferences.theme == .phosphor)
+    }
+
+    /// Waits until the session asks a question starting with `prefix`, then answers it.
+    private func answer(_ text: String, to prefix: String, in session: TerminalSession) async {
+        for _ in 0..<200 where session.question?.hasPrefix(prefix) != true {
+            await Task.yield()
+        }
+        #expect(session.question?.hasPrefix(prefix) == true)
+        await session.submit(text)
     }
 }

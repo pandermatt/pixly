@@ -1,10 +1,19 @@
 import SwiftUI
+#if os(macOS)
+import AppKit
+#endif
 
 struct TerminalView: View {
     @Environment(GameCenterManager.self) private var gameCenter
+    @Environment(Preferences.self) private var preferences
+    @Environment(\.theme) private var theme
     @State private var session = TerminalSession()
     @State private var program: PixlyProgram?
+    @State private var showsWelcome = false
     @FocusState private var keyboardFocused: Bool
+    #if os(macOS)
+    @State private var shellKeys = KeyDownMonitor()
+    #endif
 
     private let bottomID = "bottom"
     private var windowShape: RoundedRectangle { RoundedRectangle(cornerRadius: 24, style: .continuous) }
@@ -43,13 +52,16 @@ struct TerminalView: View {
         .persistentSystemOverlays(program != nil ? .hidden : .automatic)
         #endif
         .task { await setUp() }
+        .sheet(isPresented: $showsWelcome, onDismiss: welcomeDismissed) {
+            WelcomeView(onContinue: finishWelcome)
+        }
         .onChange(of: session.mode) { _, mode in
             if mode != .shell { keyboardFocused = false }
             if mode == .program { launchProgram() }
         }
         #if os(macOS)
-        .onChange(of: session.isBusy) { _, isBusy in
-            if !isBusy { keyboardFocused = true }
+        .onChange(of: session.acceptsInput) { _, acceptsInput in
+            if acceptsInput { keyboardFocused = true }
         }
         #endif
     }
@@ -71,7 +83,7 @@ struct TerminalView: View {
                         TerminalLineView(line: line)
                     }
                     if session.showsPrompt {
-                        PromptLineView(input: session.input)
+                        PromptLineView(input: session.input, question: session.question)
                     }
                     Color.clear.frame(height: 1).id(bottomID)
                 }
@@ -83,21 +95,49 @@ struct TerminalView: View {
             .defaultScrollAnchor(.bottom)
             .defaultScrollAnchor(.top, for: .alignment)
             .onChange(of: session.lines.count) { proxy.scrollTo(bottomID, anchor: .bottom) }
-            .onChange(of: session.input) { proxy.scrollTo(bottomID, anchor: .bottom) }
+            .onChange(of: session.input) { _, input in
+                // A tab that reaches the text field (e.g. from an iPad keyboard) means "complete".
+                if input.contains("\t") {
+                    session.input = input.replacingOccurrences(of: "\t", with: "")
+                    session.complete()
+                }
+                proxy.scrollTo(bottomID, anchor: .bottom)
+            }
             .onChange(of: keyboardFocused) {
                 withAnimation { proxy.scrollTo(bottomID, anchor: .bottom) }
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(.black.opacity(0.8), in: windowShape)
-        .overlay { Scanlines().clipShape(windowShape) }
-        .overlay { windowShape.strokeBorder(.white.opacity(0.1), lineWidth: 1) }
+        .background(theme.windowBackground, in: windowShape)
+        .overlay {
+            if preferences.scanlines {
+                Scanlines().clipShape(windowShape)
+            }
+        }
+        .overlay { windowShape.strokeBorder(theme.stroke, lineWidth: 1) }
         .contentShape(windowShape)
         .onTapGesture {
-            if !session.isBusy { keyboardFocused = true }
+            if session.acceptsInput { keyboardFocused = true }
         }
         .background(alignment: .bottomLeading) { commandField }
+        #if os(macOS)
+        // The text field would move focus on Tab, so catch it first and complete instead.
+        .onAppear { shellKeys.start(handleShellKey) }
+        .onDisappear { shellKeys.stop() }
+        #endif
     }
+
+    #if os(macOS)
+    private func handleShellKey(_ event: NSEvent) -> Bool {
+        guard event.keyCode == 48,
+              event.modifierFlags.intersection(.deviceIndependentFlagsMask).isEmpty,
+              session.acceptsInput,
+              NSApp.keyWindow?.firstResponder is NSTextView
+        else { return false }
+        session.complete()
+        return true
+    }
+    #endif
 
     private var commandField: some View {
         TextField("", text: $session.input)
@@ -105,6 +145,10 @@ struct TerminalView: View {
             #if os(iOS)
             .textInputAutocapitalization(.never)
             .keyboardType(.asciiCapable)
+            .onKeyPress(.tab) {
+                session.complete()
+                return .handled
+            }
             #else
             .textFieldStyle(.plain)
             .focusEffectDisabled()
@@ -112,11 +156,11 @@ struct TerminalView: View {
             .autocorrectionDisabled()
             .submitLabel(.return)
             .onSubmit {
-                let command = session.input
-                Task { await session.submit(command) }
+                let text = session.input
+                Task { await session.submit(text) }
                 keyboardFocused = true
             }
-            .disabled(session.isBusy)
+            .disabled(!session.acceptsInput)
             .frame(width: 1, height: 1)
             .opacity(0.01)
             .allowsHitTesting(false)
@@ -134,7 +178,8 @@ struct TerminalView: View {
                         .padding(.vertical, 6)
                 }
                 .buttonStyle(.glassProminent)
-                .tint(Theme.buttonGreen)
+                .buttonBorderShape(.capsule)
+                .tint(theme.buttonTint)
 
                 iconButton("trophy.fill", label: "Leaderboard") { Task { await session.run("leaderboard") } }
                 iconButton("questionmark", label: "Help") { Task { await session.run("help") } }
@@ -157,13 +202,43 @@ struct TerminalView: View {
         .accessibilityLabel(label)
     }
 
-    // MARK: - Program lifecycle
+    // MARK: - Lifecycle
 
     private func setUp() async {
         let gameCenter = gameCenter
+        session.preferences = preferences
         session.playerName = { gameCenter.alias ?? "player" }
         session.onOpenLeaderboard = { gameCenter.showLeaderboard() }
+        session.onShowWelcome = { showsWelcome = true }
         session.highscores = { ScoreStore().entries }
+        if preferences.hasSeenWelcome {
+            await startShell()
+        } else {
+            await presentWelcome()
+        }
+    }
+
+    /// Waits for the window to be up first: a sheet requested while the app is still launching can be dropped.
+    private func presentWelcome() async {
+        try? await Task.sleep(for: .milliseconds(300))
+        showsWelcome = true
+    }
+
+    private func finishWelcome() {
+        preferences.markWelcomeSeen()
+        showsWelcome = false
+        Task { await startShell() }
+    }
+
+    /// Only Continue counts as having seen the welcome; if the sheet went away any other way, show it again.
+    private func welcomeDismissed() {
+        guard !preferences.hasSeenWelcome else { return }
+        Task { await presentWelcome() }
+    }
+
+    /// Signs in to Game Center and plays the boot sequence, once the welcome sheet is out of the way.
+    private func startShell() async {
+        guard session.mode == .booting else { return }
         gameCenter.authenticate()
         await session.boot()
     }
@@ -171,7 +246,7 @@ struct TerminalView: View {
     private func launchProgram() {
         guard program == nil else { return }
         let gameCenter = gameCenter
-        let program = PixlyProgram()
+        let program = PixlyProgram(preferences: preferences)
         program.playerAlias = { gameCenter.alias }
         program.onScore = { gameCenter.submit(score: $0) }
         program.onQuit = { runtime in finishProgram(runtime: runtime, interrupted: false) }

@@ -4,6 +4,7 @@ struct TitleBar: View {
     let title: String
     let canInterrupt: Bool
     let onInterrupt: () -> Void
+    @Environment(\.theme) private var theme
 
     var body: some View {
         HStack(spacing: 8) {
@@ -29,14 +30,14 @@ struct TitleBar: View {
 
             Text(verbatim: title)
                 .font(Theme.mono(12, weight: .medium))
-                .foregroundStyle(.white.opacity(0.7))
+                .foregroundStyle(theme.dim)
                 .lineLimit(1)
                 .frame(maxWidth: .infinity)
 
             Group {
                 if canInterrupt {
                     Button(action: onInterrupt) {
-                        Text(verbatim: "⌃C").font(Theme.mono(13, weight: .bold)).foregroundStyle(Theme.green)
+                        Text(verbatim: "⌃C").font(Theme.mono(13, weight: .bold)).foregroundStyle(theme.prompt)
                     }
                     .buttonStyle(.plain)
                     .accessibilityLabel("Interrupt")

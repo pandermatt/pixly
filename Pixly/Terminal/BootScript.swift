@@ -4,10 +4,17 @@ enum BootScript {
     struct Line: Sendable {
         let text: String
         let style: TerminalLine.Style
+        let label: String?
 
-        init(_ text: String, _ style: TerminalLine.Style = .output) {
+        init(_ text: String, _ style: TerminalLine.Style = .output, label: String? = nil) {
             self.text = text
             self.style = style
+            self.label = label
+        }
+
+        /// A help entry, laid out in two columns so it stays aligned when it wraps.
+        static func entry(_ command: String, _ detail: String) -> Line {
+            Line(detail, .definition, label: command)
         }
     }
 
@@ -29,12 +36,12 @@ enum BootScript {
 
     /// "ANSI Shadow" lettering: every glyph is six rows tall.
     static let banner = [
-        "██████╗ ██╗██╗  ██╗██╗     ██╗   ██╗",
-        "██╔══██╗██║╚██╗██╔╝██║     ╚██╗ ██╔╝",
-        "██████╔╝██║ ╚███╔╝ ██║      ╚████╔╝ ",
-        "██╔═══╝ ██║ ██╔██╗ ██║       ╚██╔╝  ",
-        "██║     ██║██╔╝ ██╗███████╗   ██║   ",
-        "╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝   ╚═╝   ",
+        "██████╗ ██╗██╗  ██╗██╗   ██╗   ██╗",
+        "██╔══██╗██║╚██╗██╔╝██║   ╚██╗ ██╔╝",
+        "██████╔╝██║ ╚███╔╝ ██║    ╚████╔╝ ",
+        "██╔═══╝ ██║ ██╔██╗ ██║     ╚██╔╝  ",
+        "██║     ██║██╔╝ ██╗███████╗ ██║   ",
+        "╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝ ╚═╝   ",
     ].joined(separator: "\n")
 
     static let motd = [
@@ -48,14 +55,19 @@ enum BootScript {
 
     static let help = [
         Line("commands:"),
-        Line("  start          compile & run pixly"),
-        Line("  ./pixly        run without compiling"),
-        Line("  leaderboard    open the Game Center leaderboard"),
-        Line("  highscore      show local highscores"),
-        Line("  ls, cat FILE   browse the original C source"),
-        Line("  credits        who made this"),
-        Line("  clear          clear the screen"),
+        .entry("start", "compile & run pixly"),
+        .entry("./pixly", "run without compiling"),
+        .entry("leaderboard", "open the Game Center leaderboard"),
+        .entry("highscore", "show local highscores"),
+        .entry("settings", "theme, app icon, avatar and scanlines"),
+        .entry("theme [NAME]", "classic, phosphor, amber or light"),
+        .entry("icon [NAME]", "switch the app icon"),
+        .entry("welcome", "show the welcome screen again"),
+        .entry("ls, cat FILE", "the original C source and ~/.pixlyrc"),
+        .entry("credits", "who made this"),
+        .entry("clear", "clear the screen"),
         Line(gameHint, .dim),
+        Line("tab completes commands, files and values", .dim),
     ]
 
     #if os(macOS)

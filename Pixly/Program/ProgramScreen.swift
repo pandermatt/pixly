@@ -4,7 +4,7 @@ import AppKit
 #endif
 
 /// Hosts the running C program: the 80×25 console, plus contextual Liquid Glass keys on iOS.
-/// On the Mac the real keyboard is the only input: arrows, Return, space, q and ⌃C.
+/// On the Mac the real keyboard is the only input: arrows, Return, Esc, space, q and ⌃C.
 struct ProgramScreen: View {
     let program: PixlyProgram
     let isLandscape: Bool
@@ -13,11 +13,11 @@ struct ProgramScreen: View {
 
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.displayScale) private var displayScale
+    @Environment(\.theme) private var theme
     @State private var isPressing = false
     #if os(macOS)
     @State private var keyMonitor = KeyDownMonitor()
     #else
-    @FocusState private var nameFieldFocused: Bool
     @FocusState private var keysFocused: Bool
     #endif
 
@@ -29,9 +29,15 @@ struct ProgramScreen: View {
         let layout = isLandscape ? AnyLayout(HStackLayout(spacing: 12)) : AnyLayout(VStackLayout(spacing: 12))
         layout {
             console
-                .background(.black, in: windowShape)
+                .overlay {
+                    if program.preferences.scanlines {
+                        // Dark lines: invisible on the walls, a CRT stripe across the bright tunnel.
+                        Scanlines(color: .black.opacity(theme.colorScheme == .light ? 0.08 : 0.3))
+                    }
+                }
+                .background(theme.console(.black), in: windowShape)
                 .clipShape(windowShape)
-                .overlay { windowShape.strokeBorder(.white.opacity(0.12), lineWidth: 1) }
+                .overlay { windowShape.strokeBorder(theme.stroke, lineWidth: 1) }
             #if os(iOS)
             controls
                 .frame(width: isLandscape ? 132 : nil)
@@ -43,17 +49,20 @@ struct ProgramScreen: View {
         .onAppear { keyMonitor.start(handleKeyDown) }
         .onDisappear { keyMonitor.stop() }
         #else
-        .background(alignment: .topLeading) { nameField }
         .focusable()
         .focused($keysFocused)
         .focusEffectDisabled()
         .onKeyPress(phases: [.down, .repeat], action: handleKeyPress)
         .onAppear { keysFocused = true }
-        .onChange(of: program.screen) { _, screen in
-            if screen != .saveScore {
-                nameFieldFocused = false
-                keysFocused = true
-            }
+        .onChange(of: program.screen) { keysFocused = true }
+        .alert("Enter your name", isPresented: Binding(get: { program.isEditingName }, set: { program.isEditingName = $0 })) {
+            TextField("Name", text: Binding(get: { program.draftName }, set: { program.draftName = $0 }))
+                .textInputAutocapitalization(.words)
+                .autocorrectionDisabled()
+            Button("Save") { program.finishEditingName(save: true) }
+            Button("Cancel", role: .cancel) { program.finishEditingName(save: false) }
+        } message: {
+            Text("It goes into the highscore table with your score.")
         }
         #endif
         .onChange(of: scenePhase) { _, phase in
@@ -69,8 +78,9 @@ struct ProgramScreen: View {
         GeometryReader { proxy in
             let layout = ConsoleLayout(size: proxy.size, scale: displayScale)
             let buffer = program.console
+            let theme = theme
             Canvas { context, _ in
-                ConsoleRenderer.draw(buffer, layout: layout, in: &context)
+                ConsoleRenderer.draw(buffer, layout: layout, theme: theme, in: &context)
             }
             .contentShape(Rectangle())
             .gesture(
@@ -82,6 +92,11 @@ struct ProgramScreen: View {
                     }
                     .onEnded { _ in isPressing = false }
             )
+            .onContinuousHover { phase in
+                if case .active(let point) = phase, let cell = layout.cell(at: point) {
+                    program.hover(at: cell)
+                }
+            }
         }
         .accessibilityElement()
         .accessibilityLabel("Pixly console")
@@ -102,6 +117,7 @@ struct ProgramScreen: View {
         case 126: .up
         case 125: .down
         case 36, 76: .enter
+        case 53: .escape
         case 51: .backspace
         default: .character(event.characters ?? "")
         }
@@ -120,6 +136,7 @@ struct ProgramScreen: View {
         case .upArrow: .up
         case .downArrow: .down
         case .return: .enter
+        case .escape: .escape
         case .delete: .backspace
         default: .character(press.characters)
         }
@@ -132,17 +149,20 @@ struct ProgramScreen: View {
             let stack = isLandscape ? AnyLayout(VStackLayout(spacing: 10)) : AnyLayout(HStackLayout(spacing: 10))
             stack {
                 switch program.screen {
-                case .menu, .avatar:
+                case .menu, .avatar, .settings, .theme, .appIcon:
                     key("up", "chevron.up") { program.moveSelection(-1) }
                     key("down", "chevron.down") { program.moveSelection(1) }
                     key("enter", "return", prominent: true) { program.confirm() }
+                    if program.screen != .menu {
+                        key("back", "chevron.left") { program.handle(.escape) }
+                    }
                 case .playing:
                     key(program.isPaused ? "resume" : "quit", program.isPaused ? "play.fill" : "q.square") {
                         program.isPaused ? program.jump() : program.quitGame()
                     }
                 case .saveScore:
                     key("save", "return", prominent: true) { program.saveScore() }
-                    key("edit", "keyboard") { nameFieldFocused = true }
+                    key("name", "pencil") { program.beginEditingName() }
                 case .scoreTable:
                     key("Game Center", "trophy.fill") { onOpenLeaderboard() }
                     key("back", "return", prominent: true) { program.confirm() }
@@ -170,22 +190,10 @@ struct ProgramScreen: View {
                 .padding(.vertical, 4)
         }
         if prominent {
-            button.buttonStyle(.glassProminent).tint(Theme.buttonGreen)
+            button.buttonStyle(.glassProminent).tint(theme.buttonTint)
         } else {
             button.buttonStyle(.glass)
         }
-    }
-
-    private var nameField: some View {
-        TextField("", text: Binding(get: { program.nameInput }, set: { program.setName($0) }))
-            .focused($nameFieldFocused)
-            .textInputAutocapitalization(.words)
-            .autocorrectionDisabled()
-            .submitLabel(.done)
-            .onSubmit { program.saveScore() }
-            .frame(width: 1, height: 1)
-            .opacity(0.01)
-            .allowsHitTesting(false)
     }
     #endif
 }

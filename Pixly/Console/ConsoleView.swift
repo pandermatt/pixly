@@ -1,28 +1,5 @@
 import SwiftUI
 
-extension ConsoleColor {
-    var color: Color {
-        switch self {
-        case .black: Color(red: 0, green: 0, blue: 0)
-        case .blue: Color(red: 0, green: 0.22, blue: 0.85)
-        case .green: Color(red: 0, green: 0.48, blue: 0)
-        case .cyan: Color(red: 0.23, green: 0.59, blue: 0.87)
-        case .red: Color(red: 0.6, green: 0.06, blue: 0.02)
-        case .magenta: Color(red: 0.53, green: 0.09, blue: 0.6)
-        case .brown: Color(red: 0.76, green: 0.61, blue: 0)
-        case .gray: Color(red: 0.75, green: 0.75, blue: 0.75)
-        case .darkGray: Color(red: 0.46, green: 0.46, blue: 0.46)
-        case .lightBlue: Color(red: 0.23, green: 0.47, blue: 1)
-        case .lightGreen: Color(red: 0.09, green: 0.78, blue: 0.05)
-        case .lightCyan: Color(red: 0.38, green: 0.84, blue: 0.84)
-        case .lightRed: Color(red: 0.91, green: 0.28, blue: 0.34)
-        case .lightMagenta: Color(red: 0.71, green: 0, blue: 0.62)
-        case .yellow: Color(red: 0.98, green: 0.95, blue: 0.65)
-        case .white: Color(red: 1, green: 1, blue: 1)
-        }
-    }
-}
-
 /// Where the 80×25 grid sits inside a view, keeping the 1:2 character cell of the Windows console.
 struct ConsoleLayout: Equatable {
     let cellWidth: CGFloat
@@ -57,8 +34,8 @@ struct ConsoleLayout: Equatable {
 }
 
 enum ConsoleRenderer {
-    static func draw(_ buffer: ConsoleBuffer, layout: ConsoleLayout, in context: inout GraphicsContext) {
-        context.fill(Path(layout.frame), with: .color(.black))
+    static func draw(_ buffer: ConsoleBuffer, layout: ConsoleLayout, theme: PixlyTheme, in context: inout GraphicsContext) {
+        context.fill(Path(layout.frame), with: .color(theme.console(.black)))
 
         var backgrounds: [ConsoleColor: Path] = [:]
         for y in 1...ConsoleBuffer.rows {
@@ -76,7 +53,7 @@ enum ConsoleRenderer {
             }
         }
         for (color, path) in backgrounds {
-            context.fill(path, with: .color(color.color))
+            context.fill(path, with: .color(theme.console(color)))
         }
 
         let font = Font.system(size: layout.cellWidth / 0.6, weight: .regular, design: .monospaced)
@@ -85,17 +62,17 @@ enum ConsoleRenderer {
                 let cell = buffer[x, y]
                 guard cell.character != " " else { continue }
                 let rect = layout.rect(x: x, y: y)
-                let shading = GraphicsContext.Shading.color(cell.foreground.color)
+                let color = theme.console(cell.foreground)
                 switch cell.character {
                 case "■":
-                    context.fill(Path(CGRect(x: rect.minX, y: rect.midY - rect.width / 2, width: rect.width, height: rect.width)), with: shading)
+                    context.fill(Path(CGRect(x: rect.minX, y: rect.midY - rect.width / 2, width: rect.width, height: rect.width)), with: .color(color))
                 case ".":
                     let radius = max(rect.width * 0.14, 0.75)
-                    context.fill(Path(ellipseIn: CGRect(x: rect.midX - radius, y: rect.minY + rect.height * 0.72 - radius, width: radius * 2, height: radius * 2)), with: shading)
+                    context.fill(Path(ellipseIn: CGRect(x: rect.midX - radius, y: rect.minY + rect.height * 0.72 - radius, width: radius * 2, height: radius * 2)), with: .color(color))
                 case "_":
-                    context.fill(Path(CGRect(x: rect.minX, y: rect.minY + rect.height * 0.84, width: rect.width, height: max(rect.height * 0.06, 1))), with: shading)
+                    context.fill(Path(CGRect(x: rect.minX, y: rect.minY + rect.height * 0.84, width: rect.width, height: max(rect.height * 0.06, 1))), with: .color(color))
                 default:
-                    context.draw(Text(String(cell.character)).font(font).foregroundStyle(cell.foreground.color), at: CGPoint(x: rect.midX, y: rect.midY), anchor: .center)
+                    context.draw(Text(String(cell.character)).font(font).foregroundStyle(color), at: CGPoint(x: rect.midX, y: rect.midY), anchor: .center)
                 }
             }
         }

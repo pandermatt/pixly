@@ -9,21 +9,39 @@ struct PixlyApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     #endif
     @State private var gameCenter = GameCenterManager()
+    @State private var preferences = Preferences()
 
     var body: some Scene {
         WindowGroup {
-            TerminalView()
-                .environment(gameCenter)
-                .preferredColorScheme(.dark)
-                .tint(Theme.green)
-                #if os(macOS)
-                .frame(minWidth: 760, minHeight: 520)
-                #endif
+            ThemedRoot {
+                TerminalView()
+            }
+            .environment(gameCenter)
+            .environment(preferences)
+            #if os(macOS)
+            .frame(minWidth: 760, minHeight: 520)
+            #endif
         }
         #if os(macOS)
         .defaultSize(width: 1100, height: 760)
         .windowResizability(.contentMinSize)
         #endif
+    }
+}
+
+/// Applies the current (or previewed) theme to everything below it.
+struct ThemedRoot<Content: View>: View {
+    @Environment(Preferences.self) private var preferences
+    @ViewBuilder let content: Content
+
+    var body: some View {
+        let theme = preferences.effectiveTheme.palette
+        content
+            .environment(\.theme, theme)
+            .preferredColorScheme(theme.colorScheme)
+            .tint(theme.prompt)
+            .animation(.smooth(duration: 0.35), value: preferences.effectiveTheme)
+            .task { await preferences.restoreAppIcon() }
     }
 }
 

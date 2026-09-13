@@ -8,14 +8,18 @@
 
 /* Begin PBXBuildFile section */
 		010E58DAF66FDC59A177F1BC /* TitleBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F1490A776311ED00BC9B51 /* TitleBar.swift */; };
+		03E676D4E7325C4E4B49F41E /* AppIcon-Phosphor.icon in Resources */ = {isa = PBXBuildFile; fileRef = 14E86989D4BDDD663FBEBCB7 /* AppIcon-Phosphor.icon */; };
 		09346168A875CFF8D56162D2 /* GameCenterManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91072C6376CE8CC8780FD2F7 /* GameCenterManager.swift */; };
 		0B1A681EDE128B091E0F3D0A /* ProgramScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 653C94E76664ACA8C508C1BA /* ProgramScreen.swift */; };
+		0C84A35AB7CEB3C5AB8B661F /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD7CE014143CFE6CA8C42ABF /* WelcomeView.swift */; };
 		0CA3B8B81EDBE1F52EAB0C61 /* ball.c.txt in Resources */ = {isa = PBXBuildFile; fileRef = 5B640BAD1A4AC81093F59926 /* ball.c.txt */; };
 		0EB7C634EFFD3D019CE3F760 /* TerminalLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13B9919CBEF063F335ED95EA /* TerminalLine.swift */; };
 		0F1676179B584728042114EF /* PixlyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A5A466AED2A9A0E0B9A58AD /* PixlyApp.swift */; };
 		1A715CC39B5A7D9555E3EB00 /* PixlyProgram.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1574A3D06D1DBFE6EE3191 /* PixlyProgram.swift */; };
+		21F6BE8C6318A462CB603521 /* PixlyTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85DFF56B067856A7B5F1847B /* PixlyTheme.swift */; };
 		265A3391075B78FFA719CFBB /* score.c.txt in Resources */ = {isa = PBXBuildFile; fileRef = A5182C2B4B522D289192FAB4 /* score.c.txt */; };
 		2810453111ED8D1322AC5B46 /* ConsoleAndScoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970D51B730F334BCB8429459 /* ConsoleAndScoreTests.swift */; };
+		2A1FE10E315DA7761BCFB416 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6DC03EAAF56CA283E597960 /* Preferences.swift */; };
 		2E4B8F6F6D73B04F11C4913C /* TerminalLineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 381DAD0F64E8C8942A534801 /* TerminalLineView.swift */; };
 		3428DABF0C62D4A6BA086937 /* ProgramAndSessionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D495B6B851DB69753FFC1F38 /* ProgramAndSessionTests.swift */; };
 		36EFF4BB59DBC4F7D05947EE /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E91BD0ECCEE5722B6AA6CA2 /* Theme.swift */; };
@@ -24,17 +28,22 @@
 		42668C5960DC34C5B4D30E19 /* TerminalLineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 381DAD0F64E8C8942A534801 /* TerminalLineView.swift */; };
 		491D32D502C92C97B7652486 /* pixel_escape.cbp.txt in Resources */ = {isa = PBXBuildFile; fileRef = 6D30A929337D0087F911F5BF /* pixel_escape.cbp.txt */; };
 		502905C6C41A854C9430081E /* TerminalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0163230186057BE3105BBFBB /* TerminalView.swift */; };
+		57715351ABE3DC8AA70BE734 /* Dock-AppIcon-Light.png in Resources */ = {isa = PBXBuildFile; fileRef = AF189CAF8A905FC153CF1713 /* Dock-AppIcon-Light.png */; };
 		5ACB0F81F3D9219ECB1E924E /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 27F59BC3E82ED283831F2432 /* AppIcon.icon */; };
 		5CD153429EECEC1BFF2811BC /* landscape.h.txt in Resources */ = {isa = PBXBuildFile; fileRef = 99662FC509775ACFB87855C1 /* landscape.h.txt */; };
 		5D0439886A91B3955B7E904A /* ProgramScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 653C94E76664ACA8C508C1BA /* ProgramScreen.swift */; };
+		62E707B5F84D10E90BC92C03 /* AppIcon-Amber.icon in Resources */ = {isa = PBXBuildFile; fileRef = 96E5E4BAF3A8F1F612CA87FF /* AppIcon-Amber.icon */; };
 		630E37DF5BBD427F6A6096EE /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 27F59BC3E82ED283831F2432 /* AppIcon.icon */; };
 		6BAC70145269DE454581A596 /* landscape.c.txt in Resources */ = {isa = PBXBuildFile; fileRef = AAC993534ADB27BEE5402856 /* landscape.c.txt */; };
+		7212347267AFFB9CE8C1ADB6 /* PixlyTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85DFF56B067856A7B5F1847B /* PixlyTheme.swift */; };
 		735F4D9A8C28D7892051EE88 /* ConsoleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 969D0666885F443EA623FBB7 /* ConsoleView.swift */; };
+		740140E97E9252DD917EE6EB /* Dock-AppIcon-Phosphor.png in Resources */ = {isa = PBXBuildFile; fileRef = 7ED4AAB21BC64F4C60F05B52 /* Dock-AppIcon-Phosphor.png */; };
 		74D8DED832E73C0F3435266C /* ball.h.txt in Resources */ = {isa = PBXBuildFile; fileRef = F03E13E36FD35B602C92010B /* ball.h.txt */; };
 		7578C46C3CAD78BA8999772E /* PixelEscapeGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03989B6B9391F02C78F6EB56 /* PixelEscapeGame.swift */; };
 		793230DAF8B910D16F866917 /* main.c.txt in Resources */ = {isa = PBXBuildFile; fileRef = 7547898B833FDB86C0F69900 /* main.c.txt */; };
 		7B215231AFDB74D240CCCA34 /* PixlyProgram.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1574A3D06D1DBFE6EE3191 /* PixlyProgram.swift */; };
 		7D42B7E16E3DA1989A04E072 /* SeededGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 788A03B7F5F5BCF8F7920DCD /* SeededGenerator.swift */; };
+		817EEC967CAAA1EDBC1511C6 /* Dock-AppIcon-Amber.png in Resources */ = {isa = PBXBuildFile; fileRef = 362DCFB4C74B2A2DE5CDE8D8 /* Dock-AppIcon-Amber.png */; };
 		82B9B4BB08FD83C2DF2A79F2 /* ConsoleBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73CC8F83211C1F000B5FB8F0 /* ConsoleBuffer.swift */; };
 		838A439CBEEC85C827BDDD74 /* DisplayLinkTicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71B5BEDDE5BD5853D1FE6A3D /* DisplayLinkTicker.swift */; };
 		88BC8277D0CBC2E464E5545F /* ball.h.txt in Resources */ = {isa = PBXBuildFile; fileRef = F03E13E36FD35B602C92010B /* ball.h.txt */; };
@@ -46,11 +55,14 @@
 		97D7119FBCC7836C95E10178 /* GameCenterManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91072C6376CE8CC8780FD2F7 /* GameCenterManager.swift */; };
 		9849BD174EC0DA719C8F8B25 /* timer.h.txt in Resources */ = {isa = PBXBuildFile; fileRef = BAA1279969F5A3B2A5FB8003 /* timer.h.txt */; };
 		9A8201B76F1F326EAF1556D4 /* timer.h.txt in Resources */ = {isa = PBXBuildFile; fileRef = BAA1279969F5A3B2A5FB8003 /* timer.h.txt */; };
+		9B4B370B67FA74C625688C47 /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD7CE014143CFE6CA8C42ABF /* WelcomeView.swift */; };
+		A275D000E1C74279E7DF8117 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6DC03EAAF56CA283E597960 /* Preferences.swift */; };
 		A409C128DB2D9987430D17F6 /* main.c.txt in Resources */ = {isa = PBXBuildFile; fileRef = 7547898B833FDB86C0F69900 /* main.c.txt */; };
 		A5C3B034794D65D421F93671 /* ConsoleBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73CC8F83211C1F000B5FB8F0 /* ConsoleBuffer.swift */; };
 		B12D37A485EBAA231EB4D098 /* SeededGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 788A03B7F5F5BCF8F7920DCD /* SeededGenerator.swift */; };
 		BF4C9AD5F43FEC389C66EEAE /* TerminalSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = F72B94D140CA0F71E519DE30 /* TerminalSession.swift */; };
 		C1D82CDBAEFCE428DDF9C9C7 /* PixlyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A5A466AED2A9A0E0B9A58AD /* PixlyApp.swift */; };
+		C4D4447A35D7D7F104D80ADD /* CustomisationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA25800B3EFC63EE0220F492 /* CustomisationTests.swift */; };
 		C7AC7EBCF68FE77721D2013C /* score.h.txt in Resources */ = {isa = PBXBuildFile; fileRef = 0966600C6C0857A734AF9F00 /* score.h.txt */; };
 		C8AA450F02FD203BA58F3333 /* ScoreStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F775A32F1BAD49453EDAE8C /* ScoreStore.swift */; };
 		CE9DF2379266BD1117ED2D7C /* DisplayLinkTicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71B5BEDDE5BD5853D1FE6A3D /* DisplayLinkTicker.swift */; };
@@ -64,9 +76,12 @@
 		E74673D4382CED1EEDE7C8F3 /* BootScript.swift in Sources */ = {isa = PBXBuildFile; fileRef = 551EE7E95E573F4B991FDB64 /* BootScript.swift */; };
 		E7BE2CA1E47167C6F824AB9C /* ScoreStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F775A32F1BAD49453EDAE8C /* ScoreStore.swift */; };
 		EB4A7403A35DDE21811A6F59 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1D652F329FB2DD2FB729185C /* Assets.xcassets */; };
+		EBD939ADE8D7937D2F432772 /* AppIconSwitcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B473BC34204122465954610 /* AppIconSwitcher.swift */; };
 		EC9336CF1CAE2FCD5A737FCB /* landscape.c.txt in Resources */ = {isa = PBXBuildFile; fileRef = AAC993534ADB27BEE5402856 /* landscape.c.txt */; };
 		EDE51FA6B67E6F96E972DACA /* BootScript.swift in Sources */ = {isa = PBXBuildFile; fileRef = 551EE7E95E573F4B991FDB64 /* BootScript.swift */; };
+		F2F13183376CB7162E07941F /* AppIconSwitcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B473BC34204122465954610 /* AppIconSwitcher.swift */; };
 		F483F3326FD188AAA14637D5 /* PixelEscapeGameTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBA0EB5A17037BEFA09FCE81 /* PixelEscapeGameTests.swift */; };
+		F99A34E7FF27E2FF469E3842 /* AppIcon-Light.icon in Resources */ = {isa = PBXBuildFile; fileRef = 35CFA791CC6E275E714D0993 /* AppIcon-Light.icon */; };
 		FF33AEF2E6D6425BAC424758 /* TitleBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F1490A776311ED00BC9B51 /* TitleBar.swift */; };
 /* End PBXBuildFile section */
 
@@ -85,15 +100,19 @@
 		03989B6B9391F02C78F6EB56 /* PixelEscapeGame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixelEscapeGame.swift; sourceTree = "<group>"; };
 		0966600C6C0857A734AF9F00 /* score.h.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = score.h.txt; sourceTree = "<group>"; };
 		13B9919CBEF063F335ED95EA /* TerminalLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalLine.swift; sourceTree = "<group>"; };
+		14E86989D4BDDD663FBEBCB7 /* AppIcon-Phosphor.icon */ = {isa = PBXFileReference; lastKnownFileType = wrapper.icon; path = "AppIcon-Phosphor.icon"; sourceTree = "<group>"; };
 		1D652F329FB2DD2FB729185C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		27F59BC3E82ED283831F2432 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = wrapper.icon; path = AppIcon.icon; sourceTree = "<group>"; };
 		2E91BD0ECCEE5722B6AA6CA2 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		33F1490A776311ED00BC9B51 /* TitleBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleBar.swift; sourceTree = "<group>"; };
+		35CFA791CC6E275E714D0993 /* AppIcon-Light.icon */ = {isa = PBXFileReference; lastKnownFileType = wrapper.icon; path = "AppIcon-Light.icon"; sourceTree = "<group>"; };
+		362DCFB4C74B2A2DE5CDE8D8 /* Dock-AppIcon-Amber.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Dock-AppIcon-Amber.png"; sourceTree = "<group>"; };
 		381DAD0F64E8C8942A534801 /* TerminalLineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalLineView.swift; sourceTree = "<group>"; };
 		3B0B1B5EED68037DFE60BDEC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		4A5A466AED2A9A0E0B9A58AD /* PixlyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixlyApp.swift; sourceTree = "<group>"; };
 		511683E12516989A3F136964 /* Pixly.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Pixly.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		551EE7E95E573F4B991FDB64 /* BootScript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BootScript.swift; sourceTree = "<group>"; };
+		5B473BC34204122465954610 /* AppIconSwitcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconSwitcher.swift; sourceTree = "<group>"; };
 		5B640BAD1A4AC81093F59926 /* ball.c.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = ball.c.txt; sourceTree = "<group>"; };
 		5FF1392CD1A9191B4709A732 /* PixlyTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = PixlyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		653C94E76664ACA8C508C1BA /* ProgramScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgramScreen.swift; sourceTree = "<group>"; };
@@ -102,18 +121,25 @@
 		73CC8F83211C1F000B5FB8F0 /* ConsoleBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsoleBuffer.swift; sourceTree = "<group>"; };
 		7547898B833FDB86C0F69900 /* main.c.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = main.c.txt; sourceTree = "<group>"; };
 		788A03B7F5F5BCF8F7920DCD /* SeededGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeededGenerator.swift; sourceTree = "<group>"; };
+		7ED4AAB21BC64F4C60F05B52 /* Dock-AppIcon-Phosphor.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Dock-AppIcon-Phosphor.png"; sourceTree = "<group>"; };
+		85DFF56B067856A7B5F1847B /* PixlyTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixlyTheme.swift; sourceTree = "<group>"; };
 		860C0ABCD8F3F1406C12B3D0 /* consoleio.h.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = consoleio.h.txt; sourceTree = "<group>"; };
 		91072C6376CE8CC8780FD2F7 /* GameCenterManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameCenterManager.swift; sourceTree = "<group>"; };
 		969D0666885F443EA623FBB7 /* ConsoleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsoleView.swift; sourceTree = "<group>"; };
+		96E5E4BAF3A8F1F612CA87FF /* AppIcon-Amber.icon */ = {isa = PBXFileReference; lastKnownFileType = wrapper.icon; path = "AppIcon-Amber.icon"; sourceTree = "<group>"; };
 		970D51B730F334BCB8429459 /* ConsoleAndScoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsoleAndScoreTests.swift; sourceTree = "<group>"; };
 		99662FC509775ACFB87855C1 /* landscape.h.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = landscape.h.txt; sourceTree = "<group>"; };
 		9F775A32F1BAD49453EDAE8C /* ScoreStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreStore.swift; sourceTree = "<group>"; };
 		A5182C2B4B522D289192FAB4 /* score.c.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = score.c.txt; sourceTree = "<group>"; };
 		AAC993534ADB27BEE5402856 /* landscape.c.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = landscape.c.txt; sourceTree = "<group>"; };
+		AF189CAF8A905FC153CF1713 /* Dock-AppIcon-Light.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Dock-AppIcon-Light.png"; sourceTree = "<group>"; };
 		B57D2A7E54ECEDAAE227ECBA /* Pixly.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Pixly.entitlements; sourceTree = "<group>"; };
 		BAA1279969F5A3B2A5FB8003 /* timer.h.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = timer.h.txt; sourceTree = "<group>"; };
 		BC1574A3D06D1DBFE6EE3191 /* PixlyProgram.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixlyProgram.swift; sourceTree = "<group>"; };
+		CA25800B3EFC63EE0220F492 /* CustomisationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomisationTests.swift; sourceTree = "<group>"; };
 		D495B6B851DB69753FFC1F38 /* ProgramAndSessionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgramAndSessionTests.swift; sourceTree = "<group>"; };
+		DD7CE014143CFE6CA8C42ABF /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
+		E6DC03EAAF56CA283E597960 /* Preferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
 		EBA0EB5A17037BEFA09FCE81 /* PixelEscapeGameTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixelEscapeGameTests.swift; sourceTree = "<group>"; };
 		F03E13E36FD35B602C92010B /* ball.h.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = ball.h.txt; sourceTree = "<group>"; };
 		F72B94D140CA0F71E519DE30 /* TerminalSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalSession.swift; sourceTree = "<group>"; };
@@ -149,10 +175,21 @@
 			path = Source;
 			sourceTree = "<group>";
 		};
+		490FFABD4A599F6C23D50A5A /* PixlyMac */ = {
+			isa = PBXGroup;
+			children = (
+				B1F2A182C73480A71372D2B7 /* DockIcons */,
+			);
+			path = PixlyMac;
+			sourceTree = "<group>";
+		};
 		498D75C614ABB928A1A6E3A5 /* Support */ = {
 			isa = PBXGroup;
 			children = (
+				5B473BC34204122465954610 /* AppIconSwitcher.swift */,
 				71B5BEDDE5BD5853D1FE6A3D /* DisplayLinkTicker.swift */,
+				85DFF56B067856A7B5F1847B /* PixlyTheme.swift */,
+				E6DC03EAAF56CA283E597960 /* Preferences.swift */,
 				788A03B7F5F5BCF8F7920DCD /* SeededGenerator.swift */,
 				2E91BD0ECCEE5722B6AA6CA2 /* Theme.swift */,
 			);
@@ -171,6 +208,7 @@
 			isa = PBXGroup;
 			children = (
 				970D51B730F334BCB8429459 /* ConsoleAndScoreTests.swift */,
+				CA25800B3EFC63EE0220F492 /* CustomisationTests.swift */,
 				EBA0EB5A17037BEFA09FCE81 /* PixelEscapeGameTests.swift */,
 				D495B6B851DB69753FFC1F38 /* ProgramAndSessionTests.swift */,
 			);
@@ -181,6 +219,7 @@
 			isa = PBXGroup;
 			children = (
 				B627002C2D2F3E94C11CA15E /* Pixly */,
+				490FFABD4A599F6C23D50A5A /* PixlyMac */,
 				772C985E68CC61875A238801 /* PixlyTests */,
 				C6B093253837096B9A99085C /* Products */,
 			);
@@ -195,13 +234,27 @@
 				F72B94D140CA0F71E519DE30 /* TerminalSession.swift */,
 				0163230186057BE3105BBFBB /* TerminalView.swift */,
 				33F1490A776311ED00BC9B51 /* TitleBar.swift */,
+				DD7CE014143CFE6CA8C42ABF /* WelcomeView.swift */,
 			);
 			path = Terminal;
+			sourceTree = "<group>";
+		};
+		B1F2A182C73480A71372D2B7 /* DockIcons */ = {
+			isa = PBXGroup;
+			children = (
+				362DCFB4C74B2A2DE5CDE8D8 /* Dock-AppIcon-Amber.png */,
+				AF189CAF8A905FC153CF1713 /* Dock-AppIcon-Light.png */,
+				7ED4AAB21BC64F4C60F05B52 /* Dock-AppIcon-Phosphor.png */,
+			);
+			path = DockIcons;
 			sourceTree = "<group>";
 		};
 		B627002C2D2F3E94C11CA15E /* Pixly */ = {
 			isa = PBXGroup;
 			children = (
+				96E5E4BAF3A8F1F612CA87FF /* AppIcon-Amber.icon */,
+				35CFA791CC6E275E714D0993 /* AppIcon-Light.icon */,
+				14E86989D4BDDD663FBEBCB7 /* AppIcon-Phosphor.icon */,
 				27F59BC3E82ED283831F2432 /* AppIcon.icon */,
 				1D652F329FB2DD2FB729185C /* Assets.xcassets */,
 				3B0B1B5EED68037DFE60BDEC /* Info.plist */,
@@ -350,6 +403,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				62E707B5F84D10E90BC92C03 /* AppIcon-Amber.icon in Resources */,
+				F99A34E7FF27E2FF469E3842 /* AppIcon-Light.icon in Resources */,
+				03E676D4E7325C4E4B49F41E /* AppIcon-Phosphor.icon in Resources */,
 				5ACB0F81F3D9219ECB1E924E /* AppIcon.icon in Resources */,
 				92028177117EF61288C47188 /* Assets.xcassets in Resources */,
 				E1DA10E2EAEB581EF96B1DCE /* ball.c.txt in Resources */,
@@ -371,6 +427,9 @@
 			files = (
 				630E37DF5BBD427F6A6096EE /* AppIcon.icon in Resources */,
 				EB4A7403A35DDE21811A6F59 /* Assets.xcassets in Resources */,
+				817EEC967CAAA1EDBC1511C6 /* Dock-AppIcon-Amber.png in Resources */,
+				57715351ABE3DC8AA70BE734 /* Dock-AppIcon-Light.png in Resources */,
+				740140E97E9252DD917EE6EB /* Dock-AppIcon-Phosphor.png in Resources */,
 				0CA3B8B81EDBE1F52EAB0C61 /* ball.c.txt in Resources */,
 				88BC8277D0CBC2E464E5545F /* ball.h.txt in Resources */,
 				8B94770D6AA3A5A2A15B4E23 /* consoleio.h.txt in Resources */,
@@ -391,6 +450,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F2F13183376CB7162E07941F /* AppIconSwitcher.swift in Sources */,
 				E74673D4382CED1EEDE7C8F3 /* BootScript.swift in Sources */,
 				A5C3B034794D65D421F93671 /* ConsoleBuffer.swift in Sources */,
 				735F4D9A8C28D7892051EE88 /* ConsoleView.swift in Sources */,
@@ -399,6 +459,8 @@
 				40E94A42DFF0D91D0E761095 /* PixelEscapeGame.swift in Sources */,
 				0F1676179B584728042114EF /* PixlyApp.swift in Sources */,
 				1A715CC39B5A7D9555E3EB00 /* PixlyProgram.swift in Sources */,
+				7212347267AFFB9CE8C1ADB6 /* PixlyTheme.swift in Sources */,
+				2A1FE10E315DA7761BCFB416 /* Preferences.swift in Sources */,
 				0B1A681EDE128B091E0F3D0A /* ProgramScreen.swift in Sources */,
 				E7BE2CA1E47167C6F824AB9C /* ScoreStore.swift in Sources */,
 				B12D37A485EBAA231EB4D098 /* SeededGenerator.swift in Sources */,
@@ -408,6 +470,7 @@
 				502905C6C41A854C9430081E /* TerminalView.swift in Sources */,
 				36EFF4BB59DBC4F7D05947EE /* Theme.swift in Sources */,
 				FF33AEF2E6D6425BAC424758 /* TitleBar.swift in Sources */,
+				0C84A35AB7CEB3C5AB8B661F /* WelcomeView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -416,6 +479,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2810453111ED8D1322AC5B46 /* ConsoleAndScoreTests.swift in Sources */,
+				C4D4447A35D7D7F104D80ADD /* CustomisationTests.swift in Sources */,
 				F483F3326FD188AAA14637D5 /* PixelEscapeGameTests.swift in Sources */,
 				3428DABF0C62D4A6BA086937 /* ProgramAndSessionTests.swift in Sources */,
 			);
@@ -425,6 +489,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EBD939ADE8D7937D2F432772 /* AppIconSwitcher.swift in Sources */,
 				EDE51FA6B67E6F96E972DACA /* BootScript.swift in Sources */,
 				82B9B4BB08FD83C2DF2A79F2 /* ConsoleBuffer.swift in Sources */,
 				912205D269E629FAABCA1951 /* ConsoleView.swift in Sources */,
@@ -433,6 +498,8 @@
 				7578C46C3CAD78BA8999772E /* PixelEscapeGame.swift in Sources */,
 				C1D82CDBAEFCE428DDF9C9C7 /* PixlyApp.swift in Sources */,
 				7B215231AFDB74D240CCCA34 /* PixlyProgram.swift in Sources */,
+				21F6BE8C6318A462CB603521 /* PixlyTheme.swift in Sources */,
+				A275D000E1C74279E7DF8117 /* Preferences.swift in Sources */,
 				5D0439886A91B3955B7E904A /* ProgramScreen.swift in Sources */,
 				C8AA450F02FD203BA58F3333 /* ScoreStore.swift in Sources */,
 				7D42B7E16E3DA1989A04E072 /* SeededGenerator.swift in Sources */,
@@ -442,6 +509,7 @@
 				3933FD2184195F00BADAD3D9 /* TerminalView.swift in Sources */,
 				D86223A90A66B155A384CD18 /* Theme.swift in Sources */,
 				010E58DAF66FDC59A177F1BC /* TitleBar.swift in Sources */,
+				9B4B370B67FA74C625688C47 /* WelcomeView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -562,6 +630,7 @@
 		755D850FC1115E7E415DD5D7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = "AppIcon-Phosphor AppIcon-Amber AppIcon-Light";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Pixly/Pixly.entitlements;
@@ -580,6 +649,7 @@
 		7981B2B430132484B28040C1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = "AppIcon-Phosphor AppIcon-Amber AppIcon-Light";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Pixly/Pixly.entitlements;

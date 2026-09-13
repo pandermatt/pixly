@@ -2,35 +2,23 @@ import Foundation
 import Observation
 import QuartzCore
 
-/// The original offered CP437 characters 254, 1 and 3; the rest are more glyphs from that set.
+/// Avatars drawn with CP437 glyphs, as in the original's "Avatar wechseln" menu.
 enum Avatar: String, CaseIterable, Sendable {
-    case pixel, smiley, heart, darkSmiley, diamond, club, spade, sun, note
+    case pixel, heart, diamond
 
     var glyph: Character {
         switch self {
         case .pixel: "■"
-        case .smiley: "☺\u{FE0E}"
         case .heart: "♥\u{FE0E}"
-        case .darkSmiley: "☻\u{FE0E}"
         case .diamond: "♦\u{FE0E}"
-        case .club: "♣\u{FE0E}"
-        case .spade: "♠\u{FE0E}"
-        case .sun: "☼\u{FE0E}"
-        case .note: "♪\u{FE0E}"
         }
     }
 
     var title: String {
         switch self {
         case .pixel: "Pixel"
-        case .smiley: "Smiley"
         case .heart: "Heart"
-        case .darkSmiley: "Dark Smiley"
         case .diamond: "Diamond"
-        case .club: "Club"
-        case .spade: "Spade"
-        case .sun: "Sun"
-        case .note: "Note"
         }
     }
 }
@@ -40,20 +28,53 @@ enum Avatar: String, CaseIterable, Sendable {
 @Observable @MainActor
 final class PixlyProgram {
     enum Screen: Equatable, Sendable {
-        case loading, menu, avatar, playing, saveScore, scoreTable, credits, finished
+        case loading, menu, avatar, settings, theme, appIcon, playing, saveScore, scoreTable, credits, finished
     }
 
+    /// A centred list of entries. Submenus end with an empty line and "Back".
     struct Menu: Sendable {
         let title: String
         let items: [String]
         let firstRow: Int
+        var hasBack = false
+
+        /// Number of selectable entries, including Back.
+        var count: Int { items.count + (hasBack ? 1 : 0) }
+
+        func isBack(_ selection: Int) -> Bool {
+            hasBack && selection == items.count + 1
+        }
+
+        func label(_ selection: Int) -> String {
+            isBack(selection) ? "Back" : items[selection - 1]
+        }
+
+        func row(for selection: Int) -> Int {
+            isBack(selection) ? firstRow + items.count + 1 : firstRow + selection - 1
+        }
+
+        func selection(atRow row: Int) -> Int? {
+            if (firstRow..<firstRow + items.count).contains(row) { return row - firstRow + 1 }
+            if hasBack, row == firstRow + items.count + 1 { return items.count + 1 }
+            return nil
+        }
     }
 
-    static let mainMenu = Menu(title: "", items: ["New Game", "Highscore", "Change Avatar", "Credits", "Quit"], firstRow: 10)
-    static let avatarMenu = Menu(title: "Avatar", items: Avatar.allCases.map(\.title), firstRow: 12)
+    enum Key: Equatable, Sendable {
+        case space, up, down, enter, escape, backspace
+        case character(String)
+    }
+
+    static let mainMenu = Menu(title: "", items: ["New Game", "Highscore", "Change Avatar", "Settings", "Credits", "Quit"], firstRow: 10)
+    static let avatarMenu = Menu(title: "Avatar", items: Avatar.allCases.map(\.title), firstRow: 12, hasBack: true)
     private static let pressAnyKey = "Press any key to continue . . ."
-    private static let pressEnter = "Press enter to continue"
-    private static let avatarKey = "avatar"
+    #if os(macOS)
+    private static let continueHint = "Press enter to continue"
+    #else
+    private static let continueHint = "Tap here or press enter to continue"
+    #endif
+    private static let saveBarRow = 17
+    private static let nameRow = 16
 
     private(set) var console = ConsoleBuffer()
     private(set) var screen = Screen.loading
@@ -62,15 +83,18 @@ final class PixlyProgram {
     private(set) var jumpCount = 0
     private(set) var nameInput = ""
     private(set) var isTypingName = false
-    private(set) var avatar: Avatar
+    /// The name dialog is open (touch devices, where typing into the console is too small to see).
+    var isEditingName = false
+    var draftName = ""
     private(set) var scores: ScoreStore
     @ObservationIgnored private(set) var game = PixelEscapeGame()
+    @ObservationIgnored private(set) var iconTask: Task<Void, Never>?
 
+    @ObservationIgnored let preferences: Preferences
     @ObservationIgnored var playerAlias: @MainActor () -> String? = { nil }
     @ObservationIgnored var onScore: @MainActor (Int) -> Void = { _ in }
     @ObservationIgnored var onQuit: @MainActor (TimeInterval) -> Void = { _ in }
 
-    @ObservationIgnored private let defaults: UserDefaults
     @ObservationIgnored private let loadingStep: Duration
     @ObservationIgnored private let startDate = Date()
     @ObservationIgnored private var ticker: DisplayLinkTicker?
@@ -79,13 +103,17 @@ final class PixlyProgram {
     @ObservationIgnored private var nameTask: Task<Void, Never>?
     @ObservationIgnored private var pendingName = ""
     @ObservationIgnored private var saveScoreBar = ConsoleColor.green
+    @ObservationIgnored private var iconStatus: String?
     @ObservationIgnored private var isTerminated = false
 
-    init(defaults: UserDefaults = .standard, loadingStep: Duration = .milliseconds(12)) {
-        self.defaults = defaults
+    init(preferences: Preferences, defaults: UserDefaults = .standard, loadingStep: Duration = .milliseconds(12)) {
+        self.preferences = preferences
         self.loadingStep = loadingStep
         scores = ScoreStore(defaults: defaults)
-        avatar = defaults.string(forKey: Self.avatarKey).flatMap(Avatar.init(rawValue:)) ?? .pixel
+    }
+
+    var avatar: Avatar {
+        preferences.avatar
     }
 
     var runtime: TimeInterval {
@@ -96,8 +124,28 @@ final class PixlyProgram {
         switch screen {
         case .menu: Self.mainMenu
         case .avatar: Self.avatarMenu
+        case .settings: settingsMenu
+        case .theme: choiceMenu(title: "Theme", current: preferences.theme)
+        case .appIcon: choiceMenu(title: "App Icon", current: preferences.appIcon)
         default: nil
         }
+    }
+
+    private var settingsMenu: Menu {
+        Menu(
+            title: "Settings",
+            items: [
+                "Theme: \(preferences.theme.title)",
+                "App Icon: \(preferences.appIcon.title)",
+                "Scanlines: \(preferences.scanlines ? "On" : "Off")",
+            ],
+            firstRow: 11,
+            hasBack: true
+        )
+    }
+
+    private func choiceMenu(title: String, current: ThemeID) -> Menu {
+        Menu(title: title, items: ThemeID.allCases.map { $0 == current ? "\($0.title) (current)" : $0.title }, firstRow: 12, hasBack: true)
     }
 
     // MARK: - Lifecycle
@@ -113,6 +161,8 @@ final class PixlyProgram {
         isTerminated = true
         stopTicker()
         nameTask?.cancel()
+        iconTask?.cancel()
+        preferences.previewTheme = nil
         screen = .finished
     }
 
@@ -121,25 +171,31 @@ final class PixlyProgram {
     /// A touch landed on the console (or outside the grid when `cell` is nil).
     func press(at cell: (x: Int, y: Int)?) {
         switch screen {
-        case .menu, .avatar:
-            guard let cell, let menu = currentMenu else { return }
-            let index = cell.y - menu.firstRow
-            guard menu.items.indices.contains(index) else { return }
-            selection = index + 1
-            drawMenu(menu)
+        case .menu, .avatar, .settings, .theme, .appIcon:
+            guard let cell, let menu = currentMenu, let choice = menu.selection(atRow: cell.y) else { return }
+            selection = choice
+            selectionDidChange(menu)
             confirm()
         case .playing:
             jump()
+        case .saveScore:
+            // The bottom bar doubles as a button, so the window can be closed without a keyboard.
+            if let cell, cell.y == Self.saveBarRow, (20..<60).contains(cell.x), !isTypingName {
+                saveScore()
+            } else if let cell, cell.y == Self.nameRow, (20..<60).contains(cell.x) {
+                #if os(macOS)
+                showContinueHint()
+                #else
+                beginEditingName()
+                #endif
+            } else {
+                showContinueHint()
+            }
         case .scoreTable, .credits:
             showMainMenu()
-        case .loading, .saveScore, .finished:
+        case .loading, .finished:
             break
         }
-    }
-
-    enum Key: Equatable, Sendable {
-        case space, up, down, enter, backspace
-        case character(String)
     }
 
     /// Keyboard input, like the `_getch()` loops in main.c and score.c.
@@ -148,10 +204,12 @@ final class PixlyProgram {
         switch key {
         case .enter:
             if !isRepeat { confirm() }
+        case .escape:
+            if !isRepeat { goBack() }
         case .space:
             switch screen {
             case .playing: jump()
-            case .menu, .avatar, .scoreTable, .credits: if !isRepeat { confirm() }
+            case .menu, .avatar, .settings, .theme, .appIcon, .scoreTable, .credits: if !isRepeat { confirm() }
             // Space selects everywhere except here, where only Enter may close the window.
             case .saveScore: showContinueHint()
             case .loading, .finished: break
@@ -178,26 +236,53 @@ final class PixlyProgram {
         }
     }
 
+    /// The pointer moved over the console: an entry under it becomes the selection.
+    func hover(at cell: (x: Int, y: Int)) {
+        guard let menu = currentMenu, let choice = menu.selection(atRow: cell.y), choice != selection else { return }
+        let target = "> \(menu.label(choice)) <"
+        let start = ConsoleBuffer.centeredX(target)
+        guard (start..<start + target.count).contains(cell.x) else { return }
+        selection = choice
+        selectionDidChange(menu)
+    }
+
     func moveSelection(_ delta: Int) {
         guard let menu = currentMenu else { return }
-        selection = min(max(selection + delta, 1), menu.items.count)
-        drawMenu(menu)
+        selection = min(max(selection + delta, 1), menu.count)
+        selectionDidChange(menu)
     }
 
     func confirm() {
+        if let menu = currentMenu, menu.isBack(selection) {
+            goBack()
+            return
+        }
         switch screen {
         case .menu:
             switch selection {
             case 1: startGame()
             case 2: showScoreTable()
             case 3: showAvatarMenu()
-            case 4: showCredits()
+            case 4: showSettings()
+            case 5: showCredits()
             default: quit()
             }
         case .avatar:
-            avatar = Avatar.allCases[selection - 1]
-            defaults.set(avatar.rawValue, forKey: Self.avatarKey)
-            showMainMenu()
+            preferences.setAvatar(Avatar.allCases[selection - 1])
+            showMainMenu(selection: 3)
+        case .settings:
+            switch selection {
+            case 1: showChoiceMenu(.theme, current: preferences.theme)
+            case 2: showChoiceMenu(.appIcon, current: preferences.appIcon)
+            default:
+                preferences.setScanlines(!preferences.scanlines)
+                drawMenu(settingsMenu)
+            }
+        case .theme:
+            preferences.setTheme(ThemeID.allCases[selection - 1])
+            showSettings(selection: 1)
+        case .appIcon:
+            applyIcon(ThemeID.allCases[selection - 1])
         case .saveScore:
             saveScore()
         case .scoreTable, .credits:
@@ -237,6 +322,26 @@ final class PixlyProgram {
         drawName()
     }
 
+    /// Opens the name dialog with the name typed so far (finishing the Game Center alias first).
+    func beginEditingName() {
+        guard screen == .saveScore else { return }
+        if isTypingName {
+            nameInput = pendingName
+            drawName()
+        }
+        stopTypingName()
+        draftName = nameInput
+        isEditingName = true
+    }
+
+    /// Closes the name dialog; saving takes the name and stores the score in one step.
+    func finishEditingName(save: Bool) {
+        isEditingName = false
+        guard save, screen == .saveScore else { return }
+        setName(draftName)
+        saveScore()
+    }
+
     func saveScore() {
         guard screen == .saveScore else { return }
         if isTypingName {
@@ -245,6 +350,37 @@ final class PixlyProgram {
         stopTypingName()
         scores.add(name: nameInput, score: game.score)
         showMainMenu()
+    }
+
+    private func goBack() {
+        switch screen {
+        case .avatar: showMainMenu(selection: 3)
+        case .settings: showMainMenu(selection: 4)
+        case .theme: showSettings(selection: 1)
+        case .appIcon: showSettings(selection: 2)
+        case .scoreTable, .credits: showMainMenu()
+        default: break
+        }
+    }
+
+    private func selectionDidChange(_ menu: Menu) {
+        if screen == .theme {
+            preferences.previewTheme = menu.isBack(selection) ? nil : ThemeID.allCases[selection - 1]
+        }
+        drawMenu(menu)
+    }
+
+    private func applyIcon(_ icon: ThemeID) {
+        iconTask?.cancel()
+        iconTask = Task { [weak self] in
+            guard let self else { return }
+            let applied = await self.preferences.setAppIcon(icon)
+            guard !Task.isCancelled, self.screen == .appIcon else { return }
+            self.iconStatus = applied ? "App icon set to \(icon.title)" : "Not supported on this device"
+            if let menu = self.currentMenu {
+                self.drawMenu(menu)
+            }
+        }
     }
 
     // MARK: - Game loop
@@ -300,7 +436,8 @@ final class PixlyProgram {
     // MARK: - Screens
 
     private func showLoading(title: String, ascii: Character) async {
-        // The 30-cell bar spans columns 25–54; title and a fixed-width "[ 84%]" share its centre.
+        // The 30-cell bar spans columns 25–54. The fixed-width "[ 84%]" starts one cell left of
+        // the title, so its visible digits sit under the middle of the bar.
         screen = .loading
         draw { c in
             c.textcolor(.white, .black)
@@ -318,7 +455,7 @@ final class PixlyProgram {
             }
             let label = "[" + pad(String(percent), 3) + "%]"
             draw { c in
-                c.gotoxy(37, 13)
+                c.gotoxy(36, 13)
                 c.textcolor(.white, .black)
                 c.write(label)
                 c.gotoxy(25 + percent * 29 / 100, 14)
@@ -327,9 +464,10 @@ final class PixlyProgram {
         }
     }
 
-    private func showMainMenu() {
+    private func showMainMenu(selection: Int = 1) {
+        preferences.previewTheme = nil
         screen = .menu
-        selection = 1
+        self.selection = selection
         let glyph = avatar.glyph
         draw { c in
             c.textcolor(.white, .black)
@@ -343,18 +481,39 @@ final class PixlyProgram {
     private func showAvatarMenu() {
         screen = .avatar
         selection = (Avatar.allCases.firstIndex(of: avatar) ?? 0) + 1
-        draw { c in
-            c.textcolor(.white, .black)
-            c.clrscr()
-        }
+        clearScreen()
         drawMenu(Self.avatarMenu)
     }
 
+    private func showSettings(selection: Int = 1) {
+        preferences.previewTheme = nil
+        screen = .settings
+        self.selection = selection
+        clearScreen()
+        drawMenu(settingsMenu)
+    }
+
+    private func showChoiceMenu(_ screen: Screen, current: ThemeID) {
+        self.screen = screen
+        selection = (ThemeID.allCases.firstIndex(of: current) ?? 0) + 1
+        iconStatus = nil
+        clearScreen()
+        if let menu = currentMenu {
+            drawMenu(menu)
+        }
+    }
+
     /// Entries are centred like in main.c; the selection is white with a symmetric marker,
-    /// the rest dark grey. The avatar menu also previews the highlighted avatar.
+    /// the rest dark grey. Avatar and theme menus preview the choice in a strip of tunnel.
     private func drawMenu(_ menu: Menu) {
         let selection = selection
-        let preview = screen == .avatar ? Avatar.allCases[selection - 1].glyph : nil
+        let screen = screen
+        let preview: Character? = switch screen {
+        case .avatar: menu.isBack(selection) ? avatar.glyph : Avatar.allCases[selection - 1].glyph
+        case .theme: avatar.glyph
+        default: nil
+        }
+        let status = iconStatus
         draw { c in
             c.textcolor(.white, .black)
             c.gotoxy(ConsoleBuffer.centeredX(menu.title), 5)
@@ -366,6 +525,20 @@ final class PixlyProgram {
                     c.gotoxy(32, y)
                     c.write(String(repeating: " ", count: 16))
                 }
+                if screen == .theme {
+                    // Wall notches and the red bar, so the theme's game colours show too.
+                    c.textcolor(.black, .black)
+                    c.gotoxy(32, 7)
+                    c.write("   ")
+                    c.gotoxy(45, 9)
+                    c.write("   ")
+                    c.textcolor(.red, .red)
+                    c.gotoxy(43, 7)
+                    c.write(" ")
+                    c.gotoxy(43, 8)
+                    c.write(" ")
+                    c.textcolor(.black, .white)
+                }
                 for (index, row) in [9, 9, 8, 8].enumerated() {
                     c.gotoxy(36 + index, row)
                     c.write(".")
@@ -373,16 +546,31 @@ final class PixlyProgram {
                 c.gotoxy(40, 8)
                 c.write(String(preview))
             }
-            for (index, item) in menu.items.enumerated() {
-                let row = menu.firstRow + index
-                let isSelected = index + 1 == selection
-                let text = isSelected ? "> \(item) <" : item
+            for choice in 1...menu.count {
+                let row = menu.row(for: choice)
+                let isSelected = choice == selection
+                let text = isSelected ? "> \(menu.label(choice)) <" : menu.label(choice)
                 c.textcolor(.white, .black)
                 c.gotoxy(1, row)
                 c.write(String(repeating: " ", count: ConsoleBuffer.columns))
                 c.textcolor(isSelected ? .white : .darkGray, .black)
                 c.gotoxy(ConsoleBuffer.centeredX(text), row)
                 c.write(text)
+            }
+            if screen == .appIcon {
+                c.textcolor(.white, .black)
+                c.gotoxy(1, 19)
+                c.write(String(repeating: " ", count: ConsoleBuffer.columns))
+                if let status {
+                    c.gotoxy(ConsoleBuffer.centeredX(status), 19)
+                    c.write(status)
+                }
+                #if os(macOS)
+                let note = "On the Mac the icon changes in the Dock while Pixly runs"
+                c.textcolor(.darkGray, .black)
+                c.gotoxy(ConsoleBuffer.centeredX(note), 21)
+                c.write(note)
+                #endif
             }
         }
     }
@@ -475,13 +663,13 @@ final class PixlyProgram {
         }
     }
 
-    /// Written into the bottom bar of the save-score window when space is pressed.
+    /// Written into the bottom bar of the save-score window when space (or a stray tap) is pressed.
     private func showContinueHint() {
         let bar = saveScoreBar
         draw { c in
             c.textcolor(.white, bar)
-            c.gotoxy(ConsoleBuffer.centeredX(Self.pressEnter), 17)
-            c.write(Self.pressEnter)
+            c.gotoxy(ConsoleBuffer.centeredX(Self.continueHint), Self.saveBarRow)
+            c.write(Self.continueHint)
         }
     }
 
@@ -540,6 +728,13 @@ final class PixlyProgram {
                 c.gotoxy(ConsoleBuffer.centeredX(text), 25)
                 c.write(text)
             }
+        }
+    }
+
+    private func clearScreen() {
+        draw { c in
+            c.textcolor(.white, .black)
+            c.clrscr()
         }
     }
 
