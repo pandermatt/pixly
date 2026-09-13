@@ -14,20 +14,38 @@ struct PixlyProgramTests {
         await program.run()
         #expect(program.screen == .menu)
         #expect(program.console[40, 8].character == Avatar.pixel.glyph)
-        #expect(row(10, of: program) == "> New Game")
+        #expect(row(10, of: program) == "> New Game <")
         #expect(program.console[36, 10].foreground == .white)
         #expect(row(11, of: program) == "Highscore")
-        #expect(program.console[34, 11].foreground == .darkGray)
+        #expect(program.console[36, 11].foreground == .darkGray)
     }
 
-    @Test func menuEntriesShareOneLeftEdge() async throws {
+    @Test func menuEntriesAreCentred() async throws {
         let program = try makeProgram()
         await program.run()
-        let starts = (10...14).map { y in (1...80).first { program.console[$0, y].character != " " && program.console[$0, y].character != ">" } }
-        #expect(Set(starts).count == 1)
         program.moveSelection(1)
         #expect(row(10, of: program) == "New Game")
-        #expect(row(11, of: program) == "> Highscore")
+        #expect(row(11, of: program) == "> Highscore <")
+        for y in 10...14 {
+            let used = (1...80).filter { program.console[$0, y].character != " " }
+            let centre = Double(used.first! + used.last!) / 2
+            #expect(abs(centre - 39.5) <= 0.5)
+        }
+    }
+
+    @Test func avatarMenuPreviewsTheHighlightedAvatar() async throws {
+        let program = try makeProgram()
+        await program.run()
+        program.moveSelection(2)
+        program.handle(.space)
+        #expect(program.screen == .avatar)
+        #expect(program.console[40, 8] == .init(character: Avatar.pixel.glyph, foreground: .black, background: .white))
+        program.handle(.down)
+        #expect(program.console[40, 8].character == Avatar.smiley.glyph)
+        #expect(row(13, of: program) == "> Smiley <")
+        program.handle(.space)
+        #expect(program.avatar == .smiley)
+        #expect(program.screen == .menu)
     }
 
     private func row(_ y: Int, of program: PixlyProgram) -> String {
@@ -74,6 +92,40 @@ struct PixlyProgramTests {
         #expect(program.screen == .menu)
         #expect(!program.isTypingName)
         #expect(program.scores.entries.first?.name == "Pandermatt")
+    }
+
+    @Test func keyboardDrivesMenusAndNameEntry() async throws {
+        let program = try makeProgram()
+        await program.run()
+        program.handle(.down)
+        #expect(program.selection == 2)
+        program.handle(.space)
+        #expect(program.screen == .scoreTable)
+        program.handle(.space)
+        #expect(program.screen == .menu)
+        program.handle(.enter)
+        #expect(program.screen == .playing)
+
+        var ticks = 0
+        while program.screen == .playing, ticks < 2000 {
+            program.advance()
+            ticks += 1
+        }
+        program.handle(.space)
+        #expect(program.screen == .saveScore)
+        #expect(row(17, of: program).contains("Press enter to continue"))
+
+        program.setName("Pix")
+        program.handle(.character("l"))
+        program.handle(.character("y"))
+        program.handle(.character("!"))
+        program.handle(.space)
+        #expect(program.screen == .saveScore)
+        #expect(program.nameInput == "Pixly!")
+        program.handle(.backspace)
+        program.handle(.enter)
+        #expect(program.screen == .menu)
+        #expect(program.scores.entries.first?.name == "Pixly")
     }
 
     @Test func changingTheAvatar() async throws {

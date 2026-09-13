@@ -1,4 +1,7 @@
 import SwiftUI
+#if os(macOS)
+import AppKit
+#endif
 
 /// Hosts the running C program: the 80×25 console, plus contextual Liquid Glass keys on iOS.
 /// On the Mac the real keyboard is the only input: arrows, Return, space, q and ⌃C.
@@ -11,8 +14,12 @@ struct ProgramScreen: View {
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.displayScale) private var displayScale
     @State private var isPressing = false
+    #if os(macOS)
+    @State private var keyMonitor = KeyDownMonitor()
+    #else
     @FocusState private var nameFieldFocused: Bool
     @FocusState private var keysFocused: Bool
+    #endif
 
     private var windowShape: RoundedRectangle {
         RoundedRectangle(cornerRadius: isLandscape ? 18 : 24, style: .continuous)
@@ -30,17 +37,28 @@ struct ProgramScreen: View {
                 .frame(width: isLandscape ? 132 : nil)
             #endif
         }
+        #if os(macOS)
+        // SwiftUI focus doesn't reach a freshly shown view until it is clicked, which made
+        // the arrow keys beep. A local monitor sees every key while the program is on screen.
+        .onAppear { keyMonitor.start(handleKeyDown) }
+        .onDisappear { keyMonitor.stop() }
+        #else
         .background(alignment: .topLeading) { nameField }
         .focusable()
         .focused($keysFocused)
         .focusEffectDisabled()
-        .onKeyPress(phases: [.down, .repeat], action: handleKey)
+        .onKeyPress(phases: [.down, .repeat], action: handleKeyPress)
         .onAppear { keysFocused = true }
+        .onChange(of: program.screen) { _, screen in
+            if screen != .saveScore {
+                nameFieldFocused = false
+                keysFocused = true
+            }
+        }
+        #endif
         .onChange(of: scenePhase) { _, phase in
             if phase != .active { program.pause() }
         }
-        .onChange(of: program.screen) { updateFocus() }
-        .onChange(of: program.isTypingName) { updateFocus() }
         .sensoryFeedback(.impact(weight: .light, intensity: 0.7), trigger: program.jumpCount)
         .sensoryFeedback(trigger: program.screen) { old, new in
             old == .playing && new == .saveScore ? .error : nil
@@ -69,7 +87,46 @@ struct ProgramScreen: View {
         .accessibilityLabel("Pixly console")
     }
 
-    #if os(iOS)
+    #if os(macOS)
+    /// Returns whether the event was used. Command shortcuts (⌘Q, ⌘W…) always pass through.
+    private func handleKeyDown(_ event: NSEvent) -> Bool {
+        let flags = event.modifierFlags.intersection(.deviceIndependentFlagsMask)
+        if flags.contains(.command) { return false }
+        if flags.contains(.control) {
+            guard event.charactersIgnoringModifiers?.lowercased() == "c" else { return false }
+            onInterrupt()
+            return true
+        }
+        let key: PixlyProgram.Key = switch event.keyCode {
+        case 49: .space
+        case 126: .up
+        case 125: .down
+        case 36, 76: .enter
+        case 51: .backspace
+        default: .character(event.characters ?? "")
+        }
+        program.handle(key, isRepeat: event.isARepeat)
+        return true
+    }
+    #else
+    private func handleKeyPress(_ press: KeyPress) -> KeyPress.Result {
+        if press.modifiers.contains(.control), press.key.character == "c" || press.characters == "\u{3}" {
+            onInterrupt()
+            return .handled
+        }
+        guard !press.modifiers.contains(.command) else { return .ignored }
+        let key: PixlyProgram.Key = switch press.key {
+        case .space: .space
+        case .upArrow: .up
+        case .downArrow: .down
+        case .return: .enter
+        case .delete: .backspace
+        default: .character(press.characters)
+        }
+        program.handle(key, isRepeat: press.phase == .repeat)
+        return .handled
+    }
+
     private var controls: some View {
         GlassEffectContainer(spacing: 10) {
             let stack = isLandscape ? AnyLayout(VStackLayout(spacing: 10)) : AnyLayout(HStackLayout(spacing: 10))
@@ -118,17 +175,11 @@ struct ProgramScreen: View {
             button.buttonStyle(.glass)
         }
     }
-    #endif
 
     private var nameField: some View {
         TextField("", text: Binding(get: { program.nameInput }, set: { program.setName($0) }))
             .focused($nameFieldFocused)
-            #if os(iOS)
             .textInputAutocapitalization(.words)
-            #else
-            .textFieldStyle(.plain)
-            .focusEffectDisabled()
-            #endif
             .autocorrectionDisabled()
             .submitLabel(.done)
             .onSubmit { program.saveScore() }
@@ -136,50 +187,26 @@ struct ProgramScreen: View {
             .opacity(0.01)
             .allowsHitTesting(false)
     }
+    #endif
+}
 
-    private func updateFocus() {
-        guard program.screen == .saveScore else {
-            nameFieldFocused = false
-            keysFocused = true
-            return
+#if os(macOS)
+@MainActor
+final class KeyDownMonitor {
+    private var token: Any?
+
+    func start(_ handler: @escaping @MainActor (NSEvent) -> Bool) {
+        stop()
+        token = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
+            MainActor.assumeIsolated { handler(event) } ? nil : event
         }
-        #if os(macOS)
-        // Only hand the keyboard to the name once auto-typing is done, so a space still held
-        // from the last jump can't land in (or interrupt) the name.
-        if !program.isTypingName { nameFieldFocused = true }
-        #endif
     }
 
-    private func handleKey(_ press: KeyPress) -> KeyPress.Result {
-        if press.modifiers.contains(.control), press.key.character == "c" || press.characters == "\u{3}" {
-            onInterrupt()
-            return .handled
+    func stop() {
+        if let token {
+            NSEvent.removeMonitor(token)
         }
-        let isDown = press.phase == .down
-        switch press.key {
-        case .space:
-            // Space jumps; it never confirms, so it can't dismiss the save-score window.
-            switch program.screen {
-            case .playing:
-                program.jump()
-            case .scoreTable, .credits:
-                if isDown { program.confirm() }
-            default:
-                return .ignored
-            }
-        case .upArrow:
-            program.moveSelection(-1)
-        case .downArrow:
-            program.moveSelection(1)
-        case .return:
-            if isDown { program.confirm() }
-        case "q" where program.screen == .playing:
-            program.quitGame()
-        default:
-            // system("PAUSE"): any key continues from the tables.
-            guard isDown, program.screen == .scoreTable || program.screen == .credits else { return .ignored }
-            program.confirm()
-        }
-        return .handled
+        token = nil
     }
 }
+#endif

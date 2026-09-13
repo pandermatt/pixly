@@ -2,14 +2,21 @@ import Foundation
 import Observation
 import QuartzCore
 
+/// The original offered CP437 characters 254, 1 and 3; the rest are more glyphs from that set.
 enum Avatar: String, CaseIterable, Sendable {
-    case pixel, smiley, heart
+    case pixel, smiley, heart, darkSmiley, diamond, club, spade, sun, note
 
     var glyph: Character {
         switch self {
         case .pixel: "■"
         case .smiley: "☺\u{FE0E}"
         case .heart: "♥\u{FE0E}"
+        case .darkSmiley: "☻\u{FE0E}"
+        case .diamond: "♦\u{FE0E}"
+        case .club: "♣\u{FE0E}"
+        case .spade: "♠\u{FE0E}"
+        case .sun: "☼\u{FE0E}"
+        case .note: "♪\u{FE0E}"
         }
     }
 
@@ -18,6 +25,12 @@ enum Avatar: String, CaseIterable, Sendable {
         case .pixel: "Pixel"
         case .smiley: "Smiley"
         case .heart: "Heart"
+        case .darkSmiley: "Dark Smiley"
+        case .diamond: "Diamond"
+        case .club: "Club"
+        case .spade: "Spade"
+        case .sun: "Sun"
+        case .note: "Note"
         }
     }
 }
@@ -37,8 +50,9 @@ final class PixlyProgram {
     }
 
     static let mainMenu = Menu(title: "", items: ["New Game", "Highscore", "Change Avatar", "Credits", "Quit"], firstRow: 10)
-    static let avatarMenu = Menu(title: "Avatar", items: Avatar.allCases.map(\.title), firstRow: 11)
+    static let avatarMenu = Menu(title: "Avatar", items: Avatar.allCases.map(\.title), firstRow: 12)
     private static let pressAnyKey = "Press any key to continue . . ."
+    private static let pressEnter = "Press enter to continue"
     private static let avatarKey = "avatar"
 
     private(set) var console = ConsoleBuffer()
@@ -64,6 +78,7 @@ final class PixlyProgram {
     @ObservationIgnored private var accumulator = 0.0
     @ObservationIgnored private var nameTask: Task<Void, Never>?
     @ObservationIgnored private var pendingName = ""
+    @ObservationIgnored private var saveScoreBar = ConsoleColor.green
     @ObservationIgnored private var isTerminated = false
 
     init(defaults: UserDefaults = .standard, loadingStep: Duration = .milliseconds(12)) {
@@ -119,6 +134,47 @@ final class PixlyProgram {
             showMainMenu()
         case .loading, .saveScore, .finished:
             break
+        }
+    }
+
+    enum Key: Equatable, Sendable {
+        case space, up, down, enter, backspace
+        case character(String)
+    }
+
+    /// Keyboard input, like the `_getch()` loops in main.c and score.c.
+    func handle(_ key: Key, isRepeat: Bool = false) {
+        let editsName = screen == .saveScore && !isTypingName
+        switch key {
+        case .enter:
+            if !isRepeat { confirm() }
+        case .space:
+            switch screen {
+            case .playing: jump()
+            case .menu, .avatar, .scoreTable, .credits: if !isRepeat { confirm() }
+            // Space selects everywhere except here, where only Enter may close the window.
+            case .saveScore: showContinueHint()
+            case .loading, .finished: break
+            }
+        case .up:
+            moveSelection(-1)
+        case .down:
+            moveSelection(1)
+        case .backspace:
+            if editsName { setName(String(nameInput.dropLast())) }
+        case .character(let text):
+            switch screen {
+            case .playing where text.lowercased() == "q":
+                quitGame()
+            case .saveScore where editsName:
+                let printable = text.filter { $0.isLetter || $0.isNumber || $0.isPunctuation || $0.isSymbol }
+                setName(nameInput + printable)
+            case .scoreTable, .credits:
+                // system("PAUSE"): any key continues.
+                if !isRepeat { confirm() }
+            default:
+                break
+            }
         }
     }
 
@@ -286,7 +342,7 @@ final class PixlyProgram {
 
     private func showAvatarMenu() {
         screen = .avatar
-        selection = 1
+        selection = (Avatar.allCases.firstIndex(of: avatar) ?? 0) + 1
         draw { c in
             c.textcolor(.white, .black)
             c.clrscr()
@@ -294,23 +350,39 @@ final class PixlyProgram {
         drawMenu(Self.avatarMenu)
     }
 
-    /// Unlike main.c, which centred every entry on its own, the entries share one left edge
-    /// (the block is centred) and the selection gets a marker, so the list reads cleanly.
+    /// Entries are centred like in main.c; the selection is white with a symmetric marker,
+    /// the rest dark grey. The avatar menu also previews the highlighted avatar.
     private func drawMenu(_ menu: Menu) {
         let selection = selection
-        let width = menu.items.map(\.count).max() ?? 0
-        let left = 40 - width / 2
+        let preview = screen == .avatar ? Avatar.allCases[selection - 1].glyph : nil
         draw { c in
             c.textcolor(.white, .black)
-            c.gotoxy(left, 5)
+            c.gotoxy(ConsoleBuffer.centeredX(menu.title), 5)
             c.write(menu.title)
+            if let preview {
+                // A strip of tunnel with the avatar and its trail, as it looks in the game.
+                c.textcolor(.black, .white)
+                for y in 7...9 {
+                    c.gotoxy(32, y)
+                    c.write(String(repeating: " ", count: 16))
+                }
+                for (index, row) in [9, 9, 8, 8].enumerated() {
+                    c.gotoxy(36 + index, row)
+                    c.write(".")
+                }
+                c.gotoxy(40, 8)
+                c.write(String(preview))
+            }
             for (index, item) in menu.items.enumerated() {
+                let row = menu.firstRow + index
                 let isSelected = index + 1 == selection
-                c.gotoxy(left - 2, menu.firstRow + index)
+                let text = isSelected ? "> \(item) <" : item
                 c.textcolor(.white, .black)
-                c.write(isSelected ? "> " : "  ")
+                c.gotoxy(1, row)
+                c.write(String(repeating: " ", count: ConsoleBuffer.columns))
                 c.textcolor(isSelected ? .white : .darkGray, .black)
-                c.write(item)
+                c.gotoxy(ConsoleBuffer.centeredX(text), row)
+                c.write(text)
             }
         }
     }
@@ -353,6 +425,7 @@ final class PixlyProgram {
     private func showSaveScore(score: Int) {
         screen = .saveScore
         let isHighscore = score > scores.best
+        saveScoreBar = isHighscore ? .green : .lightRed
         draw { c in
             for y in 8..<18 {
                 let isBar = y > 16 || y < 9
@@ -399,6 +472,16 @@ final class PixlyProgram {
             }
             guard !Task.isCancelled else { return }
             self?.isTypingName = false
+        }
+    }
+
+    /// Written into the bottom bar of the save-score window when space is pressed.
+    private func showContinueHint() {
+        let bar = saveScoreBar
+        draw { c in
+            c.textcolor(.white, bar)
+            c.gotoxy(ConsoleBuffer.centeredX(Self.pressEnter), 17)
+            c.write(Self.pressEnter)
         }
     }
 
