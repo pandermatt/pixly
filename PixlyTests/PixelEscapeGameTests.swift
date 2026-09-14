@@ -4,7 +4,8 @@ import Testing
 struct PixelEscapeGameTests {
     @Test func startsLikeTheOriginal() {
         let game = PixelEscapeGame(seed: 1)
-        #expect(game.land.allSatisfy { $0 == 5 })
+        #expect(game.land.count == PixelEscapeGame.horizon)
+        #expect(game.land.prefix(80).allSatisfy { $0 == 5 })
         #expect(game.y == 13)
         #expect(game.tail == [13, 13, 13, 13])
         #expect(game.score == 0)
@@ -88,6 +89,32 @@ struct PixelEscapeGameTests {
         }
         #expect(game.isOver)
         #expect(game.score == ticks * 2)
+    }
+
+    @Test func theLandscapeAheadIsWhatScrollsIntoView() {
+        var game = PixelEscapeGame(seed: 5)
+        let ahead = Array(game.land[80..<120])
+        for _ in 0..<40 {
+            game.moveLandscape()
+        }
+        #expect(Array(game.land[40..<80]) == ahead)
+    }
+
+    @Test func barsOnTheirWayArriveAtColumnEightyAsPlanned() {
+        var game = PixelEscapeGame(seed: 5)
+        let coming = game.obstacles
+        #expect(coming.map(\.x) == [81, 161])
+
+        game.moveLandscape()
+        #expect(game.obstacleX == 80)
+        #expect(game.obstacleStart == coming[0].start)
+        #expect(game.obstacles.map(\.x) == [80, 160, 240])
+
+        for _ in 0..<80 {
+            game.moveLandscape()
+        }
+        #expect(game.obstacleX == 80)
+        #expect(game.obstacleStart == coming[1].start)
     }
 
     @Test func sameSeedSameLandscape() {

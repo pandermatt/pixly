@@ -26,6 +26,7 @@ struct WatchGameView: View {
             .overlay(alignment: .top) { scoreboard(game) }
             .overlay { message(game) }
             .modifier(WatchFeedback(game: game))
+            .modifier(WatchSounds(game: game))
     }
 
     /// The screen's clock drives the game's 20 ms ticks; the console is drawn stretched.
@@ -170,6 +171,23 @@ private struct WatchInput: ViewModifier {
             }
             .onEnded { _ in
                 isPressing = false
+            }
+    }
+}
+
+/// A chirp for every jump and a buzz for the crash, the same sounds as on the other devices.
+private struct WatchSounds: ViewModifier {
+    let game: QuickGame
+
+    func body(content: Content) -> some View {
+        content
+            .onChange(of: game.jumpCount) {
+                GameSound.jump.play()
+            }
+            .onChange(of: game.state) { old, new in
+                if old == .playing, new == .over {
+                    GameSound.crash.play()
+                }
             }
     }
 }

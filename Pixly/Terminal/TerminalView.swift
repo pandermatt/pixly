@@ -56,6 +56,10 @@ struct TerminalView: View {
             #if os(tvOS)
             // A running game fills the TV (each screen takes its colours to the edges).
             .padding(isRunning ? 0 : 12)
+            #elseif os(iOS)
+            // Pixly 2.0 fills the whole screen, around the Dynamic Island too.
+            .padding(.horizontal, smoothProgram == nil ? 12 : 0)
+            .padding(.vertical, smoothProgram == nil ? 6 : 0)
             #else
             .padding(.horizontal, smoothProgram == nil ? 12 : 4)
             .padding(.vertical, smoothProgram == nil ? 6 : 0)

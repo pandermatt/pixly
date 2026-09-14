@@ -61,6 +61,8 @@ final class PixlyProgram {
     private static let nameRow = 16
 
     private(set) var console = ConsoleBuffer()
+    /// The width the screen has room for; the console takes it on its next full redraw.
+    @ObservationIgnored private var columns = ConsoleBuffer.columns
     private(set) var screen = Screen.loading
     private(set) var selection = 1
     private(set) var isPaused = false
@@ -160,7 +162,9 @@ final class PixlyProgram {
     // MARK: - Input
 
     /// A touch landed on the console (or outside the grid when `cell` is nil).
-    func press(at cell: (x: Int, y: Int)?) {
+    func press(at screenCell: (x: Int, y: Int)?) {
+        // The original's screens are laid out on 80 columns, centred in a wider console.
+        let cell = screenCell.map { (x: $0.x - console.margin, y: $0.y) }
         switch screen {
         case .menu, .avatar, .settings, .theme, .appIcon:
             guard let cell, let menu = currentMenu, let choice = menu.selection(atRow: cell.y) else { return }
@@ -228,7 +232,8 @@ final class PixlyProgram {
     }
 
     /// The pointer moved over the console: an entry under it becomes the selection.
-    func hover(at cell: (x: Int, y: Int)) {
+    func hover(at screenCell: (x: Int, y: Int)) {
+        let cell = (x: screenCell.x - console.margin, y: screenCell.y)
         guard let menu = currentMenu, let choice = menu.selection(atRow: cell.y), choice != selection else { return }
         let target = "> \(menu.label(choice)) <"
         let start = ConsoleBuffer.centeredX(target)
@@ -690,13 +695,31 @@ final class PixlyProgram {
         }
     }
 
+    /// How many columns the screen has room for. Mac and Apple TV show more of the landscape when
+    /// wider; the game itself is the same (see `PixelEscapeGame.horizon`), so scores stay comparable.
+    func setColumns(_ columns: Int) {
+        let columns = min(max(columns, ConsoleBuffer.columns), PixelEscapeGame.horizon)
+        guard columns != self.columns else { return }
+        self.columns = columns
+        if screen == .playing {
+            renderGame()
+        } else if let menu = currentMenu {
+            clearScreen()
+            drawMenu(menu)
+        }
+    }
+
     private func renderGame() {
         let game = game
         let glyph = avatar.glyph
         let highscore = scores.highscore(game.score)
         let isPaused = isPaused
         let isWaitingToStart = isWaitingToStart
+        let columns = columns
         draw { c in
+            if c.width != columns {
+                c = ConsoleBuffer(columns: columns)
+            }
             c.drawTunnel(game, glyph: glyph)
             if isWaitingToStart {
                 // Written into the empty tunnel above the pixel, which starts on row 13.
@@ -707,12 +730,13 @@ final class PixlyProgram {
                 }
             }
 
+            // The score bar spans the whole width: the score on the left, the best on the right.
             c.textcolor(.white, .black)
-            c.gotoxy(1, 25)
-            c.write(String(repeating: " ", count: ConsoleBuffer.columns - 1))
-            c.gotoxy(2, 25)
+            c.gotoxy(fromLeft: 1, 25)
+            c.write(String(repeating: " ", count: c.width - 1))
+            c.gotoxy(fromLeft: 2, 25)
             c.write(String(game.score))
-            c.gotoxy(70, 25)
+            c.gotoxy(fromLeft: c.width - 10, 25)
             c.write(pad(String(highscore), 9))
             if isPaused {
                 #if os(macOS)
@@ -729,7 +753,11 @@ final class PixlyProgram {
     }
 
     private func clearScreen() {
+        let columns = columns
         draw { c in
+            if c.width != columns {
+                c = ConsoleBuffer(columns: columns)
+            }
             c.textcolor(.white, .black)
             c.clrscr()
         }

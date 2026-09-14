@@ -62,10 +62,12 @@
 		5FFBDF4ECF907B3DF26404AF /* AchievementTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33DF9EB038C87F70EA1C4A6F /* AchievementTests.swift */; };
 		609852917FB568F7DA8D1DC2 /* Achievement.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7E057A26D7CAADF8CDBED20 /* Achievement.swift */; };
 		60F50818DBB7153498C85B80 /* SmoothEscapeGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F28E01323BFC956862CFEC5 /* SmoothEscapeGame.swift */; };
+		61347D989E6845431E754A20 /* GameSound.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB133BFBD3D179317CE035FB /* GameSound.swift */; };
 		61705BC91745B56A4C824D04 /* PixlyTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85DFF56B067856A7B5F1847B /* PixlyTheme.swift */; };
 		62E707B5F84D10E90BC92C03 /* AppIcon-Amber.icon in Resources */ = {isa = PBXBuildFile; fileRef = 96E5E4BAF3A8F1F612CA87FF /* AppIcon-Amber.icon */; };
 		630E37DF5BBD427F6A6096EE /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 27F59BC3E82ED283831F2432 /* AppIcon.icon */; };
 		63DE6A26791B06C755BE9376 /* QuickGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 967E2FECCAC028A2F2E85946 /* QuickGame.swift */; };
+		64F4E97FA2A6F6CDA1EB29AF /* GameSound.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB133BFBD3D179317CE035FB /* GameSound.swift */; };
 		6BAC70145269DE454581A596 /* landscape.c.txt in Resources */ = {isa = PBXBuildFile; fileRef = AAC993534ADB27BEE5402856 /* landscape.c.txt */; };
 		6E44C3864C404D9AD6D0F26C /* BootScript.swift in Sources */ = {isa = PBXBuildFile; fileRef = 551EE7E95E573F4B991FDB64 /* BootScript.swift */; };
 		6EBEE355C09DB86C74CD9EE8 /* WatchGameUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A47EFB49C8A1A0FFCA944FE5 /* WatchGameUITests.swift */; };
@@ -120,6 +122,7 @@
 		B12D37A485EBAA231EB4D098 /* SeededGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 788A03B7F5F5BCF8F7920DCD /* SeededGenerator.swift */; };
 		B13A0FAB4044F1F51BCCDA34 /* WatchGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F41F03CEAB9619BB41B11D8A /* WatchGameView.swift */; };
 		B1783E274F30F7AEC1C23255 /* TitleBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33F1490A776311ED00BC9B51 /* TitleBar.swift */; };
+		B19ECAFCF7C9ACC311A47A9B /* GameSoundTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40495C455314652A215AE7A0 /* GameSoundTests.swift */; };
 		B3068D93BD5BE39BCDB73DC3 /* landscape.c.txt in Resources */ = {isa = PBXBuildFile; fileRef = AAC993534ADB27BEE5402856 /* landscape.c.txt */; };
 		B3B1E3E5C50E36B7BD5BF908 /* ProgramScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 653C94E76664ACA8C508C1BA /* ProgramScreen.swift */; };
 		B5C9E00B5E2661E164FB39D3 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6DC03EAAF56CA283E597960 /* Preferences.swift */; };
@@ -143,6 +146,7 @@
 		CE3EB7A82FAA7AEA4B20D1D0 /* score.c.txt in Resources */ = {isa = PBXBuildFile; fileRef = A5182C2B4B522D289192FAB4 /* score.c.txt */; };
 		CE9DF2379266BD1117ED2D7C /* DisplayLinkTicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71B5BEDDE5BD5853D1FE6A3D /* DisplayLinkTicker.swift */; };
 		D00D2247924C90A295222AF8 /* ConsoleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 969D0666885F443EA623FBB7 /* ConsoleView.swift */; };
+		D0B182BC10765672791E9EC9 /* GameSound.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB133BFBD3D179317CE035FB /* GameSound.swift */; };
 		D2F5355BBFD4AE7E6C64AD0A /* landscape.h.txt in Resources */ = {isa = PBXBuildFile; fileRef = 99662FC509775ACFB87855C1 /* landscape.h.txt */; };
 		D4D177620DC86D3E11FA8FEB /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6DC03EAAF56CA283E597960 /* Preferences.swift */; };
 		D86223A90A66B155A384CD18 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E91BD0ECCEE5722B6AA6CA2 /* Theme.swift */; };
@@ -163,6 +167,7 @@
 		EC578A72CBBBF8EFAAA7E785 /* SmoothProgram.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89E614D23DCA22D668860BD /* SmoothProgram.swift */; };
 		EC9336CF1CAE2FCD5A737FCB /* landscape.c.txt in Resources */ = {isa = PBXBuildFile; fileRef = AAC993534ADB27BEE5402856 /* landscape.c.txt */; };
 		EDE51FA6B67E6F96E972DACA /* BootScript.swift in Sources */ = {isa = PBXBuildFile; fileRef = 551EE7E95E573F4B991FDB64 /* BootScript.swift */; };
+		EE0B22AB0F39BBBA3AE24676 /* GameSound.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB133BFBD3D179317CE035FB /* GameSound.swift */; };
 		F29A6F69EA36293B14AEF473 /* ConsoleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 969D0666885F443EA623FBB7 /* ConsoleView.swift */; };
 		F2F13183376CB7162E07941F /* AppIconSwitcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B473BC34204122465954610 /* AppIconSwitcher.swift */; };
 		F4492522637588BAC2C2782C /* score.h.txt in Resources */ = {isa = PBXBuildFile; fileRef = 0966600C6C0857A734AF9F00 /* score.h.txt */; };
@@ -241,6 +246,7 @@
 		362DCFB4C74B2A2DE5CDE8D8 /* Dock-AppIcon-Amber.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Dock-AppIcon-Amber.png"; sourceTree = "<group>"; };
 		381DAD0F64E8C8942A534801 /* TerminalLineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalLineView.swift; sourceTree = "<group>"; };
 		3B0B1B5EED68037DFE60BDEC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		40495C455314652A215AE7A0 /* GameSoundTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSoundTests.swift; sourceTree = "<group>"; };
 		4A5A466AED2A9A0E0B9A58AD /* PixlyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixlyApp.swift; sourceTree = "<group>"; };
 		511683E12516989A3F136964 /* Pixly.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Pixly.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		551EE7E95E573F4B991FDB64 /* BootScript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BootScript.swift; sourceTree = "<group>"; };
@@ -284,6 +290,7 @@
 		DD7CE014143CFE6CA8C42ABF /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
 		DDC17D3178EAE983910D0830 /* ShellJokes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellJokes.swift; sourceTree = "<group>"; };
 		E6DC03EAAF56CA283E597960 /* Preferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
+		EB133BFBD3D179317CE035FB /* GameSound.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSound.swift; sourceTree = "<group>"; };
 		EBA0EB5A17037BEFA09FCE81 /* PixelEscapeGameTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixelEscapeGameTests.swift; sourceTree = "<group>"; };
 		F03E13E36FD35B602C92010B /* ball.h.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = ball.h.txt; sourceTree = "<group>"; };
 		F11F59754FD27F60B374BC54 /* GameControllerInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameControllerInput.swift; sourceTree = "<group>"; };
@@ -356,6 +363,7 @@
 				5B473BC34204122465954610 /* AppIconSwitcher.swift */,
 				71B5BEDDE5BD5853D1FE6A3D /* DisplayLinkTicker.swift */,
 				F11F59754FD27F60B374BC54 /* GameControllerInput.swift */,
+				EB133BFBD3D179317CE035FB /* GameSound.swift */,
 				85DFF56B067856A7B5F1847B /* PixlyTheme.swift */,
 				E6DC03EAAF56CA283E597960 /* Preferences.swift */,
 				788A03B7F5F5BCF8F7920DCD /* SeededGenerator.swift */,
@@ -389,6 +397,7 @@
 				970D51B730F334BCB8429459 /* ConsoleAndScoreTests.swift */,
 				CA25800B3EFC63EE0220F492 /* CustomisationTests.swift */,
 				C5CEF47A8A6E82B961B4EECC /* GameControllerInputTests.swift */,
+				40495C455314652A215AE7A0 /* GameSoundTests.swift */,
 				EBA0EB5A17037BEFA09FCE81 /* PixelEscapeGameTests.swift */,
 				D495B6B851DB69753FFC1F38 /* ProgramAndSessionTests.swift */,
 				2C7BFA05541008D3124ED12B /* QuickGameTests.swift */,
@@ -793,6 +802,7 @@
 				E25AD69EFA1CD69D6DF6CAB5 /* DisplayLinkTicker.swift in Sources */,
 				E87DEE4A5F32CE721E381160 /* GameCenterManager.swift in Sources */,
 				1860B732BA904648D2FAF8FE /* GameControllerInput.swift in Sources */,
+				61347D989E6845431E754A20 /* GameSound.swift in Sources */,
 				091504D25D4FFE5EFF5A731F /* PixelEscapeGame.swift in Sources */,
 				AA6E5E89C4FD754B57B9BBA3 /* PixlyApp.swift in Sources */,
 				B6AD3F06DF5B40FD1EAF88C4 /* PixlyProgram.swift in Sources */,
@@ -839,6 +849,7 @@
 				838A439CBEEC85C827BDDD74 /* DisplayLinkTicker.swift in Sources */,
 				09346168A875CFF8D56162D2 /* GameCenterManager.swift in Sources */,
 				7E5E972E1777715616E55363 /* GameControllerInput.swift in Sources */,
+				EE0B22AB0F39BBBA3AE24676 /* GameSound.swift in Sources */,
 				40E94A42DFF0D91D0E761095 /* PixelEscapeGame.swift in Sources */,
 				0F1676179B584728042114EF /* PixlyApp.swift in Sources */,
 				1A715CC39B5A7D9555E3EB00 /* PixlyProgram.swift in Sources */,
@@ -874,6 +885,7 @@
 				3AED1AF3B297F141193790EF /* ConsoleBuffer.swift in Sources */,
 				F29A6F69EA36293B14AEF473 /* ConsoleView.swift in Sources */,
 				595210A13DFDC45EE9332C03 /* GameCenterManager.swift in Sources */,
+				64F4E97FA2A6F6CDA1EB29AF /* GameSound.swift in Sources */,
 				80A038E09D0BB1DA28F387BA /* PixelEscapeGame.swift in Sources */,
 				61705BC91745B56A4C824D04 /* PixlyTheme.swift in Sources */,
 				4E17308DE743B28A50E7CA77 /* PixlyWatchApp.swift in Sources */,
@@ -904,6 +916,7 @@
 				2810453111ED8D1322AC5B46 /* ConsoleAndScoreTests.swift in Sources */,
 				C4D4447A35D7D7F104D80ADD /* CustomisationTests.swift in Sources */,
 				9E1323CDD1A30F73004D15E8 /* GameControllerInputTests.swift in Sources */,
+				B19ECAFCF7C9ACC311A47A9B /* GameSoundTests.swift in Sources */,
 				F483F3326FD188AAA14637D5 /* PixelEscapeGameTests.swift in Sources */,
 				3428DABF0C62D4A6BA086937 /* ProgramAndSessionTests.swift in Sources */,
 				1B929416C5ADB37DFEDF0018 /* QuickGameTests.swift in Sources */,
@@ -924,6 +937,7 @@
 				CE9DF2379266BD1117ED2D7C /* DisplayLinkTicker.swift in Sources */,
 				97D7119FBCC7836C95E10178 /* GameCenterManager.swift in Sources */,
 				B74573B25738806C8B007684 /* GameControllerInput.swift in Sources */,
+				D0B182BC10765672791E9EC9 /* GameSound.swift in Sources */,
 				7578C46C3CAD78BA8999772E /* PixelEscapeGame.swift in Sources */,
 				C1D82CDBAEFCE428DDF9C9C7 /* PixlyApp.swift in Sources */,
 				7B215231AFDB74D240CCCA34 /* PixlyProgram.swift in Sources */,

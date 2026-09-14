@@ -39,6 +39,31 @@ final class ClassicMenuRemoteTests: XCTestCase {
         attachScreenshot(of: app, named: "after moving")
     }
 
+    /// A new game on the TV uses its whole width: more landscape than the original 80 columns.
+    func testANewGameFillsTheWideScreen() {
+        continueAfterFailure = false
+        let app = XCUIApplication()
+        app.launch()
+        let remote = XCUIRemote.shared
+
+        let notNow = app.buttons["Not Now"]
+        if notNow.waitForExistence(timeout: 8) {
+            remote.press(.down)
+            remote.press(.select)
+        }
+        let start = app.buttons["start"]
+        XCTAssertTrue(start.waitForExistence(timeout: 15))
+        wait(for: start, "isEnabled == true", timeout: 15)
+        remote.press(.select)
+
+        let console = app.descendants(matching: .any).matching(identifier: "console").firstMatch
+        expectValue(of: console, "New Game", timeout: 40)
+        remote.press(.select)
+        // Outside a menu the console has no selection to report.
+        expectValue(of: console, "", timeout: 10)
+        attachScreenshot(of: app, named: "wide game")
+    }
+
     private func expectValue(of element: XCUIElement, _ value: String, timeout: TimeInterval = 5) {
         wait(for: element, "value == '\(value)'", timeout: timeout)
     }

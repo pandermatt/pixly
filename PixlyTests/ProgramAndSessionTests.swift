@@ -61,6 +61,35 @@ struct PixlyProgramTests {
         #expect(program.selection == 2)
     }
 
+    @Test func aWideConsoleCentresTheOriginalScreens() {
+        var buffer = ConsoleBuffer(columns: 100)
+        #expect(buffer.margin == 10)
+        buffer.gotoxy(ConsoleBuffer.centeredX("GAME OVER!"), 10)
+        buffer.write("GAME OVER!")
+        #expect(buffer[45, 10].character == "G")
+        buffer.gotoxy(fromLeft: 1, 25)
+        buffer.write("7")
+        #expect(buffer[1, 25].character == "7")
+    }
+
+    @Test func aWideScreenShowsMoreLandscapeWithTheSameGame() async throws {
+        let program = try makeProgram()
+        await program.run()
+        program.setColumns(120)
+        #expect(program.console.width == 120)
+        #expect(program.console[54, 10].character == ">")
+
+        program.confirm()
+        #expect(program.screen == .playing)
+        #expect(program.console.width == 120)
+        // The tunnel (always open on rows 10–15) reaches the right edge, the score bar spans it.
+        #expect(program.console[120, 12].background == .white)
+        #expect(program.console[2, 25].character == "0")
+        #expect(program.console[118, 25].character == "0")
+        #expect(ConsoleLayout.columns(fitting: CGSize(width: 1_500, height: 500)) == 150)
+        #expect(ConsoleLayout.columns(fitting: CGSize(width: 400, height: 500)) == 80)
+    }
+
     @Test func selectingAnEntryByNumber() async throws {
         let program = try makeProgram()
         await program.run()

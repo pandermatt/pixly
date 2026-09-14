@@ -177,6 +177,7 @@ targets:
       - Pixly/Program/ScoreStore.swift
       - Pixly/Program/TunnelDrawing.swift
       - Pixly/Support/AppIconSwitcher.swift
+      - Pixly/Support/GameSound.swift
       - Pixly/Support/PixlyTheme.swift
       - Pixly/Support/Preferences.swift
       - Pixly/Support/SeededGenerator.swift

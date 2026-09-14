@@ -27,6 +27,64 @@ struct ProgramScreen: View {
     @FocusState private var focusedEntry: Int?
     #endif
 
+    /// A chirp for every jump and a buzz when the pixel hits the wall (quitting with q is silent).
+    private struct Sounds: ViewModifier {
+        let program: PixlyProgram
+
+        func body(content: Content) -> some View {
+            content
+                .onChange(of: program.jumpCount) {
+                    GameSound.jump.play()
+                }
+                .onChange(of: program.screen) { old, new in
+                    if old == .playing, new == .saveScore, program.game.isOver {
+                        GameSound.crash.play()
+                    }
+                }
+        }
+    }
+
+    #if !os(tvOS)
+    /// Haptics for jumps and the crash, and the menu tick: the Apple TV clicks as focus moves
+    /// through a menu, so everywhere else Pixly makes the same tick itself. (A modifier of its own
+    /// keeps `body` quick to type-check.)
+    private struct Feedback: ViewModifier {
+        let program: PixlyProgram
+
+        func body(content: Content) -> some View {
+            content
+                .sensoryFeedback(.impact(weight: .light, intensity: 0.7), trigger: program.jumpCount)
+                .sensoryFeedback(trigger: program.screen) { old, new in
+                    old == .playing && new == .saveScore ? .error : nil
+                }
+                .onChange(of: position) { old, new in
+                    if new.isMove(from: old) {
+                        GameSound.tick.play()
+                    }
+                }
+                #if os(iOS)
+                .sensoryFeedback(trigger: position) { old, new in
+                    new.isMove(from: old) ? .selection : nil
+                }
+                #endif
+        }
+
+        private var position: MenuPosition {
+            MenuPosition(screen: program.screen, selection: program.selection)
+        }
+    }
+
+    /// Where the menu selection is: a tick plays when it moves within one menu, not when a new menu opens.
+    private struct MenuPosition: Equatable {
+        let screen: PixlyProgram.Screen
+        let selection: Int
+
+        func isMove(from old: MenuPosition) -> Bool {
+            screen == old.screen && selection != old.selection
+        }
+    }
+    #endif
+
     private var windowShape: RoundedRectangle {
         RoundedRectangle(cornerRadius: isLandscape ? 18 : 24, style: .continuous)
     }
@@ -91,6 +149,7 @@ struct ProgramScreen: View {
             #endif
             handleController(button)
         }
+        .modifier(Sounds(program: program))
         #if os(tvOS)
         // The Siri Remote (and controllers, through focus): swipes move through menus, Back stops
         // a run or leaves a menu (the main menu goes back to the shell), Play/Pause pauses and saves.
@@ -124,10 +183,7 @@ struct ProgramScreen: View {
             canClickToSave = !Task.isCancelled
         }
         #else
-        .sensoryFeedback(.impact(weight: .light, intensity: 0.7), trigger: program.jumpCount)
-        .sensoryFeedback(trigger: program.screen) { old, new in
-            old == .playing && new == .saveScore ? .error : nil
-        }
+        .modifier(Feedback(program: program))
         #endif
     }
 
@@ -203,12 +259,12 @@ struct ProgramScreen: View {
     private var menuEntries: some View {
         if let menu = program.currentMenu {
             GeometryReader { proxy in
-                let layout = ConsoleLayout(size: proxy.size, scale: displayScale)
+                let layout = ConsoleLayout(size: proxy.size, scale: displayScale, columns: program.console.width)
                 // Plain layout, row under row (the empty line before Back is a gap): the focus
                 // engine sees each entry exactly on its console line, so up and down go one step.
                 VStack(alignment: .leading, spacing: 0) {
                     ForEach(1...menu.count, id: \.self) { choice in
-                        let row = layout.rect(x: 1, y: menu.row(for: choice), width: ConsoleBuffer.columns)
+                        let row = layout.rect(x: 1, y: menu.row(for: choice), width: program.console.width)
                         let gap = choice == 1
                             ? row.minY
                             : row.minY - layout.rect(x: 1, y: menu.row(for: choice - 1)).maxY
@@ -241,8 +297,8 @@ struct ProgramScreen: View {
 
     private var console: some View {
         GeometryReader { proxy in
-            let layout = ConsoleLayout(size: proxy.size, scale: displayScale)
             let buffer = program.console
+            let layout = ConsoleLayout(size: proxy.size, scale: displayScale, columns: buffer.width)
             let theme = theme
             Canvas { context, _ in
                 ConsoleRenderer.draw(buffer, layout: layout, theme: theme, in: &context)
@@ -262,6 +318,12 @@ struct ProgramScreen: View {
                 if case .active(let point) = phase, let cell = layout.cell(at: point) {
                     program.hover(at: cell)
                 }
+            }
+            #endif
+            #if os(macOS) || os(tvOS)
+            // A wider window or TV shows more of the landscape; the game itself stays the same.
+            .onChange(of: proxy.size, initial: true) { _, size in
+                program.setColumns(ConsoleLayout.columns(fitting: size))
             }
             #endif
         }

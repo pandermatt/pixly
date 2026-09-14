@@ -97,37 +97,68 @@ struct SmoothEscapeGameTests {
         #expect(first.top(at: 17.3) == second.top(at: 17.3))
     }
 
+    /// Fairness: a careful player who sees one second ahead gets through the opening. Every 1/30 s
+    /// it does what a simple player would (jump when below the passage and falling), unless that
+    /// leaves no way through the next second; then it does the other thing.
     @Test(arguments: [11, 12, 13] as [UInt64])
-    func anAutopilotSurvivesTheOpening(seed: UInt64) {
+    func aCarefulPlayerSurvivesTheOpening(seed: UInt64) {
         var game = SmoothEscapeGame(aspect: 0.46, seed: seed)
         game.jump()
-        for _ in 0..<(120 * 15) where game.state == .running {
-            if game.playerY > target(in: game), game.velocity > 0, apexClearsTheCeiling(in: game) {
-                game.jump()
-            }
-            game.update(dt: step)
+        for _ in 0..<(30 * 15) where game.state == .running {
+            var jumped = game
+            jumped.jump()
+            let wantsToJump = game.playerY > target(in: game) && game.velocity > 0
+            let preferred = wantsToJump ? jumped : game
+            game = canGetThrough(preferred, decisions: 30) ? preferred : (wantsToJump ? game : jumped)
+            advanceOneDecision(&game)
         }
         #expect(game.state == .running)
     }
 
-    /// Like a player would: don't jump into a ceiling that steps down just ahead.
-    private func apexClearsTheCeiling(in game: SmoothEscapeGame) -> Bool {
-        let apex = SmoothEscapeGame.jumpVelocity * SmoothEscapeGame.jumpVelocity / (2 * SmoothEscapeGame.gravity)
-        let x = game.playerWorldX
-        let ceiling = stride(from: -SmoothEscapeGame.radius, through: 0.2, by: 0.01).map { game.top(at: x + $0) }.max() ?? 0
-        return game.playerY - apex - SmoothEscapeGame.radius > ceiling + 0.01
+    private func advanceOneDecision(_ game: inout SmoothEscapeGame) {
+        for _ in 0..<4 {
+            game.update(dt: step)
+        }
+    }
+
+    /// Whether some sequence of jumps (decided every 1/30 s) keeps the run going for `decisions`
+    /// more steps. States that already failed are remembered by their rounded height and speed.
+    private func canGetThrough(_ start: SmoothEscapeGame, decisions: Int) -> Bool {
+        var failed = Set<[Int]>()
+        func search(_ game: SmoothEscapeGame, _ remaining: Int) -> Bool {
+            guard game.state == .running else { return false }
+            guard remaining > 0 else { return true }
+            let key = [remaining, Int((game.playerY * 300).rounded()), Int((game.velocity * 30).rounded())]
+            guard !failed.contains(key) else { return false }
+            for jumps in [false, true] {
+                var next = game
+                if jumps {
+                    next.jump()
+                }
+                advanceOneDecision(&next)
+                if search(next, remaining - 1) {
+                    return true
+                }
+            }
+            failed.insert(key)
+            return false
+        }
+        var first = start
+        advanceOneDecision(&first)
+        return search(first, decisions - 1)
     }
 
     /// Where a player would aim: the middle of the next passage, a little low because a jump rises.
     private func target(in game: SmoothEscapeGame) -> Double {
         let x = game.playerWorldX
-        if let bar = game.bars.first(where: { $0.x + SmoothEscapeGame.Bar.width > x - 0.03 && $0.x < x + 0.35 }) {
+        if let bar = game.bars.first(where: { $0.x + SmoothEscapeGame.Bar.width > x - 0.03 && $0.x < x + game.speed }) {
             let ceiling = game.top(at: bar.x)
             let floor = game.bottom(at: bar.x)
             let passage = bar.top - ceiling > floor - bar.bottom ? (ceiling, bar.top) : (bar.bottom, floor)
             return (passage.0 + passage.1) / 2 + 0.06
         }
-        return (game.top(at: x + 0.1) + game.bottom(at: x + 0.1)) / 2 + 0.06
+        let ahead = game.speed * 0.25
+        return (game.top(at: x + ahead) + game.bottom(at: x + ahead)) / 2 + 0.06
     }
 }
 

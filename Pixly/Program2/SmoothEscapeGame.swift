@@ -37,9 +37,10 @@ struct SmoothEscapeGame: Sendable {
     static let startGap = 0.62
     static let minGap = 0.40
     static let minPassage = 0.20
-    /// Width of one wall step.
-    static let columnWidth = 0.05
-    /// Walls and bars snap to 20 rows, so every step is a square block.
+    /// Width of one wall step: half a row, so the blocks have the 1:2 cells of the original console
+    /// and neighbouring blocks step at different heights, as finely jagged as its landscape.
+    static let columnWidth = 0.025
+    /// Walls and bars snap to 20 rows.
     static let rowHeight = 1.0 / 20
     private static let controlSpacing = 0.25
     /// At least a row, so a column's wobble never pushes the tunnel off the screen.
@@ -79,7 +80,7 @@ struct SmoothEscapeGame: Sendable {
 
     /// Scroll speed in playfield heights per second.
     var speed: Double {
-        min(0.55, 0.32 + distance * 0.004)
+        min(0.75, 0.42 + distance * 0.005)
     }
 
     var playerWorldX: Double {
@@ -105,9 +106,19 @@ struct SmoothEscapeGame: Sendable {
     /// neighbours, and none in the straight start.
     private func wobble(_ column: Double) -> Double {
         guard column > straightLength else { return 0 }
-        let index = UInt64(bitPattern: Int64((column / Self.columnWidth).rounded()))
-        var generator = SeededGenerator(seed: seed ^ (index &* 0xD1B5_4A32_D192_ED03))
-        return Double(Int.random(in: 0...1, using: &generator)) * Self.rowHeight
+        // Runs of one to four columns share a height, like the random walk of the original's
+        // landscape; a new height every column would look like a comb.
+        var index = Int64((column / Self.columnWidth).rounded())
+        for _ in 0..<3 where random(index, salt: 0x9E37_79B9_7F4A_7C15) == 0 {
+            index -= 1
+        }
+        return Double(random(index, salt: 0xD1B5_4A32_D192_ED03)) * Self.rowHeight
+    }
+
+    /// 0 or 1, the same every time for this column (and this seed).
+    private func random(_ index: Int64, salt: UInt64) -> Int {
+        var generator = SeededGenerator(seed: seed ^ (UInt64(bitPattern: index) &* salt))
+        return Int.random(in: 0...1, using: &generator)
     }
 
     /// The epsilon keeps an x that is exactly on a column boundary (e.g. 142.85) from rounding
@@ -217,7 +228,8 @@ struct SmoothEscapeGame: Sendable {
         let column = Self.columnStart(x)
         let ceiling = self.top(at: column + Self.columnWidth / 2)
         let floor = self.bottom(at: column + Self.columnWidth / 2)
-        for rows in [Int.random(in: 4...5, using: &rng), 4] {
+        // Two or three rows: with smooth jumps, holding one height is harder than in the original.
+        for rows in [Int.random(in: 2...3, using: &rng), 2] {
             let height = Double(rows) * Self.rowHeight
             let candidates = stride(from: ceiling, through: floor - height + 1e-9, by: Self.rowHeight).filter { barTop in
                 barTop - ceiling >= Self.minPassage - 1e-9 || floor - (barTop + height) >= Self.minPassage - 1e-9

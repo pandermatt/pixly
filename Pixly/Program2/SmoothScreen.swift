@@ -31,6 +31,11 @@ struct SmoothScreen: View {
             playfield
                 .remoteSelect { handleController(.a) }
                 .ignoresSafeArea()
+            #elseif os(iOS)
+            // Full screen: the tunnel runs behind the Dynamic Island and into the corners; the HUD
+            // and the controls stay in the safe area.
+            playfield
+                .ignoresSafeArea()
             #else
             playfield
             #endif
@@ -42,7 +47,7 @@ struct SmoothScreen: View {
                 // Dims the frozen frame so the panel reads well over any tunnel colour.
                 (theme.colorScheme == .light ? Color.white.opacity(0.45) : theme.console(.black).opacity(0.5))
                     .allowsHitTesting(false)
-                    #if os(tvOS)
+                    #if os(tvOS) || os(iOS)
                     .ignoresSafeArea()
                     #endif
                     .transition(.opacity)
@@ -50,7 +55,7 @@ struct SmoothScreen: View {
                     .transition(.scale(scale: 0.92).combined(with: .opacity))
             }
         }
-        #if os(tvOS)
+        #if os(tvOS) || os(iOS)
         .background { theme.console(.black).ignoresSafeArea() }
         #else
         .background(theme.console(.black), in: shape)
@@ -92,6 +97,7 @@ struct SmoothScreen: View {
             #endif
             handleController(button)
         }
+        .modifier(SmoothSounds(program: program))
         #if os(tvOS)
         .onExitCommand { handleController(.b) }
         .onPlayPauseCommand { handleController(.menu) }
@@ -425,6 +431,23 @@ struct SmoothScreen: View {
     #endif
 }
 
+/// A chirp for every jump and a buzz for the crash.
+private struct SmoothSounds: ViewModifier {
+    let program: SmoothProgram
+
+    func body(content: Content) -> some View {
+        content
+            .onChange(of: program.jumpCount) {
+                GameSound.jump.play()
+            }
+            .onChange(of: program.result) { old, new in
+                if old == nil, new != nil {
+                    GameSound.crash.play()
+                }
+            }
+    }
+}
+
 /// The theme and avatar menus. A view of its own so it only redraws when a preference changes:
 /// while the pixel bobs the screen redraws every frame, and a macOS menu rebuilt that often
 /// can't be used.
@@ -532,7 +555,8 @@ enum SmoothRenderer {
                 width: SmoothEscapeGame.Bar.width * scale,
                 height: (bar.bottom - bar.top) * scale
             )
-            context.fill(Path(rect), with: .color(barColor))
+            // Rounded like the pixel.
+            context.fill(Path(roundedRect: rect, cornerRadius: rect.width * 0.35), with: .color(barColor))
         }
 
         for (index, dot) in game.trail.enumerated() {
