@@ -90,6 +90,29 @@ struct PixlyProgramTests {
         #expect(ConsoleLayout.columns(fitting: CGSize(width: 400, height: 500)) == 80)
     }
 
+    @Test func afterACrashATapAnywhereContinuesOnceTheScoreHasShown() async throws {
+        let defaults = try #require(UserDefaults(suiteName: "pixly-continue-\(UUID().uuidString)"))
+        let preferences = Preferences(defaults: defaults, iconSwitcher: FakeIconSwitcher())
+        let program = PixlyProgram(preferences: preferences, defaults: defaults, loadingStep: .zero, continueDelay: .milliseconds(50))
+        await program.run()
+        program.confirm()
+        _ = playUntilGameOver(program)
+        #expect(program.screen == .saveScore)
+
+        // Straight after the crash a tap only shows how to continue.
+        program.press(at: nil)
+        #expect(program.screen == .saveScore)
+        #expect(!program.canContinue)
+
+        for _ in 0..<100 where !program.canContinue {
+            try await Task.sleep(for: .milliseconds(10))
+        }
+        #expect(program.canContinue)
+        program.press(at: nil)
+        #expect(program.screen == .menu)
+        #expect(program.scores.entries.count == 1)
+    }
+
     @Test func selectingAnEntryByNumber() async throws {
         let program = try makeProgram()
         await program.run()

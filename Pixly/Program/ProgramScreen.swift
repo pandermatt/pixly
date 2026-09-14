@@ -20,8 +20,6 @@ struct ProgramScreen: View {
     #else
     @FocusState private var keysFocused: Bool
     #endif
-    /// tvOS: a moment after the crash, a click saves the score.
-    @State private var canClickToSave = false
     #if os(tvOS)
     /// tvOS: the menu entry whose invisible row has focus.
     @FocusState private var focusedEntry: Int?
@@ -175,13 +173,6 @@ struct ProgramScreen: View {
                 program.select(entry)
             }
         }
-        // Clicks in the first moments after a crash were still meant for jumping.
-        .task(id: program.screen) {
-            canClickToSave = false
-            guard program.screen == .saveScore else { return }
-            try? await Task.sleep(for: .seconds(1.5))
-            canClickToSave = !Task.isCancelled
-        }
         #else
         .modifier(Feedback(program: program))
         #endif
@@ -223,7 +214,7 @@ struct ProgramScreen: View {
     /// in (and until then shows how to continue).
     private func saveWindowClicked() {
         #if os(tvOS)
-        if canClickToSave {
+        if program.canContinue {
             program.confirm()
         } else {
             program.handle(.space)
@@ -392,8 +383,8 @@ struct ProgramScreen: View {
                         program.isPaused ? program.jump() : program.quitGame()
                     }
                 case .saveScore:
-                    key("save", "return", prominent: true) { program.saveScore() }
                     key("name", "pencil") { program.beginEditingName() }
+                    key("save", "return", prominent: true) { program.saveScore() }
                 case .scoreTable:
                     key("Game Center", "trophy.fill") { onOpenLeaderboard() }
                     key("back", "return", prominent: true) { program.confirm() }
@@ -411,7 +402,28 @@ struct ProgramScreen: View {
         }
         .font(Theme.mono(14, weight: .semibold))
         .animation(.smooth(duration: 0.25), value: program.screen)
+        #if os(iOS)
+        .background { columnTouchArea }
+        #endif
     }
+
+    #if os(iOS)
+    /// The space around the keys works like the console: a touch jumps while playing, and after a
+    /// crash it continues (once the score has been on screen for a moment).
+    private var columnTouchArea: some View {
+        Color.clear
+            .contentShape(Rectangle())
+            .gesture(
+                DragGesture(minimumDistance: 0)
+                    .onChanged { _ in
+                        guard !isPressing else { return }
+                        isPressing = true
+                        program.press(at: nil)
+                    }
+                    .onEnded { _ in isPressing = false }
+            )
+    }
+    #endif
 
     @ViewBuilder
     private func key(_ title: String, _ systemImage: String, prominent: Bool = false, action: @escaping () -> Void) -> some View {

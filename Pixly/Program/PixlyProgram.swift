@@ -68,6 +68,9 @@ final class PixlyProgram {
     private(set) var isPaused = false
     /// A new game shows the tunnel and waits for the first tap, so new players aren't thrown in.
     private(set) var isWaitingToStart = false
+    /// After a crash the score shows for a moment before a tap anywhere continues, so taps that
+    /// were meant as jumps can't skip it.
+    private(set) var canContinue = false
     private(set) var jumpCount = 0
     private(set) var nameInput = ""
     private(set) var isTypingName = false
@@ -84,6 +87,8 @@ final class PixlyProgram {
     @ObservationIgnored var onQuit: @MainActor (TimeInterval) -> Void = { _ in }
 
     @ObservationIgnored private let loadingStep: Duration
+    @ObservationIgnored private let continueDelay: Duration
+    @ObservationIgnored private var continueTask: Task<Void, Never>?
     @ObservationIgnored private let startDate = Date()
     @ObservationIgnored private var ticker: DisplayLinkTicker?
     @ObservationIgnored private var lastTimestamp: CFTimeInterval?
@@ -94,9 +99,15 @@ final class PixlyProgram {
     @ObservationIgnored private var iconStatus: String?
     @ObservationIgnored private var isTerminated = false
 
-    init(preferences: Preferences, defaults: UserDefaults = .standard, loadingStep: Duration = .milliseconds(12)) {
+    init(
+        preferences: Preferences,
+        defaults: UserDefaults = .standard,
+        loadingStep: Duration = .milliseconds(12),
+        continueDelay: Duration = .seconds(1.5)
+    ) {
         self.preferences = preferences
         self.loadingStep = loadingStep
+        self.continueDelay = continueDelay
         scores = ScoreStore(defaults: defaults)
     }
 
@@ -183,6 +194,10 @@ final class PixlyProgram {
                 #else
                 beginEditingName()
                 #endif
+            } else if canContinue {
+                // A tap anywhere else continues, once the score has been on screen for a moment
+                // (a name still being typed in is saved whole).
+                saveScore()
             } else {
                 showContinueHint()
             }
@@ -348,6 +363,8 @@ final class PixlyProgram {
 
     func saveScore() {
         guard screen == .saveScore else { return }
+        continueTask?.cancel()
+        canContinue = false
         if isTypingName {
             nameInput = pendingName
         }
@@ -618,6 +635,14 @@ final class PixlyProgram {
     /// `showSaveScore()` from score.c.
     private func showSaveScore(score: Int) {
         screen = .saveScore
+        canContinue = false
+        continueTask?.cancel()
+        let delay = continueDelay
+        continueTask = Task { [weak self] in
+            try? await Task.sleep(for: delay)
+            guard !Task.isCancelled else { return }
+            self?.canContinue = true
+        }
         let isHighscore = score > scores.best
         saveScoreBar = isHighscore ? .green : .lightRed
         draw { c in
