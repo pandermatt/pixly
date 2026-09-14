@@ -1,5 +1,10 @@
 import Foundation
 
+/// Which game a run was played in: the classic port or Pixly 2.0.
+enum PixlyGame: Equatable, Sendable {
+    case classic, smooth
+}
+
 /// Pixly's Game Center achievements. Each needs a matching achievement in App Store Connect with
 /// the same ID, title, description and points (and an image); the hidden ones stay secret until earned.
 enum Achievement: String, CaseIterable, Sendable {
@@ -75,7 +80,7 @@ enum Achievement: String, CaseIterable, Sendable {
     }
 
     /// The tiers a finished run reached; finishing at all counts as the first one.
-    static func unlocked(byScore score: Int, in program: TerminalSession.Program) -> [Achievement] {
+    static func unlocked(byScore score: Int, in program: PixlyGame) -> [Achievement] {
         let tiers: [(score: Int, achievement: Achievement)] = switch program {
         case .classic: [(0, .firstEscape), (500, .classic500), (2_000, .classic2000), (5_000, .classic5000)]
         case .smooth: [(0, .recompiled), (500, .smooth500), (1_500, .smooth1500), (3_000, .smooth3000)]

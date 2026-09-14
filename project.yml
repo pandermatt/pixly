@@ -21,6 +21,9 @@ targets:
     platform: iOS
     sources:
       - path: Pixly
+    dependencies:
+      # The watch app ships inside the iPhone app.
+      - target: PixlyWatch
     entitlements:
       path: Pixly/Pixly.entitlements
       properties:
@@ -152,6 +155,65 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: ch.pandermatt.pixly.tvuitests
         GENERATE_INFOPLIST_FILE: YES
         TEST_TARGET_NAME: PixlyTV
+  PixlyWatch:
+    type: application
+    platform: watchOS
+    deploymentTarget: "26.0"
+    sources:
+      - path: PixlyWatch
+        excludes:
+          - Info.plist
+          - PixlyWatch.entitlements
+      # Only the classic game: the engine, the console and what the score needs.
+      - Pixly/AppIcon.icon
+      - Pixly/Assets.xcassets
+      - Pixly/Console/ConsoleBuffer.swift
+      - Pixly/Console/ConsoleView.swift
+      - Pixly/GameCenter/Achievement.swift
+      - Pixly/GameCenter/GameCenterManager.swift
+      - Pixly/Program/Avatar.swift
+      - Pixly/Program/PixelEscapeGame.swift
+      - Pixly/Program/QuickGame.swift
+      - Pixly/Program/ScoreStore.swift
+      - Pixly/Program/TunnelDrawing.swift
+      - Pixly/Support/AppIconSwitcher.swift
+      - Pixly/Support/PixlyTheme.swift
+      - Pixly/Support/Preferences.swift
+      - Pixly/Support/SeededGenerator.swift
+      - Pixly/Support/Theme.swift
+      - Pixly/Support/WatchSync.swift
+    entitlements:
+      path: PixlyWatch/PixlyWatch.entitlements
+      properties:
+        com.apple.developer.game-center: true
+    info:
+      path: PixlyWatch/Info.plist
+      properties:
+        CFBundleDisplayName: Pixly
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        WKApplication: true
+        WKCompanionAppBundleIdentifier: ch.pandermatt.pixly
+        WKRunsIndependentlyOfCompanionApp: true
+    settings:
+      base:
+        PRODUCT_NAME: Pixly
+        PRODUCT_BUNDLE_IDENTIFIER: ch.pandermatt.pixly.watchkitapp
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+  PixlyWatchUITests:
+    type: bundle.ui-testing
+    platform: watchOS
+    deploymentTarget: "26.0"
+    sources:
+      - path: PixlyWatchUITests
+    dependencies:
+      - target: PixlyWatch
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: ch.pandermatt.pixly.watchuitests
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_TARGET_NAME: PixlyWatch
   PixlyTests:
     type: bundle.unit-test
     platform: iOS
@@ -184,3 +246,11 @@ schemes:
     test:
       targets:
         - PixlyTVUITests
+  PixlyWatch:
+    build:
+      targets:
+        PixlyWatch: all
+        PixlyWatchUITests: [test]
+    test:
+      targets:
+        - PixlyWatchUITests

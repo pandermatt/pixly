@@ -6,6 +6,14 @@ struct ConsoleLayout: Equatable {
     let cellHeight: CGFloat
     let origin: CGPoint
 
+    /// All 80 columns across the width and the first `rows` rows down the height, whatever shape
+    /// that makes the cells: the watch stretches the tunnel over its tall screen.
+    init(stretching size: CGSize, rows: Int = ConsoleBuffer.rows) {
+        cellWidth = size.width / CGFloat(ConsoleBuffer.columns)
+        cellHeight = size.height / CGFloat(rows)
+        origin = .zero
+    }
+
     init(size: CGSize, scale: CGFloat) {
         let fitted = min(size.width / CGFloat(ConsoleBuffer.columns), size.height / CGFloat(ConsoleBuffer.rows * 2))
         let width = max(1 / scale, (fitted * scale).rounded(.down) / scale)

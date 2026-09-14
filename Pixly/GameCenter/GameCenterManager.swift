@@ -3,6 +3,8 @@ import Observation
 #if os(macOS)
 import AppKit
 typealias PlatformViewController = NSViewController
+#elseif os(watchOS)
+// The watch signs in through the paired iPhone and has no view controllers to present.
 #else
 import UIKit
 typealias PlatformViewController = UIViewController
@@ -27,7 +29,7 @@ final class GameCenterManager {
     }
 
     /// A finished run unlocks the score tiers it reached.
-    func recordRun(score: Int, program: TerminalSession.Program) {
+    func recordRun(score: Int, program: PixlyGame) {
         for achievement in Achievement.unlocked(byScore: score, in: program) {
             unlock(achievement)
         }
@@ -55,12 +57,21 @@ final class GameCenterManager {
     }
 
     func authenticate() {
+        #if os(watchOS)
+        GKLocalPlayer.local.authenticateHandler = { @Sendable [weak self] _ in
+            let manager = self
+            Task { @MainActor in
+                manager?.playerDidChange()
+            }
+        }
+        #else
         GKLocalPlayer.local.authenticateHandler = { @Sendable [weak self] viewController, error in
             let manager = self
             Task { @MainActor in
                 manager?.handleAuthentication(viewController: viewController, error: error)
             }
         }
+        #endif
     }
 
     /// Submits every finished run; Game Center keeps the best one. Scores made while
@@ -71,20 +82,30 @@ final class GameCenterManager {
     }
 
     func showLeaderboard() -> Bool {
+        #if os(watchOS)
+        return false
+        #else
         guard GKLocalPlayer.local.isAuthenticated else { return false }
         GKAccessPoint.shared.trigger(leaderboardID: Self.leaderboardID, playerScope: .global, timeScope: .allTime) {}
         return true
+        #endif
     }
 
+    #if !os(watchOS)
     private func handleAuthentication(viewController: PlatformViewController?, error: (any Error)?) {
         if let viewController {
             Self.present(viewController)
             return
         }
+        GKAccessPoint.shared.isActive = false
+        playerDidChange()
+    }
+    #endif
+
+    private func playerDidChange() {
         let player = GKLocalPlayer.local
         isAuthenticated = player.isAuthenticated
         alias = player.isAuthenticated ? player.alias : nil
-        GKAccessPoint.shared.isActive = false
         if player.isAuthenticated {
             Task { await sendPendingScores() }
         }
@@ -126,6 +147,7 @@ final class GameCenterManager {
         }
     }
 
+    #if !os(watchOS)
     private static func present(_ viewController: PlatformViewController) {
         #if os(macOS)
         let window = NSApp.keyWindow ?? NSApp.windows.first
@@ -140,4 +162,5 @@ final class GameCenterManager {
         top?.present(viewController, animated: true)
         #endif
     }
+    #endif
 }

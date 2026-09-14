@@ -68,8 +68,14 @@ struct TerminalView: View {
         .persistentSystemOverlays(isRunning ? .hidden : .automatic)
         #endif
         .task { await setUp() }
-        .onChange(of: preferences.theme) { gameCenter.unlock(.dressUp) }
-        .onChange(of: preferences.avatar) { gameCenter.unlock(.dressUp) }
+        .onChange(of: preferences.theme) {
+            gameCenter.unlock(.dressUp)
+            sendLookToWatch()
+        }
+        .onChange(of: preferences.avatar) {
+            gameCenter.unlock(.dressUp)
+            sendLookToWatch()
+        }
         .sheet(isPresented: $showsWelcome, onDismiss: welcomeDismissed) {
             WelcomeView(onContinue: finishWelcome)
         }
@@ -269,6 +275,13 @@ struct TerminalView: View {
         .accessibilityLabel(label)
     }
 
+    /// The Apple Watch app plays in the phone's theme and avatar.
+    private func sendLookToWatch() {
+        #if os(iOS)
+        WatchSync.shared.send()
+        #endif
+    }
+
     // MARK: - Lifecycle
 
     private func setUp() async {
@@ -280,6 +293,9 @@ struct TerminalView: View {
         session.highscores = { ScoreStore().entries }
         session.highscores2 = { ScoreStore(key: SmoothProgram.scoreKey).entries }
         session.onAchievement = { gameCenter.unlock($0) }
+        #if os(iOS)
+        WatchSync.shared.start(preferences: preferences)
+        #endif
         session.resetScores = { program in
             var store = ScoreStore(key: program == .classic ? "scores" : SmoothProgram.scoreKey)
             store.removeAll()

@@ -5,9 +5,7 @@ import Observation
 @Observable @MainActor
 final class TerminalSession {
     /// The classic port, or Pixly 2.0.
-    enum Program: Equatable, Sendable {
-        case classic, smooth
-    }
+    typealias Program = PixlyGame
 
     enum Mode: Equatable, Sendable {
         case booting, shell, compiling, program(Program)

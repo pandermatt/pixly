@@ -2,36 +2,6 @@ import Foundation
 import Observation
 import QuartzCore
 
-/// Avatars drawn with CP437 glyphs, as in the original's "Avatar wechseln" menu.
-enum Avatar: String, CaseIterable, Sendable {
-    case pixel, heart, diamond
-
-    var glyph: Character {
-        switch self {
-        case .pixel: "■"
-        case .heart: "♥\u{FE0E}"
-        case .diamond: "♦\u{FE0E}"
-        }
-    }
-
-    var title: String {
-        switch self {
-        case .pixel: "Pixel"
-        case .heart: "Heart"
-        case .diamond: "Diamond"
-        }
-    }
-
-    /// How Pixly 2.0 draws the avatar: the pixel stays a square, the others become emoji.
-    var emoji: String? {
-        switch self {
-        case .pixel: nil
-        case .heart: "❤️"
-        case .diamond: "💎"
-        }
-    }
-}
-
 /// Port of main.c and score.c: the loading bar, menus and save-score window, drawn into an
 /// 80×25 console buffer.
 @Observable @MainActor
@@ -727,22 +697,7 @@ final class PixlyProgram {
         let isPaused = isPaused
         let isWaitingToStart = isWaitingToStart
         draw { c in
-            for y in 1...24 {
-                for x in 1...ConsoleBuffer.columns {
-                    c.set(x, y, .init(character: " ", foreground: .black, background: game.isSolid(x: x, y: y) ? .black : .white))
-                }
-            }
-            if let obstacleX = game.obstacleX {
-                for y in game.obstacleStart..<game.obstacleStart + PixelEscapeGame.obstacleHeight {
-                    c.set(obstacleX, y, .init(character: " ", foreground: .red, background: .red))
-                }
-            }
-            for (index, row) in game.tail.enumerated() where (1...24).contains(row) && !game.isSolid(x: index + 1, y: row) {
-                c.set(index + 1, row, .init(character: ".", foreground: .black, background: .white))
-            }
-            if (1...24).contains(game.y) {
-                c.set(PixelEscapeGame.playerX, game.y, .init(character: glyph, foreground: .black, background: .white))
-            }
+            c.drawTunnel(game, glyph: glyph)
             if isWaitingToStart {
                 // Written into the empty tunnel above the pixel, which starts on row 13.
                 c.textcolor(.black, .white)
