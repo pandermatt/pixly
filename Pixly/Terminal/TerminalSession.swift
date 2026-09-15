@@ -73,7 +73,7 @@ final class TerminalSession {
 
     func boot() async {
         guard mode == .booting else { return }
-        append(BootScript.lastLogin(Date()), .dim)
+        append(BootScript.greeting(Date()), .dim)
         append("")
         await wait(lineDelay * 2)
         append(BootScript.banner, .art)
@@ -303,7 +303,7 @@ final class TerminalSession {
             } else if !visibleFiles.contains("Pixly.xcodeproj") {
                 append("xcodebuild: error: 'Pixly.xcodeproj' does not exist.", .error)
             } else {
-                append("Xcode doesn't fit on one pixel. read the project on GitHub:", .dim)
+                append("the whole project doesn't fit on one pixel. read it on GitHub:", .dim)
                 append(BootScript.repository, .link)
             }
         case "credits":
@@ -366,11 +366,7 @@ final class TerminalSession {
         }
         let force = arguments.contains { $0.hasPrefix("-") && $0.contains("f") }
         if names.contains(where: { $0 == "/" || $0 == "/*" }) {
-            if arguments.contains(where: { $0.hasPrefix("-") && $0.lowercased().contains("r") }) {
-                await removeRoot()
-            } else {
-                append("rm: /: is a directory", .error)
-            }
+            append("rm: \"/\" may not be removed", .error)
             return
         }
         var targets: [String] = []
@@ -409,37 +405,6 @@ final class TerminalSession {
     /// The start button after a failed build: types the git command that brings the sources back.
     func restoreFiles() async {
         await run(BootScript.restoreCommand)
-    }
-
-    /// `rm -rf /`, the easter egg: the system scrolls away, the shell eats its own scrollback,
-    /// the kernel panics and the machine boots again. Nothing is actually removed.
-    private func removeRoot() async {
-        mode = .compiling
-        append("rm: it is dangerous to operate recursively on '/'", .warning)
-        append("rm: ignoring --preserve-root. good luck.", .warning)
-        await wait(lineDelay * 10)
-        for path in BootScript.rootPaths {
-            append("removed '\(path)'", .dim)
-            await wait(lineDelay / 2)
-        }
-        await wait(lineDelay * 6)
-        while !lines.isEmpty {
-            lines.removeLast(min(lines.count, max(2, lines.count / 12)))
-            await wait(lineDelay)
-        }
-        await wait(lineDelay * 10)
-        append("zsh: /bin/zsh: No such file or directory", .error)
-        await wait(lineDelay * 12)
-        append("panic(cpu 0 caller 0xffffff8000ba5e1e): \"the pixel escaped\"", .error)
-        append("Debugger called: <panic>", .dim)
-        append("rebooting…", .dim)
-        await wait(lineDelay * 25)
-        lines.removeAll()
-        await wait(lineDelay * 8)
-        mode = .booting
-        await boot()
-        append("(just kidding. nothing was deleted. please don't try this at home.)", .dim)
-        onAchievement(.rmRoot)
     }
 
     private func serveCoffee() {

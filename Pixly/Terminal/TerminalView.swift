@@ -98,7 +98,7 @@ struct TerminalView: View {
     private var title: String {
         if program != nil { return "./pixly — 80×25" }
         if smoothProgram != nil { return "./pixly2 — 2.0" }
-        return "player@pixly: ~ — zsh"
+        return "pixly"
     }
     #endif
 

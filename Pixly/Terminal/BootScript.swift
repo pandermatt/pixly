@@ -76,11 +76,6 @@ enum BootScript {
         Pixly, its iOS and macOS port
         """
 
-    /// What `rm -rf /` pretends to delete, on the way to taking the shell with it.
-    static let rootPaths = ["/Applications/Pixly.app", "/Library/Fonts", "/System/Library/CoreServices/Finder.app", "/Users/player/.pixlyrc"]
-        + files.map { "/Users/player/\($0)" }
-        + ["/Users/player/highscore.txt", "/usr/lib/libconsoleio.a", "/usr/bin/gcc", "/bin/ls", "/bin/rm", "/bin/zsh", "/System/Library/Kernels/kernel"]
-
     static func source(named name: String) -> String? {
         if name == "credits.txt" {
             return credits
@@ -92,11 +87,12 @@ enum BootScript {
         return try? String(contentsOf: url, encoding: .utf8)
     }
 
-    static func lastLogin(_ date: Date) -> String {
+    /// Pixly's own first line (not the login line of a real terminal app).
+    static func greeting(_ date: Date) -> String {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.dateFormat = "EEE MMM d HH:mm:ss"
-        return "Last login: \(formatter.string(from: date)) on ttys001"
+        formatter.dateFormat = "EEE MMM d HH:mm"
+        return "pixly shell 1.0 · \(formatter.string(from: date))"
     }
 
     /// "ANSI Shadow" lettering: every glyph is six rows tall.

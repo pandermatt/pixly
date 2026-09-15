@@ -11,7 +11,7 @@ enum Achievement: String, CaseIterable, Sendable {
     case firstEscape, classic500, classic2000, classic5000
     case recompiled, smooth500, smooth1500, smooth3000
     case frequentFlyer, dressUp
-    case readTheSource, showOff, teapot, fridayDeploy, restored, rmRoot
+    case readTheSource, showOff, teapot, fridayDeploy, restored
 
     static let jumpGoal = 1_000
 
@@ -36,7 +36,6 @@ enum Achievement: String, CaseIterable, Sendable {
         case .teapot: "418"
         case .fridayDeploy: "Friday Deploy"
         case .restored: "git checkout -- ."
-        case .rmRoot: "Don't Try This at Home"
         }
     }
 
@@ -57,7 +56,6 @@ enum Achievement: String, CaseIterable, Sendable {
         case .teapot: "Ask the shell for coffee."
         case .fridayDeploy: "Force push to main."
         case .restored: "Break the build, then bring the files back."
-        case .rmRoot: "Run rm -rf /."
         }
     }
 
@@ -66,7 +64,7 @@ enum Achievement: String, CaseIterable, Sendable {
         case .firstEscape, .recompiled, .dressUp: 10
         case .classic500, .smooth500, .readTheSource, .showOff, .teapot: 20
         case .fridayDeploy, .restored: 30
-        case .classic2000, .smooth1500, .frequentFlyer, .rmRoot: 50
+        case .classic2000, .smooth1500, .frequentFlyer: 50
         case .classic5000, .smooth3000: 100
         }
     }
@@ -74,7 +72,7 @@ enum Achievement: String, CaseIterable, Sendable {
     /// The shell's secrets aren't listed until someone finds them.
     var isHidden: Bool {
         switch self {
-        case .readTheSource, .showOff, .teapot, .fridayDeploy, .restored, .rmRoot: true
+        case .readTheSource, .showOff, .teapot, .fridayDeploy, .restored: true
         default: false
         }
     }

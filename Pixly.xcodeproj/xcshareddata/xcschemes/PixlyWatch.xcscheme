@@ -79,7 +79,6 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B5FA393074EDB555AD46F2BF"
             BuildableName = "Pixly.app"
-            BlueprintName = "PixlyWatch"
             ReferencedContainer = "container:Pixly.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -96,7 +95,6 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B5FA393074EDB555AD46F2BF"
             BuildableName = "Pixly.app"
-            BlueprintName = "PixlyWatch"
             ReferencedContainer = "container:Pixly.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
