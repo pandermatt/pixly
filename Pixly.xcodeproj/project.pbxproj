@@ -89,7 +89,7 @@
 		80A038E09D0BB1DA28F387BA /* PixelEscapeGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03989B6B9391F02C78F6EB56 /* PixelEscapeGame.swift */; };
 		817EEC967CAAA1EDBC1511C6 /* Dock-AppIcon-Amber.png in Resources */ = {isa = PBXBuildFile; fileRef = 362DCFB4C74B2A2DE5CDE8D8 /* Dock-AppIcon-Amber.png */; };
 		82B9B4BB08FD83C2DF2A79F2 /* ConsoleBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73CC8F83211C1F000B5FB8F0 /* ConsoleBuffer.swift */; };
-		82E9F056BB583CC4F0ED6BC4 /* PixlyWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 1CB43C02966167D2ACE44B27 /* PixlyWatch.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		82E9F056BB583CC4F0ED6BC4 /* Pixly.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 1CB43C02966167D2ACE44B27 /* Pixly.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		838A439CBEEC85C827BDDD74 /* DisplayLinkTicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71B5BEDDE5BD5853D1FE6A3D /* DisplayLinkTicker.swift */; };
 		83BBAEE54F20CA3240C1CDAC /* Avatar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 074BDE59890F7AF4D581B500 /* Avatar.swift */; };
 		84D74062B5092F13BF751ABC /* SeededGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 788A03B7F5F5BCF8F7920DCD /* SeededGenerator.swift */; };
@@ -217,7 +217,7 @@
 			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
 			dstSubfolderSpec = 16;
 			files = (
-				82E9F056BB583CC4F0ED6BC4 /* PixlyWatch.app in Embed Watch Content */,
+				82E9F056BB583CC4F0ED6BC4 /* Pixly.app in Embed Watch Content */,
 			);
 			name = "Embed Watch Content";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -233,7 +233,7 @@
 		10F370E2C2DEC7D3D8A415A9 /* SmoothScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmoothScreen.swift; sourceTree = "<group>"; };
 		13B9919CBEF063F335ED95EA /* TerminalLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalLine.swift; sourceTree = "<group>"; };
 		14E86989D4BDDD663FBEBCB7 /* AppIcon-Phosphor.icon */ = {isa = PBXFileReference; lastKnownFileType = wrapper.icon; path = "AppIcon-Phosphor.icon"; sourceTree = "<group>"; };
-		1CB43C02966167D2ACE44B27 /* PixlyWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PixlyWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1CB43C02966167D2ACE44B27 /* Pixly.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pixly.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1D652F329FB2DD2FB729185C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1F28E01323BFC956862CFEC5 /* SmoothEscapeGame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmoothEscapeGame.swift; sourceTree = "<group>"; };
 		27A3ED285F5B6CD9D47ED8FA /* PixlyWatchUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PixlyWatchUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -248,11 +248,11 @@
 		3B0B1B5EED68037DFE60BDEC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		40495C455314652A215AE7A0 /* GameSoundTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSoundTests.swift; sourceTree = "<group>"; };
 		4A5A466AED2A9A0E0B9A58AD /* PixlyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixlyApp.swift; sourceTree = "<group>"; };
-		511683E12516989A3F136964 /* Pixly.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Pixly.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		511683E12516989A3F136964 /* Pixly.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pixly.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		551EE7E95E573F4B991FDB64 /* BootScript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BootScript.swift; sourceTree = "<group>"; };
 		5B473BC34204122465954610 /* AppIconSwitcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconSwitcher.swift; sourceTree = "<group>"; };
 		5B640BAD1A4AC81093F59926 /* ball.c.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = ball.c.txt; sourceTree = "<group>"; };
-		5FF1392CD1A9191B4709A732 /* PixlyTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = PixlyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		5FF1392CD1A9191B4709A732 /* PixlyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PixlyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		633CD3C01561A504C7D3F892 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		653C94E76664ACA8C508C1BA /* ProgramScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgramScreen.swift; sourceTree = "<group>"; };
 		6D30A929337D0087F911F5BF /* pixel_escape.cbp.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = pixel_escape.cbp.txt; sourceTree = "<group>"; };
@@ -276,12 +276,12 @@
 		A7E057A26D7CAADF8CDBED20 /* Achievement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Achievement.swift; sourceTree = "<group>"; };
 		AAC993534ADB27BEE5402856 /* landscape.c.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = landscape.c.txt; sourceTree = "<group>"; };
 		AF189CAF8A905FC153CF1713 /* Dock-AppIcon-Light.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Dock-AppIcon-Light.png"; sourceTree = "<group>"; };
-		B42364A1C2491AD2983069BD /* PixlyTV.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = PixlyTV.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B42364A1C2491AD2983069BD /* Pixly.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pixly.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B57D2A7E54ECEDAAE227ECBA /* Pixly.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Pixly.entitlements; sourceTree = "<group>"; };
 		BAA1279969F5A3B2A5FB8003 /* timer.h.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = timer.h.txt; sourceTree = "<group>"; };
 		BC1574A3D06D1DBFE6EE3191 /* PixlyProgram.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixlyProgram.swift; sourceTree = "<group>"; };
 		BF81488E53277B17253D0BDA /* PixlyWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixlyWatchApp.swift; sourceTree = "<group>"; };
-		C1234FBD64674F54D4144932 /* PixlyTVUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = PixlyTVUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C1234FBD64674F54D4144932 /* PixlyTVUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PixlyTVUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C5CEF47A8A6E82B961B4EECC /* GameControllerInputTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameControllerInputTests.swift; sourceTree = "<group>"; };
 		CA25800B3EFC63EE0220F492 /* CustomisationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomisationTests.swift; sourceTree = "<group>"; };
 		CD97F9ECC05725B343F3E43B /* ClassicMenuRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassicMenuRemoteTests.swift; sourceTree = "<group>"; };
@@ -297,7 +297,7 @@
 		F41F03CEAB9619BB41B11D8A /* WatchGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchGameView.swift; sourceTree = "<group>"; };
 		F72B94D140CA0F71E519DE30 /* TerminalSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalSession.swift; sourceTree = "<group>"; };
 		F85421EC23FF3E94C1446FAA /* WatchSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchSync.swift; sourceTree = "<group>"; };
-		F9669617A6F6CB7D6FBE9B2B /* PixlyMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PixlyMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F9669617A6F6CB7D6FBE9B2B /* Pixly.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pixly.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -481,11 +481,11 @@
 			isa = PBXGroup;
 			children = (
 				511683E12516989A3F136964 /* Pixly.app */,
-				F9669617A6F6CB7D6FBE9B2B /* PixlyMac.app */,
+				F9669617A6F6CB7D6FBE9B2B /* Pixly.app */,
 				5FF1392CD1A9191B4709A732 /* PixlyTests.xctest */,
-				B42364A1C2491AD2983069BD /* PixlyTV.app */,
+				B42364A1C2491AD2983069BD /* Pixly.app */,
 				C1234FBD64674F54D4144932 /* PixlyTVUITests.xctest */,
-				1CB43C02966167D2ACE44B27 /* PixlyWatch.app */,
+				1CB43C02966167D2ACE44B27 /* Pixly.app */,
 				27A3ED285F5B6CD9D47ED8FA /* PixlyWatchUITests.xctest */,
 			);
 			name = Products;
@@ -552,7 +552,7 @@
 			packageProductDependencies = (
 			);
 			productName = PixlyTV;
-			productReference = B42364A1C2491AD2983069BD /* PixlyTV.app */;
+			productReference = B42364A1C2491AD2983069BD /* Pixly.app */;
 			productType = "com.apple.product-type.application";
 		};
 		9425E031778F05481F8B0AD3 /* PixlyMac */ = {
@@ -570,7 +570,7 @@
 			packageProductDependencies = (
 			);
 			productName = PixlyMac;
-			productReference = F9669617A6F6CB7D6FBE9B2B /* PixlyMac.app */;
+			productReference = F9669617A6F6CB7D6FBE9B2B /* Pixly.app */;
 			productType = "com.apple.product-type.application";
 		};
 		B5FA393074EDB555AD46F2BF /* PixlyWatch */ = {
@@ -588,7 +588,7 @@
 			packageProductDependencies = (
 			);
 			productName = PixlyWatch;
-			productReference = 1CB43C02966167D2ACE44B27 /* PixlyWatch.app */;
+			productReference = 1CB43C02966167D2ACE44B27 /* Pixly.app */;
 			productType = "com.apple.product-type.application";
 		};
 		C3A0DA1099C197E3F75F3ADC /* Pixly */ = {
@@ -657,32 +657,25 @@
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
 					15B0E7367A94B6089873D10E = {
-						DevelopmentTeam = 692NM4E836;
 						ProvisioningStyle = Automatic;
 						TestTargetID = 44EBCA1AE6C3295E07577353;
 					};
 					44EBCA1AE6C3295E07577353 = {
-						DevelopmentTeam = 692NM4E836;
 						ProvisioningStyle = Automatic;
 					};
 					9425E031778F05481F8B0AD3 = {
-						DevelopmentTeam = 692NM4E836;
 						ProvisioningStyle = Automatic;
 					};
 					B5FA393074EDB555AD46F2BF = {
-						DevelopmentTeam = 692NM4E836;
 						ProvisioningStyle = Automatic;
 					};
 					C3A0DA1099C197E3F75F3ADC = {
-						DevelopmentTeam = 692NM4E836;
 						ProvisioningStyle = Automatic;
 					};
 					C520D3FD2C7148E4619DE337 = {
-						DevelopmentTeam = 692NM4E836;
 						ProvisioningStyle = Automatic;
 					};
 					EA9481EC2FB309BD6303A6F5 = {
-						DevelopmentTeam = 692NM4E836;
 						ProvisioningStyle = Automatic;
 						TestTargetID = B5FA393074EDB555AD46F2BF;
 					};
@@ -1059,13 +1052,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = Y78JQ299FM;
 				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = ch.pandermatt.pixly.tvuitests;
+				PRODUCT_BUNDLE_IDENTIFIER = "ch.pandermatt-huber.pixly.tvuitests";
 				SDKROOT = appletvos;
 				TARGETED_DEVICE_FAMILY = 3;
 				TEST_TARGET_NAME = PixlyTV;
@@ -1077,13 +1071,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = Y78JQ299FM;
 				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = ch.pandermatt.pixly.watchuitests;
+				PRODUCT_BUNDLE_IDENTIFIER = "ch.pandermatt-huber.pixly.watchuitests";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 4;
@@ -1099,6 +1094,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = PixlyMac/PixlyMac.entitlements;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = Y78JQ299FM;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = PixlyMac/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1106,7 +1102,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 26.0;
-				PRODUCT_BUNDLE_IDENTIFIER = ch.pandermatt.pixly;
+				PRODUCT_BUNDLE_IDENTIFIER = "ch.pandermatt-huber.pixly";
 				PRODUCT_NAME = Pixly;
 				SDKROOT = macosx;
 			};
@@ -1116,13 +1112,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = Y78JQ299FM;
 				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = ch.pandermatt.pixly.tvuitests;
+				PRODUCT_BUNDLE_IDENTIFIER = "ch.pandermatt-huber.pixly.tvuitests";
 				SDKROOT = appletvos;
 				TARGETED_DEVICE_FAMILY = 3;
 				TEST_TARGET_NAME = PixlyTV;
@@ -1134,13 +1131,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = Y78JQ299FM;
 				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = ch.pandermatt.pixly.tests;
+				PRODUCT_BUNDLE_IDENTIFIER = "ch.pandermatt-huber.pixly.tests";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Pixly.app/Pixly";
@@ -1153,8 +1151,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = PixlyWatch/PixlyWatch.entitlements;
+				DEVELOPMENT_TEAM = Y78JQ299FM;
 				INFOPLIST_FILE = PixlyWatch/Info.plist;
-				PRODUCT_BUNDLE_IDENTIFIER = ch.pandermatt.pixly.watchkitapp;
+				PRODUCT_BUNDLE_IDENTIFIER = "ch.pandermatt-huber.pixly.watchkitapp";
 				PRODUCT_NAME = Pixly;
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
@@ -1170,12 +1169,13 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = PixlyTV/PixlyTV.entitlements;
+				DEVELOPMENT_TEAM = Y78JQ299FM;
 				INFOPLIST_FILE = PixlyTV/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = ch.pandermatt.pixly;
+				PRODUCT_BUNDLE_IDENTIFIER = "ch.pandermatt-huber.pixly";
 				PRODUCT_NAME = Pixly;
 				SDKROOT = appletvos;
 				TARGETED_DEVICE_FAMILY = 3;
@@ -1191,12 +1191,13 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Pixly/Pixly.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = Y78JQ299FM;
 				INFOPLIST_FILE = Pixly/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = ch.pandermatt.pixly;
+				PRODUCT_BUNDLE_IDENTIFIER = "ch.pandermatt-huber.pixly";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1210,12 +1211,13 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Pixly/Pixly.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = Y78JQ299FM;
 				INFOPLIST_FILE = Pixly/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = ch.pandermatt.pixly;
+				PRODUCT_BUNDLE_IDENTIFIER = "ch.pandermatt-huber.pixly";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1225,13 +1227,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = Y78JQ299FM;
 				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = ch.pandermatt.pixly.watchuitests;
+				PRODUCT_BUNDLE_IDENTIFIER = "ch.pandermatt-huber.pixly.watchuitests";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 4;
@@ -1247,12 +1250,13 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = PixlyTV/PixlyTV.entitlements;
+				DEVELOPMENT_TEAM = Y78JQ299FM;
 				INFOPLIST_FILE = PixlyTV/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = ch.pandermatt.pixly;
+				PRODUCT_BUNDLE_IDENTIFIER = "ch.pandermatt-huber.pixly";
 				PRODUCT_NAME = Pixly;
 				SDKROOT = appletvos;
 				TARGETED_DEVICE_FAMILY = 3;
@@ -1266,8 +1270,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = PixlyWatch/PixlyWatch.entitlements;
+				DEVELOPMENT_TEAM = Y78JQ299FM;
 				INFOPLIST_FILE = PixlyWatch/Info.plist;
-				PRODUCT_BUNDLE_IDENTIFIER = ch.pandermatt.pixly.watchkitapp;
+				PRODUCT_BUNDLE_IDENTIFIER = "ch.pandermatt-huber.pixly.watchkitapp";
 				PRODUCT_NAME = Pixly;
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
@@ -1339,13 +1344,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = Y78JQ299FM;
 				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = ch.pandermatt.pixly.tests;
+				PRODUCT_BUNDLE_IDENTIFIER = "ch.pandermatt-huber.pixly.tests";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Pixly.app/Pixly";
@@ -1359,6 +1365,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = PixlyMac/PixlyMac.entitlements;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = Y78JQ299FM;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = PixlyMac/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1366,7 +1373,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 26.0;
-				PRODUCT_BUNDLE_IDENTIFIER = ch.pandermatt.pixly;
+				PRODUCT_BUNDLE_IDENTIFIER = "ch.pandermatt-huber.pixly";
 				PRODUCT_NAME = Pixly;
 				SDKROOT = macosx;
 			};

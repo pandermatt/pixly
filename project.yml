@@ -1,6 +1,6 @@
 name: Pixly
 options:
-  bundleIdPrefix: ch.pandermatt
+  bundleIdPrefix: ch.pandermatt-huber
   deploymentTarget:
     iOS: "26.0"
   createIntermediateGroups: true
@@ -58,7 +58,7 @@ targets:
           - UIInterfaceOrientationLandscapeRight
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: ch.pandermatt.pixly
+        PRODUCT_BUNDLE_IDENTIFIER: ch.pandermatt-huber.pixly
         TARGETED_DEVICE_FAMILY: "1,2"
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES: AppIcon-Phosphor AppIcon-Amber AppIcon-Light
@@ -97,7 +97,7 @@ targets:
     settings:
       base:
         PRODUCT_NAME: Pixly
-        PRODUCT_BUNDLE_IDENTIFIER: ch.pandermatt.pixly
+        PRODUCT_BUNDLE_IDENTIFIER: ch.pandermatt-huber.pixly
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
         ENABLE_HARDENED_RUNTIME: YES
@@ -138,7 +138,7 @@ targets:
     settings:
       base:
         PRODUCT_NAME: Pixly
-        PRODUCT_BUNDLE_IDENTIFIER: ch.pandermatt.pixly
+        PRODUCT_BUNDLE_IDENTIFIER: ch.pandermatt-huber.pixly
         TARGETED_DEVICE_FAMILY: "3"
         ASSETCATALOG_COMPILER_APPICON_NAME: "App Icon & Top Shelf Image"
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
@@ -152,7 +152,7 @@ targets:
       - target: PixlyTV
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: ch.pandermatt.pixly.tvuitests
+        PRODUCT_BUNDLE_IDENTIFIER: ch.pandermatt-huber.pixly.tvuitests
         GENERATE_INFOPLIST_FILE: YES
         TEST_TARGET_NAME: PixlyTV
   PixlyWatch:
@@ -194,12 +194,12 @@ targets:
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         WKApplication: true
-        WKCompanionAppBundleIdentifier: ch.pandermatt.pixly
+        WKCompanionAppBundleIdentifier: ch.pandermatt-huber.pixly
         WKRunsIndependentlyOfCompanionApp: true
     settings:
       base:
         PRODUCT_NAME: Pixly
-        PRODUCT_BUNDLE_IDENTIFIER: ch.pandermatt.pixly.watchkitapp
+        PRODUCT_BUNDLE_IDENTIFIER: ch.pandermatt-huber.pixly.watchkitapp
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
   PixlyWatchUITests:
@@ -212,7 +212,7 @@ targets:
       - target: PixlyWatch
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: ch.pandermatt.pixly.watchuitests
+        PRODUCT_BUNDLE_IDENTIFIER: ch.pandermatt-huber.pixly.watchuitests
         GENERATE_INFOPLIST_FILE: YES
         TEST_TARGET_NAME: PixlyWatch
   PixlyTests:
@@ -224,7 +224,7 @@ targets:
       - target: Pixly
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: ch.pandermatt.pixly.tests
+        PRODUCT_BUNDLE_IDENTIFIER: ch.pandermatt-huber.pixly.tests
         GENERATE_INFOPLIST_FILE: YES
 schemes:
   Pixly:
