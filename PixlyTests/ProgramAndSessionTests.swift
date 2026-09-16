@@ -352,6 +352,7 @@ struct TerminalSessionTests {
         await session.boot()
         #expect(session.mode == .shell)
         #expect(session.showsPrompt)
+        #expect(session.lines.first?.text.hasPrefix("pixly shell") == true)
     }
 
     @Test func startTypesTheBuildCommandThenLaunches() async {
@@ -617,15 +618,14 @@ struct TerminalSessionTests {
         #expect(session.lines.suffix(4).map(\.text) == ["theme = classic", "icon = classic", "avatar = pixel", "scanlines = off"])
     }
 
-    @Test func removingTheRootDirectoryRebootsWithoutDeletingAnything() async throws {
+    @Test func theRootDirectoryMayNotBeRemoved() async throws {
         let (session, _) = try await sessionWithFiles()
-        await session.submit("rm -rf /")
+        for command in ["rm -rf /", "rm /", "rm -rf /*"] {
+            await session.submit(command)
+            #expect(session.lines.last?.text == "rm: \"/\" may not be removed")
+        }
         #expect(session.mode == .shell)
-        #expect(session.lines.first?.text.hasPrefix("Last login") == true)
-        #expect(session.lines.last?.text.hasPrefix("(just kidding") == true)
         #expect(session.removedFiles.isEmpty)
-        await session.submit("rm /")
-        #expect(session.lines.last?.text == "rm: /: is a directory")
     }
 
     @Test func swiftSourceLinksToGitHubAndTheProjectIsADirectory() async throws {

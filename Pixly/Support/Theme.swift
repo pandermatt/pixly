@@ -2,10 +2,6 @@ import SwiftUI
 
 /// Fixed styling; colours come from `PixlyTheme` in the environment.
 enum Theme {
-    static let trafficRed = Color(red: 1, green: 0.37, blue: 0.34)
-    static let trafficYellow = Color(red: 1, green: 0.74, blue: 0.18)
-    static let trafficGreen = Color(red: 0.16, green: 0.79, blue: 0.25)
-
     /// Sizes are for a phone or a desk; a TV is watched from the couch.
     #if os(tvOS)
     static let scale: CGFloat = 2
