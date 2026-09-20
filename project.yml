@@ -10,7 +10,6 @@ options:
       buildPhase: resources
 settings:
   base:
-    DEVELOPMENT_TEAM: 692NM4E836
     CODE_SIGN_STYLE: Automatic
     SWIFT_VERSION: "6.0"
     MARKETING_VERSION: "1.0"
