@@ -189,7 +189,7 @@ struct PixlyProgramTests {
         program.press(at: (x: 40, y: 12))
         #expect(!program.isWaitingToStart)
         #expect(!row(9, of: program).contains("START"))
-        #expect(program.game.y == PixelEscapeGame.startY - 1)
+        #expect(program.game.y == ClassicGame.startY - 1)
     }
 
     @Test func playingUntilGameOverSavesTheScore() async throws {
@@ -415,6 +415,54 @@ struct TerminalSessionTests {
         #expect(!session.lines.contains { ["credits", "theme [NAME]", "icon [NAME]", "ls, cat FILE", "./pixly", "clear"].contains($0.label) })
     }
 
+    @Test func historyReadsTheBundledStoryWithoutAwardingSourceAchievement() async throws {
+        let suite = "pixly-history-\(UUID().uuidString)"
+        let defaults = try #require(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        let session = TerminalSession(charDelay: .zero, lineDelay: .zero, defaults: defaults)
+        await session.boot()
+        var achievements: [Achievement] = []
+        session.onAchievement = { achievements.append($0) }
+        await session.submit("clear")
+        await session.submit("history")
+        let story = session.lines.dropFirst().map(\.text)
+        #expect(story.first == "THE STORY OF PIXLY")
+        #expect(story.contains { $0.contains("Winterthur") && $0.contains("C programming course") })
+        #expect(!story.contains { $0.contains("Pascal") || $0.contains("Jan Huber") || $0.contains("Adrian") })
+        #expect(achievements.isEmpty)
+        await session.submit("clear")
+        await session.submit("cat pixly-history.txt")
+        #expect(session.lines.dropFirst().map(\.text) == story)
+        #expect(achievements.isEmpty)
+        #expect(session.mode == .shell)
+    }
+
+    @Test func historyFileSupportsDiscoveryRemovalAndRestore() async throws {
+        let suite = "pixly-history-files-\(UUID().uuidString)"
+        let defaults = try #require(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        let session = TerminalSession(charDelay: .zero, lineDelay: .zero, defaults: defaults)
+        await session.boot()
+        await session.submit("ls")
+        #expect(session.lines.last?.text.contains("pixly-history.txt") == true)
+        await session.submit("help")
+        #expect(session.lines.contains { $0.label == "history" })
+        session.input = "hist"
+        session.complete()
+        #expect(session.input == "history ")
+        session.input = "cat pixly-"
+        session.complete()
+        #expect(session.input == "cat pixly-history.txt ")
+        await session.submit("rm pixly-history.txt")
+        await session.submit("history")
+        #expect(session.lines.last?.style == .error)
+        #expect(session.lines.last?.text == "cat: pixly-history.txt: No such file or directory")
+        await session.submit("git restore .")
+        await session.submit("clear")
+        await session.submit("history")
+        #expect(session.lines.contains { $0.text == "THE STORY OF PIXLY" })
+    }
+
     @Test func clearEmptiesTheScrollback() async {
         let session = await bootedSession()
         await session.submit("clear")
@@ -581,7 +629,7 @@ struct TerminalSessionTests {
         #expect(session.lines.last?.text == "compilation terminated.")
 
         let relaunched = TerminalSession(charDelay: .zero, lineDelay: .zero, defaults: defaults)
-        #expect(relaunched.removedFiles == ["ball.h", "pixel_escape.cbp"])
+        #expect(relaunched.removedFiles == ["ball.h", "pixly.cbp"])
 
         await session.restoreFiles()
         #expect(!session.canRestore)

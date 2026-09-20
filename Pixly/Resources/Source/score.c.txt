@@ -8,7 +8,7 @@
 #define STANDART_INACTIVE_TEXT gray
 #define STANDART_LOADING lightblue //ACHTUNG, Resundant, Muss ich noch anpassen
 
-char dateiname[] = "pixel_escape.txt"; //Hier wird der Score gespeichert
+char dateiname[] = "highscore.txt"; //Hier wird der Score gespeichert
 FILE *myFile;
 int isLoaded = 0;
 

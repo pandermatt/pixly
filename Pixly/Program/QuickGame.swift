@@ -27,7 +27,7 @@ final class QuickGame {
     /// A run ended: its score and how many jumps it took.
     @ObservationIgnored var onRunEnd: @MainActor (_ score: Int, _ jumps: Int) -> Void = { _, _ in }
 
-    @ObservationIgnored private var game = PixelEscapeGame()
+    @ObservationIgnored private var game = ClassicGame()
     @ObservationIgnored private var scores: ScoreStore
     @ObservationIgnored private var lastTime: TimeInterval?
     @ObservationIgnored private var accumulator = 0.0
@@ -79,8 +79,8 @@ final class QuickGame {
         }
         guard state == .playing, !isPaused, let lastTime else { return }
         accumulator += min(max(time - lastTime, 0), 0.1)
-        while accumulator >= PixelEscapeGame.tickInterval, state == .playing {
-            accumulator -= PixelEscapeGame.tickInterval
+        while accumulator >= ClassicGame.tickInterval, state == .playing {
+            accumulator -= ClassicGame.tickInterval
             game.tick()
             score = game.score
             if game.isOver {
@@ -110,7 +110,7 @@ final class QuickGame {
     }
 
     private func startRun() {
-        game = PixelEscapeGame()
+        game = ClassicGame()
         state = .playing
         score = 0
         isNewBest = false

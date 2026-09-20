@@ -172,7 +172,7 @@ targets:
       - Pixly/GameCenter/Achievement.swift
       - Pixly/GameCenter/GameCenterManager.swift
       - Pixly/Program/Avatar.swift
-      - Pixly/Program/PixelEscapeGame.swift
+      - Pixly/Program/ClassicGame.swift
       - Pixly/Program/QuickGame.swift
       - Pixly/Program/ScoreStore.swift
       - Pixly/Program/TunnelDrawing.swift

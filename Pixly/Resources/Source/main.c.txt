@@ -185,7 +185,7 @@ int main ()
     int pixel=254; //quadrat
 
     //Ladebalken anzeigen
-    load("Pixel Escape", 1, '_'); //Ladebalken zeigen
+    load("Pixly", 1, '_'); //Ladebalken zeigen
 
     while (1)
     {

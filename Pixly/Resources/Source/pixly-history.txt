@@ -1,0 +1,8 @@
+THE STORY OF PIXLY
+==================
+
+Pixly began as a group project for a C programming course in Winterthur, Switzerland. Its entire world was drawn with ASCII characters in an 80-by-25 console.
+
+The challenge was simple: guide a pixel through a scrolling tunnel without hitting the walls. Making it work within a text screen was part of the fun.
+
+Today's Pixly keeps those console roots alive. Play the classic game, explore the original source code, or try Pixly 2.0 with smooth movement and the same stepped tunnel walls.

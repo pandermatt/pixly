@@ -1,6 +1,6 @@
-/// Swift port of ball.c and landscape.c from the original Pixel Escape.
+/// Swift port of ball.c and landscape.c from the original Pixly.
 /// Coordinates are 1-based console cells; `tick()` is one 20 ms timer step of main.c.
-struct PixelEscapeGame: Sendable {
+struct ClassicGame: Sendable {
     static let tickInterval = 0.020
     static let lastColumn = 80          // LAST_LAND
     static let whiteZone = 15           // WHITE_ZONE
