@@ -15,7 +15,7 @@ struct QuickGameTests {
         var time = start
         game.frame(at: time)
         while time < start + seconds, game.state == .playing {
-            time += PixelEscapeGame.tickInterval
+            time += ClassicGame.tickInterval
             game.frame(at: time)
         }
         return time
@@ -27,7 +27,7 @@ struct QuickGameTests {
         game.frame(at: 5)
         #expect(game.state == .ready)
         #expect(game.score == 0)
-        #expect(game.playerRow == PixelEscapeGame.startY)
+        #expect(game.playerRow == ClassicGame.startY)
     }
 
     @Test func aCrashEndsTheRunAndIsReportedOnce() throws {

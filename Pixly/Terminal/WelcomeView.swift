@@ -42,7 +42,7 @@ struct WelcomeView: View {
                         feature(
                             "play.fill",
                             title: "Press start",
-                            detail: "Start compiles the original C game and runs it. Your best scores go to Game Center."
+                            detail: "Start plays a simulated build sequence, then launches the classic game. Game Center keeps track of your best scores."
                         )
                         #if os(tvOS)
                         feature(

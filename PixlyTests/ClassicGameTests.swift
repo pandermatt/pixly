@@ -1,10 +1,10 @@
 import Testing
 @testable import Pixly
 
-struct PixelEscapeGameTests {
+struct ClassicGameTests {
     @Test func startsLikeTheOriginal() {
-        let game = PixelEscapeGame(seed: 1)
-        #expect(game.land.count == PixelEscapeGame.horizon)
+        let game = ClassicGame(seed: 1)
+        #expect(game.land.count == ClassicGame.horizon)
         #expect(game.land.prefix(80).allSatisfy { $0 == 5 })
         #expect(game.y == 13)
         #expect(game.tail == [13, 13, 13, 13])
@@ -13,7 +13,7 @@ struct PixelEscapeGameTests {
     }
 
     @Test func wallsMatchCheckFromLandscapeC() {
-        let game = PixelEscapeGame(seed: 1)
+        let game = ClassicGame(seed: 1)
         #expect(game.isSolid(x: 5, y: 5))
         #expect(!game.isSolid(x: 5, y: 6))
         #expect(!game.isSolid(x: 5, y: 20))
@@ -21,7 +21,7 @@ struct PixelEscapeGameTests {
     }
 
     @Test func tickScoresTwoAndBringsInTheObstacle() {
-        var game = PixelEscapeGame(seed: 1)
+        var game = ClassicGame(seed: 1)
         game.tick()
         #expect(game.score == 2)
         #expect(game.obstacleX == 80)
@@ -29,7 +29,7 @@ struct PixelEscapeGameTests {
     }
 
     @Test func fallsOneRowEveryThirdTick() {
-        var game = PixelEscapeGame(seed: 1)
+        var game = ClassicGame(seed: 1)
         game.tick()
         game.tick()
         #expect(game.y == 13)
@@ -40,7 +40,7 @@ struct PixelEscapeGameTests {
     }
 
     @Test func jumpRisesImmediatelyThenOnceMoreBeforeFalling() {
-        var game = PixelEscapeGame(seed: 1)
+        var game = ClassicGame(seed: 1)
         game.jump()
         #expect(game.y == 12)
         for _ in 0..<3 { game.tick() }
@@ -53,11 +53,11 @@ struct PixelEscapeGameTests {
     }
 
     @Test func landscapeStaysInsideTheConsole() {
-        var game = PixelEscapeGame(seed: 42)
+        var game = ClassicGame(seed: 42)
         var valid = true
         for _ in 0..<20_000 {
             game.moveLandscape()
-            let inRange = game.land.allSatisfy { PixelEscapeGame.landRange.contains($0) }
+            let inRange = game.land.allSatisfy { ClassicGame.landRange.contains($0) }
             if !inRange || abs(game.land[79] - game.land[78]) > 1 {
                 valid = false
                 break
@@ -67,11 +67,11 @@ struct PixelEscapeGameTests {
     }
 
     @Test func obstacleWrapsEveryEightyColumnsInsideTheSafeZone() {
-        var game = PixelEscapeGame(seed: 7)
+        var game = ClassicGame(seed: 7)
         var valid = true
         for step in 0..<800 {
             game.moveLandscape()
-            let rows = game.obstacleStart..<game.obstacleStart + PixelEscapeGame.obstacleHeight
+            let rows = game.obstacleStart..<game.obstacleStart + ClassicGame.obstacleHeight
             if game.obstacleX != 80 - step % 80 || rows.contains(where: { game.isSolid(x: game.obstacleX!, y: $0) }) {
                 valid = false
                 break
@@ -81,7 +81,7 @@ struct PixelEscapeGameTests {
     }
 
     @Test func notJumpingEndsTheGame() {
-        var game = PixelEscapeGame(seed: 3)
+        var game = ClassicGame(seed: 3)
         var ticks = 0
         while !game.isOver, ticks < 1000 {
             game.tick()
@@ -92,7 +92,7 @@ struct PixelEscapeGameTests {
     }
 
     @Test func theLandscapeAheadIsWhatScrollsIntoView() {
-        var game = PixelEscapeGame(seed: 5)
+        var game = ClassicGame(seed: 5)
         let ahead = Array(game.land[80..<120])
         for _ in 0..<40 {
             game.moveLandscape()
@@ -101,7 +101,7 @@ struct PixelEscapeGameTests {
     }
 
     @Test func barsOnTheirWayArriveAtColumnEightyAsPlanned() {
-        var game = PixelEscapeGame(seed: 5)
+        var game = ClassicGame(seed: 5)
         let coming = game.obstacles
         #expect(coming.map(\.x) == [81, 161])
 
@@ -118,8 +118,8 @@ struct PixelEscapeGameTests {
     }
 
     @Test func sameSeedSameLandscape() {
-        var a = PixelEscapeGame(seed: 9)
-        var b = PixelEscapeGame(seed: 9)
+        var a = ClassicGame(seed: 9)
+        var b = ClassicGame(seed: 9)
         for _ in 0..<500 {
             a.moveLandscape()
             b.moveLandscape()

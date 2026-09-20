@@ -78,7 +78,7 @@ final class PixlyProgram {
     var isEditingName = false
     var draftName = ""
     private(set) var scores: ScoreStore
-    @ObservationIgnored private(set) var game = PixelEscapeGame()
+    @ObservationIgnored private(set) var game = ClassicGame()
     @ObservationIgnored private(set) var iconTask: Task<Void, Never>?
 
     @ObservationIgnored let preferences: Preferences
@@ -418,7 +418,7 @@ final class PixlyProgram {
     }
 
     private func startGame() {
-        game = PixelEscapeGame()
+        game = ClassicGame()
         isPaused = false
         isWaitingToStart = true
         accumulator = 0
@@ -438,8 +438,8 @@ final class PixlyProgram {
         defer { lastTimestamp = timestamp }
         guard screen == .playing, !isPaused, !isWaitingToStart, let lastTimestamp else { return }
         accumulator += min(timestamp - lastTimestamp, 0.1)
-        while accumulator >= PixelEscapeGame.tickInterval, screen == .playing {
-            accumulator -= PixelEscapeGame.tickInterval
+        while accumulator >= ClassicGame.tickInterval, screen == .playing {
+            accumulator -= ClassicGame.tickInterval
             advance()
         }
     }
@@ -721,9 +721,9 @@ final class PixlyProgram {
     }
 
     /// How many columns the screen has room for. Mac and Apple TV show more of the landscape when
-    /// wider; the game itself is the same (see `PixelEscapeGame.horizon`), so scores stay comparable.
+    /// wider; the game itself is the same (see `ClassicGame.horizon`), so scores stay comparable.
     func setColumns(_ columns: Int) {
-        let columns = min(max(columns, ConsoleBuffer.columns), PixelEscapeGame.horizon)
+        let columns = min(max(columns, ConsoleBuffer.columns), ClassicGame.horizon)
         guard columns != self.columns else { return }
         self.columns = columns
         if screen == .playing {

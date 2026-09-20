@@ -47,7 +47,7 @@ struct WatchGameView: View {
     /// height of a row.
     private func drawAvatar(row: Int, layout: ConsoleLayout, in graphics: inout GraphicsContext) {
         guard (1...24).contains(row) else { return }
-        let cell = layout.rect(x: PixelEscapeGame.playerX, y: row)
+        let cell = layout.rect(x: ClassicGame.playerX, y: row)
         let side = min(cell.height, cell.width * 3)
         let rect = CGRect(x: cell.midX - side / 2, y: cell.midY - side / 2, width: side, height: side)
         let ink = theme.ink(.black)

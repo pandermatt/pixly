@@ -14,7 +14,7 @@ final class TerminalSession {
     nonisolated static let prompt = "player@pixly ~ %"
     nonisolated static let commands = [
         "./pixly", "./pixly2", "avatar", "brew", "cat", "clear", "coffee", "credits", "echo", "exit", "gcc", "git", "help",
-        "highscore", "highscore2", "icon", "leaderboard", "ls", "make", "neofetch", "open", "ping", "rm", "scanlines",
+        "highscore", "highscore2", "history", "icon", "leaderboard", "ls", "make", "neofetch", "open", "ping", "rm", "scanlines",
         "settings", "start", "start2", "sudo", "theme", "top", "welcome", "whoami", "xcodebuild", "xed",
     ]
     private static let maxLines = 500
@@ -244,6 +244,8 @@ final class TerminalSession {
             } else {
                 append("git: '\(parts[1])' is not a git command. See 'git --help'.", .error)
             }
+        case "history":
+            await execute("cat pixly-history.txt")
         case "cat":
             if argument.isEmpty {
                 append("usage: cat FILE", .dim)
@@ -252,7 +254,7 @@ final class TerminalSession {
                     append(line)
                 }
             } else if let program = scoreProgram(named: argument), !scores(of: program).isEmpty {
-                // score.c's pixel_escape.txt format, without its +5 "encryption".
+                // score.c's highscore.txt format, without its +5 "encryption".
                 for entry in scores(of: program) {
                     append("\(entry.name)§\(entry.score)")
                 }
@@ -266,7 +268,7 @@ final class TerminalSession {
                     append("// the whole game (Swift and C) is on GitHub:", .dim)
                     append(BootScript.repository, .link)
                 }
-                if argument != "credits.txt" {
+                if argument != "credits.txt" && argument != "pixly-history.txt" {
                     onAchievement(.readTheSource)
                 }
             } else {
@@ -317,7 +319,7 @@ final class TerminalSession {
         case "sudo":
             append("\(playerName()) is not in the sudoers file. This incident will be reported.", .error)
         case "exit", "logout":
-            append("there is no escape. except pixel escape: try ./pixly", .dim)
+            append("ready for another run? try ./pixly", .dim)
         default:
             append("zsh: command not found: \(name)", .error)
         }

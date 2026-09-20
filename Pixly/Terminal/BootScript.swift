@@ -28,7 +28,7 @@ enum BootScript {
 
     static let files = [
         "Pixly.xcodeproj", "Pixly2.swift", "ball.c", "ball.h", "consoleio.h", "credits.txt", "landscape.c", "landscape.h", "main.c",
-        "pixel_escape.cbp", "score.c", "score.h", "timer.h",
+        "pixly.cbp", "pixly-history.txt", "score.c", "score.h", "timer.h",
     ]
     static let directories = ["Pixly.xcodeproj"]
     static let xcodeprojContents = "project.pbxproj  project.xcworkspace  xcshareddata"
@@ -70,13 +70,17 @@ enum BootScript {
         """
 
     static let credits = """
-        Pixel Escape, the original C console game
+        Pixly, the original C console game
         © Pascal Andermatt, Jan Huber, Adrian Schrempp
 
         Pixly, its iOS and macOS port
         """
 
     static func source(named name: String) -> String? {
+        if name == "pixly-history.txt" {
+            guard let url = Bundle.main.url(forResource: "pixly-history", withExtension: "txt") else { return nil }
+            return try? String(contentsOf: url, encoding: .utf8)
+        }
         if name == "credits.txt" {
             return credits
         }
@@ -108,7 +112,7 @@ enum BootScript {
     static let motd = [
         Line(""),
         Line("pixly — one pixel, one tunnel, no way out", .accent),
-        Line("a port of \"Pixel Escape\", our C console game (consoleio.h, 80×25)", .dim),
+        Line("a port of \"Pixly\", our C console game (consoleio.h, 80×25)", .dim),
         Line(""),
         Line(startHint),
         Line(""),
@@ -138,6 +142,7 @@ enum BootScript {
         .entry("highscore2", "show Pixly 2.0 highscores"),
         .entry("leaderboard", "open the Game Center leaderboard"),
         .entry("welcome", "show the welcome screen again"),
+        .entry("history", "read the story in pixly-history.txt"),
         Line("tab completes commands, files and values", .dim),
     ]
     #endif

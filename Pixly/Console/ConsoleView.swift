@@ -34,7 +34,7 @@ struct ConsoleLayout: Equatable {
         guard size.width > 0, size.height > 0 else { return ConsoleBuffer.columns }
         let cellWidth = size.height / CGFloat(ConsoleBuffer.rows * 2)
         let fitting = Int((size.width / cellWidth).rounded(.down))
-        let columns = min(max(fitting, ConsoleBuffer.columns), PixelEscapeGame.horizon)
+        let columns = min(max(fitting, ConsoleBuffer.columns), ClassicGame.horizon)
         return columns - columns % 2
     }
 

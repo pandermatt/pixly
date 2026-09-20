@@ -5,7 +5,7 @@ struct ScoreEntry: Codable, Equatable, Sendable {
     var score: Int
 }
 
-/// Local highscore table, the successor of pixel_escape.txt. Each game mode keeps its own `key`.
+/// Local highscore table, the successor of highscore.txt. Each game mode keeps its own `key`.
 struct ScoreStore {
     static let maxNameLength = 24
 
