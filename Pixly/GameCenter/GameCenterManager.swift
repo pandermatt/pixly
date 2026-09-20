@@ -12,9 +12,9 @@ typealias PlatformViewController = UIViewController
 
 @Observable @MainActor
 final class GameCenterManager {
-    nonisolated static let leaderboardID = "ch.pandermatt-huber.pixly.highscore"
+    nonisolated static let leaderboardID = "ch.pandermatt_huber.pixly.highscore"
     /// Pixly 2.0 scores are not comparable with the classic port, so they get their own board.
-    nonisolated static let leaderboardID2 = "ch.pandermatt-huber.pixly.highscore2"
+    nonisolated static let leaderboardID2 = "ch.pandermatt_huber.pixly.highscore2"
     private static let leaderboards = [leaderboardID, leaderboardID2]
 
     private(set) var isAuthenticated = false
