@@ -211,6 +211,28 @@ struct PixlyProgramTests {
         #expect(program.scores.entries == [ScoreEntry(name: "Pascal", score: ticks * 2)])
     }
 
+    @Test func restartKeepsTheScoreAndGoesStraightBackIn() async throws {
+        let program = try makeProgram()
+        await program.run()
+        program.confirm()
+        let ticks = playUntilGameOver(program)
+        #expect(program.screen == .saveScore)
+
+        program.setName("Pascal")
+        program.saveAndRestart()
+        #expect(program.scores.entries == [ScoreEntry(name: "Pascal", score: ticks * 2)])
+        #expect(program.screen == .playing)
+    }
+
+    @Test func restartDoesNothingOutsideTheSaveScreen() async throws {
+        let program = try makeProgram()
+        await program.run()
+        #expect(program.screen == .menu)
+        program.saveAndRestart()
+        #expect(program.screen == .menu)
+        #expect(program.scores.entries.isEmpty)
+    }
+
     @Test func tappingTheBottomBarSavesOnceTheNameIsTyped() async throws {
         let program = try makeProgram()
         await program.run()

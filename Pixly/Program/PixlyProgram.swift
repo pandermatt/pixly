@@ -373,6 +373,14 @@ final class PixlyProgram {
         showMainMenu()
     }
 
+    /// The flat half's restart: keep the score and go straight into the next run. `saveScore()`
+    /// leaves the main menu with "New Game" already selected, so confirming starts it.
+    func saveAndRestart() {
+        guard screen == .saveScore else { return }
+        saveScore()
+        confirm()
+    }
+
     private func goBack() {
         switch screen {
         case .avatar: showMainMenu(selection: 3)

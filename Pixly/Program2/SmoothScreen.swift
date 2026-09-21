@@ -7,6 +7,8 @@ import AppKit
 /// all in the current theme's colours.
 struct SmoothScreen: View {
     let program: SmoothProgram
+    /// True when the vertical bar hosts the looks and the way out, so they are not drawn here too.
+    var hidesControls = false
     let onExit: (_ interrupted: Bool) -> Void
 
     @Environment(\.theme) private var theme
@@ -41,7 +43,9 @@ struct SmoothScreen: View {
             #endif
             hud
             #if !os(tvOS)
-            readyControls
+            if !hidesControls {
+                readyControls
+            }
             #endif
             if let result = program.result {
                 // Dims the frozen frame so the panel reads well over any tunnel colour.
@@ -189,7 +193,9 @@ struct SmoothScreen: View {
                     .padding(.horizontal, 18)
                     .padding(.vertical, 10)
                     .glassEffect(.regular, in: .capsule)
-                    .padding(.bottom, 110)
+                    // 110 clears the looks row; with those in the vertical bar the hint drops to
+                    // where that row used to sit.
+                    .padding(.bottom, hidesControls ? 24 : 110)
                     .transition(.opacity)
             }
         }

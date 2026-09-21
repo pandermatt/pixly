@@ -16,6 +16,7 @@ final class Preferences {
     private static let appIconKey = "appIcon"
     private static let avatarKey = "avatar"
     private static let scanlinesKey = "scanlines"
+    private static let leftHandedKey = "leftHanded"
     private static let welcomeKey = "hasSeenWelcome"
 
     private(set) var theme: ThemeID
@@ -23,6 +24,8 @@ final class Preferences {
     private(set) var avatar: Avatar
     /// CRT-style lines over the terminal and the game console.
     private(set) var scanlines: Bool
+    /// Mirrors the folded phone's control surface for a left-handed grip.
+    private(set) var leftHanded: Bool
     private(set) var hasSeenWelcome: Bool
     /// Set while browsing the Theme menu, so the whole app recolours before the choice is made.
     var previewTheme: ThemeID?
@@ -37,6 +40,7 @@ final class Preferences {
         theme = defaults.string(forKey: Self.themeKey).flatMap(ThemeID.init(rawValue:)) ?? .classic
         avatar = defaults.string(forKey: Self.avatarKey).flatMap(Avatar.init(rawValue:)) ?? .pixel
         scanlines = defaults.object(forKey: Self.scanlinesKey) as? Bool ?? false
+        leftHanded = defaults.object(forKey: Self.leftHandedKey) as? Bool ?? false
         hasSeenWelcome = defaults.bool(forKey: Self.welcomeKey)
         appIcon = switcher.current ?? defaults.string(forKey: Self.appIconKey).flatMap(ThemeID.init(rawValue:)) ?? .classic
     }
@@ -61,6 +65,11 @@ final class Preferences {
         defaults.set(scanlines, forKey: Self.scanlinesKey)
     }
 
+    func setLeftHanded(_ leftHanded: Bool) {
+        self.leftHanded = leftHanded
+        defaults.set(leftHanded, forKey: Self.leftHandedKey)
+    }
+
     func markWelcomeSeen() {
         hasSeenWelcome = true
         defaults.set(true, forKey: Self.welcomeKey)
@@ -79,10 +88,11 @@ final class Preferences {
         setTheme(.classic)
         setAvatar(.pixel)
         setScanlines(false)
+        setLeftHanded(false)
         if appIcon != .classic {
             await setAppIcon(.classic)
         }
-        for key in [Self.themeKey, Self.avatarKey, Self.scanlinesKey] {
+        for key in [Self.themeKey, Self.avatarKey, Self.scanlinesKey, Self.leftHandedKey] {
             defaults.removeObject(forKey: key)
         }
     }

@@ -8,6 +8,9 @@ import AppKit
 struct ProgramScreen: View {
     let program: PixlyProgram
     let isLandscape: Bool
+    /// True when something else hosts the keys — the flat half of a folded phone, or the vertical
+    /// bar the system stacks down one side of it — so the console takes the whole width.
+    var hidesKeys = false
     let onInterrupt: () -> Void
     let onOpenLeaderboard: () -> Void
 
@@ -106,8 +109,10 @@ struct ProgramScreen: View {
                 .overlay { windowShape.strokeBorder(theme.stroke, lineWidth: 1) }
             #endif
             #if os(iOS)
-            controls
-                .frame(width: isLandscape ? 132 : nil)
+            if !hidesKeys {
+                controls
+                    .frame(width: isLandscape ? 132 : nil)
+            }
             #endif
         }
         #if os(macOS)
@@ -206,7 +211,9 @@ struct ProgramScreen: View {
                 program.isPaused ? program.jump() : program.pause()
             }
         case .y:
-            break
+            if program.screen == .saveScore {
+                program.saveAndRestart()
+            }
         }
     }
 
@@ -384,6 +391,7 @@ struct ProgramScreen: View {
                     }
                 case .saveScore:
                     key("name", "pencil") { program.beginEditingName() }
+                    key("restart", "arrow.clockwise") { program.saveAndRestart() }
                     key("save", "return", prominent: true) { program.saveScore() }
                 case .scoreTable:
                     key("Game Center", "trophy.fill") { onOpenLeaderboard() }

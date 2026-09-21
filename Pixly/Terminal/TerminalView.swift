@@ -11,6 +11,10 @@ struct TerminalView: View {
     @State private var program: PixlyProgram?
     @State private var smoothProgram: SmoothProgram?
     @State private var showsWelcome = false
+    /// True while the phone is partly folded with the crease across it.
+    @State private var isTabletop = false
+    /// Set while the system is stacking bars down one side of the display.
+    @State private var barEdge: HorizontalEdge?
     @FocusState private var keyboardFocused: Bool
     #if os(macOS)
     @State private var shellKeys = KeyDownMonitor()
@@ -24,48 +28,74 @@ struct TerminalView: View {
     }
 
     var body: some View {
+        #if os(iOS)
+        if #available(iOS 27.1, *) {
+            // The system only lifts a bar into the folded phone's vertical strip when the items
+            // come from a navigation container, so one is wrapped around the terminal. Its own
+            // bar stays hidden: Pixly draws its chrome itself.
+            NavigationStack {
+                terminalBody
+                    .modifier(SideBar(edge: $barEdge) { programBarItems })
+            }
+        } else {
+            terminalBody
+        }
+        #else
+        terminalBody
+        #endif
+    }
+
+    private var terminalBody: some View {
         GeometryReader { proxy in
             let isLandscape = proxy.size.width > proxy.size.height
-            VStack(spacing: 10) {
-                #if os(iOS)
-                // On the Mac the real window title bar is the only one. Both games hide it to use
-                // the whole screen: the classic port in landscape, Pixly 2.0 always.
-                if smoothProgram == nil, program == nil || !isLandscape {
-                    TitleBar(title: title, canInterrupt: isRunning, onInterrupt: interruptProgram)
-                }
-                #endif
-                if let program {
-                    ProgramScreen(
-                        program: program,
-                        isLandscape: isLandscape,
-                        onInterrupt: interruptProgram,
-                        onOpenLeaderboard: { _ = gameCenter.showLeaderboard() }
-                    )
-                    .transition(.opacity)
-                } else if let smoothProgram {
-                    SmoothScreen(program: smoothProgram) { interrupted in
-                        finishProgram(runtime: smoothProgram.runtime, interrupted: interrupted)
+            // A partly folded phone puts the game in the standing half and the keys in the
+            // flat one; every other posture renders this exactly as before.
+            TabletopSplit(isActive: isTabletop && isRunning) {
+                VStack(spacing: 10) {
+                    #if os(iOS)
+                    // On the Mac the real window title bar is the only one. Both games hide it to use
+                    // the whole screen: the classic port in landscape, Pixly 2.0 always.
+                    if smoothProgram == nil, program == nil || !isLandscape {
+                        TitleBar(title: title, canInterrupt: isRunning, onInterrupt: interruptProgram)
                     }
-                    .transition(.opacity)
-                } else {
-                    shellWindow
-                    commandBar
-                        .transition(.move(edge: .bottom).combined(with: .opacity))
+                    #endif
+                    if let program {
+                        ProgramScreen(
+                            program: program,
+                            isLandscape: isLandscape,
+                            hidesKeys: isTabletop || barEdge != nil,
+                            onInterrupt: interruptProgram,
+                            onOpenLeaderboard: { _ = gameCenter.showLeaderboard() }
+                        )
+                        .transition(.opacity)
+                    } else if let smoothProgram {
+                        SmoothScreen(program: smoothProgram, hidesControls: barEdge != nil) { interrupted in
+                            finishProgram(runtime: smoothProgram.runtime, interrupted: interrupted)
+                        }
+                        .transition(.opacity)
+                    } else {
+                        shellWindow
+                        commandBar
+                            .transition(.move(edge: .bottom).combined(with: .opacity))
+                    }
                 }
+                #if os(tvOS)
+                // A running game fills the TV (each screen takes its colours to the edges).
+                .padding(isRunning ? 0 : 12)
+                #elseif os(iOS)
+                // Pixly 2.0 fills the whole screen, around the Dynamic Island too.
+                .padding(.horizontal, smoothProgram == nil ? 12 : 0)
+                .padding(.vertical, smoothProgram == nil ? 6 : 0)
+                #else
+                .padding(.horizontal, smoothProgram == nil ? 12 : 4)
+                .padding(.vertical, smoothProgram == nil ? 6 : 0)
+                #endif
+            } controls: {
+                tabletopControls
             }
-            #if os(tvOS)
-            // A running game fills the TV (each screen takes its colours to the edges).
-            .padding(isRunning ? 0 : 12)
-            #elseif os(iOS)
-            // Pixly 2.0 fills the whole screen, around the Dynamic Island too.
-            .padding(.horizontal, smoothProgram == nil ? 12 : 0)
-            .padding(.vertical, smoothProgram == nil ? 6 : 0)
-            #else
-            .padding(.horizontal, smoothProgram == nil ? 12 : 4)
-            .padding(.vertical, smoothProgram == nil ? 6 : 0)
-            #endif
         }
         .background { Backdrop() }
+        .background { TabletopProbe(isTabletop: $isTabletop) }
         .animation(.smooth(duration: 0.3), value: isRunning)
         #if os(iOS)
         .statusBarHidden(isRunning)
@@ -248,6 +278,8 @@ struct TerminalView: View {
                 .tint(theme.buttonTint)
                 .layoutPriority(1)
 
+                // Stays beside start even with a vertical bar up: as an icon alone it gives no
+                // hint that it launches a second game.
                 Button {
                     Task { await session.compileAndRun(.smooth) }
                 } label: {
@@ -261,8 +293,11 @@ struct TerminalView: View {
                 .buttonBorderShape(.capsule)
                 .accessibilityLabel("Start Pixly 2.0")
 
-                iconButton("trophy.fill", label: "Leaderboard") { Task { await session.run("leaderboard") } }
-                iconButton("questionmark", label: "Help") { Task { await session.run("help") } }
+                // These two read fine as icons, so a vertical bar takes them.
+                if barEdge == nil {
+                    iconButton("trophy.fill", label: "Leaderboard") { Task { await session.run("leaderboard") } }
+                    iconButton("questionmark", label: "Help") { Task { await session.run("help") } }
+                }
             }
         }
         .disabled(session.isBusy)
@@ -363,6 +398,141 @@ struct TerminalView: View {
         }
     }
 
+    #if os(iOS)
+    private static let menuScreens: [PixlyProgram.Screen] = [.menu, .avatar, .settings, .theme, .appIcon]
+
+    /// The classic port's keys, in the strip the system reserves for bars. Jump is deliberately
+    /// not here: it wants a thumb-sized target, and the console itself is already one.
+    ///
+    /// Every item carries an icon — the system drops a title-only or custom-view item from a
+    /// vertical bar entirely.
+    @available(iOS 27.1, *)
+    @ToolbarContentBuilder
+    private var programBarItems: some ToolbarContent {
+        if let program {
+            let screen = program.screen
+            if Self.menuScreens.contains(screen) {
+                ToolbarItem {
+                    Button("Up", systemImage: "chevron.up") { program.moveSelection(-1) }
+                }
+                ToolbarItem {
+                    Button("Down", systemImage: "chevron.down") { program.moveSelection(1) }
+                }
+                if screen != .menu {
+                    ToolbarItem {
+                        Button("Back", systemImage: "chevron.left") { program.handle(.escape) }
+                    }
+                }
+                ToolbarItem(placement: .topBarPinnedTrailing) {
+                    Button("Enter", systemImage: "return") { program.confirm() }
+                }
+            }
+            if screen == .playing {
+                ToolbarItem(placement: .topBarPinnedTrailing) {
+                    // `stop.circle` rather than the column's `q.square`: stripped of its label in
+                    // a vertical bar, a bare "q" glyph reads as nothing next to the ✕ beside it.
+                    // This ends the run and keeps the score; ✕ throws it away.
+                    Button(
+                        program.isPaused ? "Resume" : "Quit",
+                        systemImage: program.isPaused ? "play.fill" : "stop.circle"
+                    ) {
+                        program.isPaused ? program.jump() : program.quitGame()
+                    }
+                }
+            }
+            if screen == .saveScore {
+                ToolbarItem {
+                    Button("Name", systemImage: "pencil") { program.beginEditingName() }
+                }
+                ToolbarItem {
+                    Button("Restart", systemImage: "arrow.clockwise") { program.saveAndRestart() }
+                }
+                ToolbarItem(placement: .topBarPinnedTrailing) {
+                    Button("Save", systemImage: "return") { program.saveScore() }
+                }
+            }
+            if screen == .scoreTable || screen == .credits {
+                ToolbarItem(placement: .topBarPinnedTrailing) {
+                    Button("Back", systemImage: "return") { program.confirm() }
+                }
+            }
+            // Apple reserves the top of a vertical bar for Back and Close.
+            ToolbarItem(placement: .cancellationAction) {
+                Button("Interrupt", systemImage: "xmark", action: interruptProgram)
+            }
+        }
+        // Nothing while the game-over panel is up: it owns that moment. It holds the name field,
+        // which cannot move into a bar, so `Save & Retry` has to stay beside it — and its Exit
+        // saves the run first, where a bar exit would quietly bin it.
+        if let smoothProgram, smoothProgram.result == nil {
+            // Pixly 2.0's looks and its way out. Unlike the flat layout, these stay up during a
+            // run: the bar sits outside the playfield, so a press here can never cost a jump.
+            ToolbarItem {
+                Menu {
+                    Picker("Theme", selection: Binding(get: { preferences.theme }, set: { preferences.setTheme($0) })) {
+                        ForEach(ThemeID.allCases, id: \.self) { theme in
+                            Text(theme.title).tag(theme)
+                        }
+                    }
+                    .pickerStyle(.inline)
+                } label: {
+                    Label("Theme", systemImage: "paintpalette.fill")
+                }
+            }
+            ToolbarItem {
+                Menu {
+                    Picker("Avatar", selection: Binding(get: { preferences.avatar }, set: { preferences.setAvatar($0) })) {
+                        ForEach(Avatar.allCases, id: \.self) { avatar in
+                            Text(verbatim: "\(avatar.emoji ?? "■") \(avatar.title)").tag(avatar)
+                        }
+                    }
+                    .pickerStyle(.inline)
+                } label: {
+                    Label("Avatar", systemImage: "face.smiling")
+                }
+            }
+            ToolbarItem(placement: .cancellationAction) {
+                Button("Exit Pixly 2.0", systemImage: "xmark") {
+                    finishProgram(runtime: smoothProgram.runtime, interrupted: true)
+                }
+            }
+        }
+        if !isRunning {
+            // The shell's row keeps start and 2.0; the rest moves here. Each needs an icon — a
+            // title-only item is dropped from a vertical bar.
+            ToolbarItem {
+                Button("Leaderboard", systemImage: "trophy.fill") {
+                    Task { await session.run("leaderboard") }
+                }
+                .disabled(session.isBusy)
+            }
+            ToolbarItem {
+                Button("Help", systemImage: "questionmark") {
+                    Task { await session.run("help") }
+                }
+                .disabled(session.isBusy)
+            }
+        }
+    }
+    #endif
+
+    /// The keys for the flat half of a folded phone. Built here rather than inside a game screen:
+    /// those re-evaluate every frame, this does not.
+    @ViewBuilder
+    private var tabletopControls: some View {
+        #if os(iOS)
+        if #available(iOS 27.1, *) {
+            if let program {
+                ClassicTabletopControls(program: program, preferences: preferences)
+            } else if let smoothProgram {
+                SmoothTabletopControls(program: smoothProgram, preferences: preferences) {
+                    finishProgram(runtime: smoothProgram.runtime, interrupted: false)
+                }
+            }
+        }
+        #endif
+    }
+
     private func interruptProgram() {
         finishProgram(runtime: program?.runtime ?? smoothProgram?.runtime ?? 0, interrupted: true)
     }
@@ -381,3 +551,25 @@ struct TerminalView: View {
         }
     }
 }
+
+#if os(iOS)
+/// Hands `items` to the strip the system stacks bars into on one side of a folded phone — space
+/// Pixly would otherwise leave empty — and reports that edge back so the rest of the layout can
+/// drop the keys it would have drawn itself.
+///
+/// The bar stays hidden in every other pose: Pixly draws its own chrome.
+@available(iOS 27.1, *)
+private struct SideBar<Items: ToolbarContent>: ViewModifier {
+    @Binding var edge: HorizontalEdge?
+    @ToolbarContentBuilder let items: () -> Items
+
+    @Environment(\.toolbarVerticalEdge) private var verticalEdge
+
+    func body(content: Content) -> some View {
+        content
+            .toolbar(verticalEdge == nil ? .hidden : .visible, for: .navigationBar)
+            .toolbar { items() }
+            .onChange(of: verticalEdge, initial: true) { _, edge in self.edge = edge }
+    }
+}
+#endif

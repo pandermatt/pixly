@@ -52,6 +52,19 @@ struct PreferencesTests {
         #expect(reloaded.scanlines)
     }
 
+    @Test func theHandedSwitchPersistsAndResets() async throws {
+        let defaults = try makeDefaults()
+        let preferences = Preferences(defaults: defaults, iconSwitcher: FakeIconSwitcher(current: nil))
+        #expect(!preferences.leftHanded)
+
+        preferences.setLeftHanded(true)
+        #expect(Preferences(defaults: defaults, iconSwitcher: FakeIconSwitcher(current: nil)).leftHanded)
+
+        await preferences.resetSettings()
+        #expect(!preferences.leftHanded)
+        #expect(!Preferences(defaults: defaults, iconSwitcher: FakeIconSwitcher(current: nil)).leftHanded)
+    }
+
     @Test func aRemovedAvatarFallsBackToPixel() throws {
         let defaults = try makeDefaults()
         defaults.set("smiley", forKey: "avatar")
