@@ -16,7 +16,7 @@ enum Achievement: String, CaseIterable, Sendable {
     static let jumpGoal = 1_000
 
     var id: String {
-        "ch.pandermatt.pixly.achievement.\(rawValue)"
+        "ch.pandermatt_huber.pixly.achievement.\(rawValue)"
     }
 
     var title: String {

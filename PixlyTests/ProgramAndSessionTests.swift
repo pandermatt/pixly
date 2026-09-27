@@ -657,8 +657,9 @@ struct TerminalSessionTests {
             if program == .classic { classic = [] }
         }
         await session.submit("ls")
-        #expect(session.lines.last?.text.contains("consoleio.h  credits.txt  highscore.txt  landscape.c") == true)
-        #expect(session.lines.last?.text.contains("highscore2.txt") == false)
+        let listedFiles = Set(try #require(session.lines.last).text.split(separator: "  ").map(String.init))
+        #expect(Set(["consoleio.h", "credits.txt", "highscore.txt", "history.txt", "landscape.c"]).isSubset(of: listedFiles))
+        #expect(!listedFiles.contains("highscore2.txt"))
         await session.submit("cat highscore.txt")
         #expect(session.lines.suffix(2).map(\.text) == ["Pascal§420", "Jan§99"])
 
@@ -677,7 +678,10 @@ struct TerminalSessionTests {
         await session.submit("rm ball.h *.cbp")
         #expect(!session.canRestore)
         await session.submit("ls")
-        #expect(session.lines.last?.text.hasPrefix("Pixly.xcodeproj  Pixly2.swift  ball.c  consoleio.h  credits.txt  landscape.c") == true)
+        let listedFiles = Set(try #require(session.lines.last).text.split(separator: "  ").map(String.init))
+        #expect(Set(["Pixly.xcodeproj", "Pixly2.swift", "ball.c", "consoleio.h", "credits.txt", "history.txt", "landscape.c"]).isSubset(of: listedFiles))
+        #expect(!listedFiles.contains("ball.h"))
+        #expect(!listedFiles.contains("pixly.cbp"))
         #expect(session.restoreTitle == "restore C files")
         await session.submit("cat ball.h")
         #expect(session.lines.last?.text == "cat: ball.h: No such file or directory")

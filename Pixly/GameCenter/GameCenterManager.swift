@@ -12,9 +12,11 @@ typealias PlatformViewController = UIViewController
 
 @Observable @MainActor
 final class GameCenterManager {
-    nonisolated static let leaderboardID = "ch.pandermatt_huber.pixly.highscore"
+    // Replacement boards for 1.0.1: Best Score, High to Low in App Store Connect.
+    // The original live boards sort Low to High, which cannot be changed after release.
+    nonisolated static let leaderboardID = "ch.pandermatt_huber.pixly.highscore.v2"
     /// Pixly 2.0 scores are not comparable with the classic port, so they get their own board.
-    nonisolated static let leaderboardID2 = "ch.pandermatt_huber.pixly.highscore2"
+    nonisolated static let leaderboardID2 = "ch.pandermatt_huber.pixly.highscore2.v2"
     private static let leaderboards = [leaderboardID, leaderboardID2]
 
     private(set) var isAuthenticated = false
@@ -123,9 +125,16 @@ final class GameCenterManager {
         }
     }
 
-    /// The classic board keeps its original key, so scores stored by earlier versions still get sent.
+    /// Keep the 1.0 storage keys for both modes so unsent scores reach the replacement boards.
     private static func pendingKey(for leaderboardID: String) -> String {
-        leaderboardID == Self.leaderboardID ? "pendingGameCenterScore" : "pendingGameCenterScore.\(leaderboardID)"
+        switch leaderboardID {
+        case Self.leaderboardID:
+            "pendingGameCenterScore"
+        case Self.leaderboardID2:
+            "pendingGameCenterScore.ch.pandermatt_huber.pixly.highscore2"
+        default:
+            "pendingGameCenterScore.\(leaderboardID)"
+        }
     }
 
     private func keepPending(_ score: Int, for leaderboardID: String) {
