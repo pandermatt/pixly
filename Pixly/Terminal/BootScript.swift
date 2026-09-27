@@ -28,7 +28,7 @@ enum BootScript {
 
     static let files = [
         "Pixly.xcodeproj", "Pixly2.swift", "ball.c", "ball.h", "consoleio.h", "credits.txt", "landscape.c", "landscape.h", "main.c",
-        "pixly.cbp", "pixly-history.txt", "score.c", "score.h", "timer.h",
+        "pixly.cbp", "history.txt", "score.c", "score.h", "timer.h",
     ]
     static let directories = ["Pixly.xcodeproj"]
     static let xcodeprojContents = "project.pbxproj  project.xcworkspace  xcshareddata"
@@ -77,8 +77,8 @@ enum BootScript {
         """
 
     static func source(named name: String) -> String? {
-        if name == "pixly-history.txt" {
-            guard let url = Bundle.main.url(forResource: "pixly-history", withExtension: "txt") else { return nil }
+        if name == "history.txt" {
+            guard let url = Bundle.main.url(forResource: "history", withExtension: "txt") else { return nil }
             return try? String(contentsOf: url, encoding: .utf8)
         }
         if name == "credits.txt" {
@@ -142,7 +142,7 @@ enum BootScript {
         .entry("highscore2", "show Pixly 2.0 highscores"),
         .entry("leaderboard", "open the Game Center leaderboard"),
         .entry("welcome", "show the welcome screen again"),
-        .entry("history", "read the story in pixly-history.txt"),
+        .entry("history", "read the story in history.txt"),
         Line("tab completes commands, files and values", .dim),
     ]
     #endif

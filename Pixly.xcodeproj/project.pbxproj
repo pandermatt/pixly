@@ -19,7 +19,7 @@
 		0DA6CAB7698CAA66E5CC1136 /* SmoothProgram.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89E614D23DCA22D668860BD /* SmoothProgram.swift */; };
 		0EB7C634EFFD3D019CE3F760 /* TerminalLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13B9919CBEF063F335ED95EA /* TerminalLine.swift */; };
 		0F1676179B584728042114EF /* PixlyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A5A466AED2A9A0E0B9A58AD /* PixlyApp.swift */; };
-		0F8CAD3058C5B3AF2BA99B19 /* pixly-history.txt in Resources */ = {isa = PBXBuildFile; fileRef = 4237B6B847910FB56A90B8DC /* pixly-history.txt */; };
+		0F8CAD3058C5B3AF2BA99B19 /* history.txt in Resources */ = {isa = PBXBuildFile; fileRef = 4237B6B847910FB56A90B8DC /* history.txt */; };
 		157200E89996F409E168381C /* ShellJokes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDC17D3178EAE983910D0830 /* ShellJokes.swift */; };
 		1860B732BA904648D2FAF8FE /* GameControllerInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11F59754FD27F60B374BC54 /* GameControllerInput.swift */; };
 		1A715CC39B5A7D9555E3EB00 /* PixlyProgram.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1574A3D06D1DBFE6EE3191 /* PixlyProgram.swift */; };
@@ -58,7 +58,7 @@
 		595210A13DFDC45EE9332C03 /* GameCenterManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91072C6376CE8CC8780FD2F7 /* GameCenterManager.swift */; };
 		59BD6612796854661488B578 /* WatchSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = F85421EC23FF3E94C1446FAA /* WatchSync.swift */; };
 		5ACB0F81F3D9219ECB1E924E /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 27F59BC3E82ED283831F2432 /* AppIcon.icon */; };
-		5C34E3A3A43994857438D6C1 /* pixly-history.txt in Resources */ = {isa = PBXBuildFile; fileRef = 4237B6B847910FB56A90B8DC /* pixly-history.txt */; };
+		5C34E3A3A43994857438D6C1 /* history.txt in Resources */ = {isa = PBXBuildFile; fileRef = 4237B6B847910FB56A90B8DC /* history.txt */; };
 		5CD153429EECEC1BFF2811BC /* landscape.h.txt in Resources */ = {isa = PBXBuildFile; fileRef = 99662FC509775ACFB87855C1 /* landscape.h.txt */; };
 		5D0439886A91B3955B7E904A /* ProgramScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 653C94E76664ACA8C508C1BA /* ProgramScreen.swift */; };
 		5FFBDF4ECF907B3DF26404AF /* AchievementTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33DF9EB038C87F70EA1C4A6F /* AchievementTests.swift */; };
@@ -116,7 +116,7 @@
 		9B437FAAA14C24FDD2977D43 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1D652F329FB2DD2FB729185C /* Assets.xcassets */; };
 		9B4B370B67FA74C625688C47 /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD7CE014143CFE6CA8C42ABF /* WelcomeView.swift */; };
 		9E1323CDD1A30F73004D15E8 /* GameControllerInputTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5CEF47A8A6E82B961B4EECC /* GameControllerInputTests.swift */; };
-		A05B30D40D52C33CA462841D /* pixly-history.txt in Resources */ = {isa = PBXBuildFile; fileRef = 4237B6B847910FB56A90B8DC /* pixly-history.txt */; };
+		A05B30D40D52C33CA462841D /* history.txt in Resources */ = {isa = PBXBuildFile; fileRef = 4237B6B847910FB56A90B8DC /* history.txt */; };
 		A204326C466A76C1601017E8 /* WatchSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = F85421EC23FF3E94C1446FAA /* WatchSync.swift */; };
 		A275D000E1C74279E7DF8117 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6DC03EAAF56CA283E597960 /* Preferences.swift */; };
 		A409C128DB2D9987430D17F6 /* main.c.txt in Resources */ = {isa = PBXBuildFile; fileRef = 7547898B833FDB86C0F69900 /* main.c.txt */; };
@@ -252,7 +252,7 @@
 		381DAD0F64E8C8942A534801 /* TerminalLineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalLineView.swift; sourceTree = "<group>"; };
 		3B0B1B5EED68037DFE60BDEC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		40495C455314652A215AE7A0 /* GameSoundTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSoundTests.swift; sourceTree = "<group>"; };
-		4237B6B847910FB56A90B8DC /* pixly-history.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "pixly-history.txt"; sourceTree = "<group>"; };
+		4237B6B847910FB56A90B8DC /* history.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "history.txt"; sourceTree = "<group>"; };
 		4A5A466AED2A9A0E0B9A58AD /* PixlyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixlyApp.swift; sourceTree = "<group>"; };
 		511683E12516989A3F136964 /* Pixly.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Pixly.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		551EE7E95E573F4B991FDB64 /* BootScript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BootScript.swift; sourceTree = "<group>"; };
@@ -340,7 +340,7 @@
 				AAC993534ADB27BEE5402856 /* landscape.c.txt */,
 				99662FC509775ACFB87855C1 /* landscape.h.txt */,
 				7547898B833FDB86C0F69900 /* main.c.txt */,
-				4237B6B847910FB56A90B8DC /* pixly-history.txt */,
+				4237B6B847910FB56A90B8DC /* history.txt */,
 				9935F8BBFE07E5E59EBAACA3 /* pixly.cbp.txt */,
 				A5182C2B4B522D289192FAB4 /* score.c.txt */,
 				0966600C6C0857A734AF9F00 /* score.h.txt */,
@@ -729,7 +729,7 @@
 				B3068D93BD5BE39BCDB73DC3 /* landscape.c.txt in Resources */,
 				3638F1226BF681CCED1ADF1A /* landscape.h.txt in Resources */,
 				7D0856CD8A599BE8EFD6236F /* main.c.txt in Resources */,
-				5C34E3A3A43994857438D6C1 /* pixly-history.txt in Resources */,
+				5C34E3A3A43994857438D6C1 /* history.txt in Resources */,
 				B168C7564C74DEFB863F0551 /* pixly.cbp.txt in Resources */,
 				CE3EB7A82FAA7AEA4B20D1D0 /* score.c.txt in Resources */,
 				F4492522637588BAC2C2782C /* score.h.txt in Resources */,
@@ -761,7 +761,7 @@
 				EC9336CF1CAE2FCD5A737FCB /* landscape.c.txt in Resources */,
 				D2F5355BBFD4AE7E6C64AD0A /* landscape.h.txt in Resources */,
 				793230DAF8B910D16F866917 /* main.c.txt in Resources */,
-				A05B30D40D52C33CA462841D /* pixly-history.txt in Resources */,
+				A05B30D40D52C33CA462841D /* history.txt in Resources */,
 				9B2E25DE9A39D37B366FD894 /* pixly.cbp.txt in Resources */,
 				265A3391075B78FFA719CFBB /* score.c.txt in Resources */,
 				E32F704B1164B9BED869C0E9 /* score.h.txt in Resources */,
@@ -784,7 +784,7 @@
 				6BAC70145269DE454581A596 /* landscape.c.txt in Resources */,
 				5CD153429EECEC1BFF2811BC /* landscape.h.txt in Resources */,
 				A409C128DB2D9987430D17F6 /* main.c.txt in Resources */,
-				0F8CAD3058C5B3AF2BA99B19 /* pixly-history.txt in Resources */,
+				0F8CAD3058C5B3AF2BA99B19 /* history.txt in Resources */,
 				28656023DCA578B983E9C3AB /* pixly.cbp.txt in Resources */,
 				94B6EBBADAC6B14C0429C1C5 /* score.c.txt in Resources */,
 				C7AC7EBCF68FE77721D2013C /* score.h.txt in Resources */,
@@ -1052,7 +1052,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -1332,7 +1332,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";

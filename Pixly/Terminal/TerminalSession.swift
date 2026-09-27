@@ -68,7 +68,11 @@ final class TerminalSession {
         self.charDelay = charDelay
         self.lineDelay = lineDelay
         self.defaults = defaults
-        removedFiles = Set(defaults.stringArray(forKey: Self.removedFilesKey) ?? []).intersection(BootScript.files)
+        // Preserve simulated deletions saved before the story file was renamed.
+        let savedFiles = (defaults.stringArray(forKey: Self.removedFilesKey) ?? []).map {
+            $0 == "pixly-history.txt" ? "history.txt" : $0
+        }
+        removedFiles = Set(savedFiles).intersection(BootScript.files)
     }
 
     func boot() async {
@@ -220,10 +224,11 @@ final class TerminalSession {
             let words = parts.dropFirst()
             let hidden = words.contains { $0.hasPrefix("-") && $0.contains("a") }
             if let path = words.first(where: { !$0.hasPrefix("-") && ![".", "~", "~/"].contains($0) }) {
-                if !visibleFiles.contains(path) {
+                let file = resolvedFile(path)
+                if !visibleFiles.contains(file) {
                     append("ls: \(path): No such file or directory", .error)
                 } else {
-                    append(BootScript.directories.contains(path) ? BootScript.xcodeprojContents : path)
+                    append(BootScript.directories.contains(file) ? BootScript.xcodeprojContents : path)
                 }
             } else {
                 let names = (hidden ? [".", "..", ".pixlyrc"] : []) + visibleFiles
@@ -245,30 +250,31 @@ final class TerminalSession {
                 append("git: '\(parts[1])' is not a git command. See 'git --help'.", .error)
             }
         case "history":
-            await execute("cat pixly-history.txt")
+            await execute("cat history.txt")
         case "cat":
+            let file = resolvedFile(argument)
             if argument.isEmpty {
                 append("usage: cat FILE", .dim)
-            } else if argument == ".pixlyrc" || argument == "~/.pixlyrc", let rc = pixlyrc() {
+            } else if file == ".pixlyrc", let rc = pixlyrc() {
                 for line in rc {
                     append(line)
                 }
-            } else if let program = scoreProgram(named: argument), !scores(of: program).isEmpty {
+            } else if let program = scoreProgram(named: file), !scores(of: program).isEmpty {
                 // score.c's highscore.txt format, without its +5 "encryption".
                 for entry in scores(of: program) {
                     append("\(entry.name)§\(entry.score)")
                 }
-            } else if BootScript.directories.contains(argument), visibleFiles.contains(argument) {
+            } else if BootScript.directories.contains(file), visibleFiles.contains(file) {
                 append("cat: \(argument): Is a directory", .error)
-            } else if !removedFiles.contains(argument), let source = BootScript.source(named: argument) {
+            } else if !removedFiles.contains(file), let source = BootScript.source(named: file) {
                 for line in source.components(separatedBy: "\n") {
                     append(line)
                 }
-                if argument.hasSuffix(".swift") {
+                if file.hasSuffix(".swift") {
                     append("// the whole game (Swift and C) is on GitHub:", .dim)
                     append(BootScript.repository, .link)
                 }
-                if argument != "credits.txt" && argument != "pixly-history.txt" {
+                if file != "credits.txt" && file != "history.txt" {
                     onAchievement(.readTheSource)
                 }
             } else {
@@ -340,6 +346,14 @@ final class TerminalSession {
 
     // MARK: - Files
 
+    /// Resolve paths relative to the simulated home directory.
+    private func resolvedFile(_ path: String) -> String {
+        var name = path
+        if name.hasPrefix("~/") { name = String(name.dropFirst(2)) }
+        while name.hasPrefix("./") { name = String(name.dropFirst(2)) }
+        return name
+    }
+
     /// What `ls` shows: the sources that weren't removed, and a score file for each table with scores.
     private var visibleFiles: [String] {
         let scoreFiles = [Program.classic, .smooth].filter { !scores(of: $0).isEmpty }.map(Self.scoreFile)
@@ -385,7 +399,7 @@ final class TerminalSession {
             targets += matches
         }
         for target in targets {
-            let file = target.hasPrefix("~/") ? String(target.dropFirst(2)) : target
+            let file = resolvedFile(target)
             if file == "." || file == ".." {
                 append("rm: \".\" and \"..\" may not be removed", .error)
             } else if file == ".pixlyrc", let preferences {
