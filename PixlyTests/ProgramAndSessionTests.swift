@@ -453,10 +453,48 @@ struct TerminalSessionTests {
         #expect(!story.contains { $0.contains("Pascal") || $0.contains("Jan Huber") || $0.contains("Adrian") })
         #expect(achievements.isEmpty)
         await session.submit("clear")
-        await session.submit("cat pixly-history.txt")
+        await session.submit("cat history.txt")
         #expect(session.lines.dropFirst().map(\.text) == story)
         #expect(achievements.isEmpty)
         #expect(session.mode == .shell)
+    }
+
+    @Test func historyPathsShareContentsAndRemovalState() async throws {
+        let (session, defaults) = try await sessionWithFiles()
+        var achievements: [Achievement] = []
+        session.onAchievement = { achievements.append($0) }
+        for path in ["history.txt", "./history.txt", "~/history.txt"] {
+            await session.submit("clear")
+            await session.submit("cat \(path)")
+            #expect(session.lines.dropFirst().first?.text == "THE STORY OF PIXLY")
+            #expect(!session.lines.contains { $0.style == .error })
+            await session.submit("ls \(path)")
+            #expect(session.lines.last?.text == path)
+        }
+        #expect(achievements.isEmpty)
+        await session.submit("rm ./history.txt")
+        #expect(session.removedFiles == ["history.txt"])
+        let relaunched = TerminalSession(charDelay: .zero, lineDelay: .zero, defaults: defaults)
+        await relaunched.boot()
+        for path in ["history.txt", "./history.txt", "~/history.txt"] {
+            await relaunched.submit("cat \(path)")
+            #expect(relaunched.lines.last?.text == "cat: \(path): No such file or directory")
+            await relaunched.submit("ls \(path)")
+            #expect(relaunched.lines.last?.text == "ls: \(path): No such file or directory")
+        }
+        await relaunched.submit("git restore .")
+        await relaunched.submit("clear")
+        await relaunched.submit("cat history.txt")
+        #expect(relaunched.lines.dropFirst().first?.text == "THE STORY OF PIXLY")
+    }
+
+    @Test func renamedHistoryPreservesExistingRemovalState() async throws {
+        let (session, defaults) = try await sessionWithFiles()
+        await session.submit("cat pixly-history.txt")
+        #expect(session.lines.last?.text == "cat: pixly-history.txt: No such file or directory")
+        defaults.set(["pixly-history.txt"], forKey: "removedFiles")
+        let relaunched = TerminalSession(charDelay: .zero, lineDelay: .zero, defaults: defaults)
+        #expect(relaunched.removedFiles == ["history.txt"])
     }
 
     @Test func historyFileSupportsDiscoveryRemovalAndRestore() async throws {
@@ -466,19 +504,19 @@ struct TerminalSessionTests {
         let session = TerminalSession(charDelay: .zero, lineDelay: .zero, defaults: defaults)
         await session.boot()
         await session.submit("ls")
-        #expect(session.lines.last?.text.contains("pixly-history.txt") == true)
+        #expect(session.lines.last?.text.contains("history.txt") == true)
         await session.submit("help")
         #expect(session.lines.contains { $0.label == "history" })
         session.input = "hist"
         session.complete()
         #expect(session.input == "history ")
-        session.input = "cat pixly-"
+        session.input = "cat hist"
         session.complete()
-        #expect(session.input == "cat pixly-history.txt ")
-        await session.submit("rm pixly-history.txt")
+        #expect(session.input == "cat history.txt ")
+        await session.submit("rm history.txt")
         await session.submit("history")
         #expect(session.lines.last?.style == .error)
-        #expect(session.lines.last?.text == "cat: pixly-history.txt: No such file or directory")
+        #expect(session.lines.last?.text == "cat: history.txt: No such file or directory")
         await session.submit("git restore .")
         await session.submit("clear")
         await session.submit("history")
